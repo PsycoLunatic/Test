@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Government Exam Preparation: State GK</title>
+<style>
+    :root {
+        --primary: #1e3a8a;
+        --secondary: #3b82f6;
+        --bg: #f3f4f6;
+        --text: #1f2937;
+        --success: #10b981;
+        --danger: #ef4444;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header-left h1 { margin: 0; font-size: 1.5rem; }
+    .header-left p { margin: 0.2rem 0 0; font-size: 0.9rem; opacity: 0.8; }
+    #timer-display {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: #fff;
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        display: none;
+    }
+    .container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .set-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .set-btn {
+        background-color: white;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        flex: 1;
+        min-width: 150px;
+        transition: all 0.2s;
+    }
+    .set-btn:hover, .set-btn.active {
+        background-color: var(--primary);
+        color: white;
+    }
+    .quiz-container {
+        display: none;
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .question-card {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .question-text {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    .options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .option-label:hover { background: #e5e7eb; }
+    .option-label input { margin-right: 1rem; }
+    .correct-ans { background-color: #d1fae5 !important; border-color: var(--success) !important; }
+    .wrong-ans { background-color: #fee2e2 !important; border-color: var(--danger) !important; }
+    .action-btns {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        color: white;
+        font-size: 1rem;
+    }
+    .btn-submit { background-color: var(--success); }
+    .btn-submit:hover { background-color: #059669; }
+    .btn-retry { background-color: var(--secondary); display: none; }
+    .btn-retry:hover { background-color: #2563eb; }
+    #score-display {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-top: 1rem;
+        text-align: center;
+        color: var(--primary);
+        display: none;
+        padding: 1rem;
+        background: #eff6ff;
+        border-radius: 4px;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <h1>State GK Revision Portal</h1>
+        <p>Reference: States.pdf</p>
+    </div>
+    <div id="timer-display">25:00</div>
+</header>
+
+<div class="container">
+    <div id="selection-screen">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Select a Practice Set</h2>
+        <div class="set-selector" id="set-buttons">
+            <!-- Buttons injected via JS -->
+        </div>
+    </div>
+
+    <div class="quiz-container" id="quiz-screen">
+        <h2 id="current-set-title" style="margin-top: 0; color: var(--primary);"></h2>
+        <div id="questions-wrapper"></div>
+        
+        <div id="score-display"></div>
+        
+        <div class="action-btns">
+            <button class="btn btn-submit" id="submit-btn" onclick="submitQuiz()">Submit & Review</button>
+            <button class="btn btn-retry" id="retry-btn" onclick="retrySet()">Retry This Set</button>
+            <button class="btn btn-retry" id="back-btn" onclick="goBack()" style="display: block; background: #6b7280;">Back to Menu</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Quiz Data
+const quizData = [
+    {
+        title: "Set 1: Basic State Facts (Easy)",
+        questions: [
+            { q: "What is the capital of Uttar Pradesh?", options: ["Kanpur", "Lucknow", "Agra", "Prayagraj"], a: 1 },
+            { q: "When was Bihar formed?", options: ["24 January 1950", "22 March 1912", "1 April 1936", "1 May 1960"], a: 1 },
+            { q: "What is the highest peak of Rajasthan?", options: ["Kangto", "Kanchenjunga", "Guru Shikhar", "Someshwar Peak"], a: 2 },
+            { q: "When did Himachal Pradesh achieve full statehood?", options: ["15 April 1948", "25 January 1971", "1 November 1956", "20 February 1987"], a: 1 },
+            { q: "Who is the current Chief Minister of West Bengal as of August 2026?", options: ["Suvendu Adhikari", "Mamata Banerjee", "Prafulla Chandra Ghosh", "Bidhan Chandra Roy"], a: 0 },
+            { q: "By which constitutional amendment did Sikkim become a state?", options: ["36th Amendment Act", "55th Amendment Act", "56th Amendment Act", "42nd Amendment Act"], a: 0 },
+            { q: "What is the capital of Arunachal Pradesh?", options: ["Shillong", "Agartala", "Kohima", "Itanagar"], a: 3 },
+            { q: "What is the capital of Tripura?", options: ["Dispur", "Imphal", "Agartala", "Aizawl"], a: 2 },
+            { q: "What is the official capital of Assam?", options: ["Guwahati", "Dibrugarh", "Dispur", "Silchar"], a: 2 },
+            { q: "Who is the current Chief Minister of Andhra Pradesh as of August 2026?", options: ["Y. S. Jagan Mohan Reddy", "Nara Chandrababu Naidu", "Pawan Kalyan", "Neelam Sanjiva Reddy"], a: 1 },
+            { q: "Which is the longest lake in India, located in Kerala?", options: ["Ashtamudi Lake", "Loktak Lake", "Sambhar Lake", "Vembanad Lake"], a: 3 },
+            { q: "Where are the ISRO Headquarters located?", options: ["Thiruvananthapuram", "Sriharikota", "Bengaluru", "Hyderabad"], a: 2 },
+            { q: "In which year was Madras officially renamed Chennai?", options: ["1956", "1969", "1995", "1996"], a: 3 },
+            { q: "What is the state flower of Manipur?", options: ["Foxtail Orchid", "Shirui Lily", "Palash", "Lotus"], a: 1 },
+            { q: "Which state hosts the famous Hornbill Festival?", options: ["Nagaland", "Meghalaya", "Mizoram", "Tripura"], a: 0 },
+            { q: "What is the capital of Meghalaya?", options: ["Shillong", "Gangtok", "Itanagar", "Kohima"], a: 0 },
+            { q: "Mizoram became the 23rd state of India on which date?", options: ["21 January 1972", "20 February 1987", "30 May 1987", "1 December 1963"], a: 1 },
+            { q: "When was Gujarat formed?", options: ["1 May 1960", "1 November 1956", "1 October 1953", "2 June 2014"], a: 0 },
+            { q: "Who is the current Chief Minister of Maharashtra as of August 2026?", options: ["Eknath Shinde", "Uddhav Thackeray", "Devendra Fadnavis", "Yashwantrao Chavan"], a: 2 },
+            { q: "Hirakud Dam is built across which river?", options: ["Godavari", "Krishna", "Mahanadi", "Brahmaputra"], a: 2 },
+            { q: "When is Goa Statehood Day observed?", options: ["19th December", "30th May", "20th February", "21st January"], a: 1 },
+            { q: "When was Telangana formed?", options: ["2 June 2014", "1 May 2014", "1 November 2000", "9 November 2000"], a: 0 },
+            { q: "What is the highest peak of Uttarakhand?", options: ["Kamet", "Nanda Devi", "Trishul", "Kangto"], a: 1 },
+            { q: "Which is the largest district by area in Uttar Pradesh?", options: ["Sonbhadra", "Lalitpur", "Lakhimpur Kheri", "Prayagraj"], a: 2 },
+            { q: "Which river is historically known as the 'Sorrow of Bihar'?", options: ["Gandak", "Ghaghara", "Ganga", "Kosi"], a: 3 }
+        ]
+    },
+    {
+        title: "Set 2: Wildlife, Parks & Rivers (Moderate - Easy)",
+        questions: [
+            { q: "In which state is Dudhwa National Park located?", options: ["Madhya Pradesh", "Bihar", "Uttar Pradesh", "Uttarakhand"], a: 2 },
+            { q: "Which is Bihar's only tiger reserve?", options: ["Buxa Tiger Reserve", "Valmiki Tiger Reserve", "Palamau Tiger Reserve", "Sariska Tiger Reserve"], a: 1 },
+            { q: "Which is India's largest inland salt lake?", options: ["Chilika Lake", "Sambhar Lake", "Vembanad Lake", "Loktak Lake"], a: 1 },
+            { q: "Pin Valley is located in which region?", options: ["Lahaul", "Spiti", "Kinnaur", "Kullu"], a: 1 },
+            { q: "Jaldapara National Park is famous for which animal?", options: ["Royal Bengal Tiger", "Indian One-horned Rhinoceros", "Red Panda", "Asiatic Lion"], a: 1 },
+            { q: "Which of the following is India's only Mixed UNESCO World Heritage Site?", options: ["Nanda Devi NP", "Sundarbans NP", "Khangchendzonga NP", "Manas NP"], a: 2 },
+            { q: "Namdapha National Park is located in which state?", options: ["Assam", "Arunachal Pradesh", "Meghalaya", "Nagaland"], a: 1 },
+            { q: "Clouded Leopard National Park is in which state?", options: ["Tripura", "Mizoram", "Sikkim", "Assam"], a: 0 },
+            { q: "Kaziranga National Park is primarily famous for which animal?", options: ["Tiger", "Elephant", "One-Horned Rhinoceros", "Hoolock Gibbon"], a: 2 },
+            { q: "Sabarimala Temple is situated in which tiger reserve region?", options: ["Bandipur", "Periyar", "Mudumalai", "Nagarhole"], a: 1 },
+            { q: "Bandipur National Park is in which state?", options: ["Kerala", "Tamil Nadu", "Karnataka", "Andhra Pradesh"], a: 2 },
+            { q: "Which is the world's only floating national park?", options: ["Keibul Lamjao", "Namdapha", "KBR National Park", "Mouling National Park"], a: 0 },
+            { q: "Gir National Park contains the only surviving wild population of which animal?", options: ["Snow Leopard", "Asiatic Lion", "Indian Rhinoceros", "Bengal Tiger"], a: 1 },
+            { q: "Similipal National Park is located in which state?", options: ["Jharkhand", "Chhattisgarh", "Odisha", "West Bengal"], a: 2 },
+            { q: "KBR (Kasu Brahmananda Reddy) National Park is located in which state?", options: ["Andhra Pradesh", "Telangana", "Karnataka", "Tamil Nadu"], a: 1 },
+            { q: "Project Tiger was launched in 1973 from which National Park?", options: ["Ranthambore NP", "Kanha NP", "Jim Corbett NP", "Bandipur NP"], a: 2 },
+            { q: "Bhitarkanika National Park is particularly famous for which animal?", options: ["Saltwater crocodiles", "Tigers", "Elephants", "One-horned rhinos"], a: 0 },
+            { q: "Ranthambore National Park is famous for which animal?", options: ["Lions", "Tigers", "Rhinoceros", "Swamp Deer"], a: 1 },
+            { q: "Majuli is a famous river island located in which river?", options: ["Ganga", "Brahmaputra", "Lohit", "Mahanadi"], a: 1 },
+            { q: "Where is Buxa Tiger Reserve located?", options: ["Assam", "Odisha", "West Bengal", "Bihar"], a: 2 },
+            { q: "Neora Valley National Park is known as a habitat for which animal?", options: ["Red Panda", "Tiger", "Rhinoceros", "Snow Leopard"], a: 0 },
+            { q: "Mouling National Park is located in which state?", options: ["Sikkim", "Arunachal Pradesh", "Meghalaya", "Manipur"], a: 1 },
+            { q: "Mahavir Harina Vanasthali National Park is in which state?", options: ["Maharashtra", "Gujarat", "Telangana", "Rajasthan"], a: 2 },
+            { q: "In which year was Jim Corbett National Park established?", options: ["1936", "1950", "1973", "1987"], a: 0 },
+            { q: "What is the approximate length of Vembanad Lake?", options: ["65 km", "80.5 km", "96.5 km", "110 km"], a: 2 }
+        ]
+    },
+    {
+        title: "Set 3: Culture, Dances & Festivals (Moderate)",
+        questions: [
+            { q: "The Lucknow Gharana is particularly associated with which classical dance?", options: ["Kathakali", "Bharatanatyam", "Kathak", "Odissi"], a: 2 },
+            { q: "Chhath Puja is a major festival particularly associated with which state?", options: ["Gujarat", "Bihar", "Rajasthan", "Maharashtra"], a: 1 },
+            { q: "Ghoomar is one of the most famous traditional dances of which state?", options: ["Gujarat", "Haryana", "Rajasthan", "Punjab"], a: 2 },
+            { q: "Halda Festival is celebrated in which region?", options: ["Manali", "Kullu", "Sirmaur", "Lahaul"], a: 3 },
+            { q: "Chhau dance is famously associated with which district in West Bengal?", options: ["Malda", "Darjeeling", "Purulia", "Kolkata"], a: 2 },
+            { q: "Chu-Faat dance is associated with which community in Sikkim?", options: ["Nepali", "Bhutia", "Lepcha", "Khasi"], a: 1 },
+            { q: "The Hornbill Festival of Nagaland is usually held in which month?", options: ["April", "August", "October", "December"], a: 3 },
+            { q: "Which Bihu is celebrated in April?", options: ["Kongali Bihu", "Kati Bihu", "Bhogali Bihu", "Rongali/Bohag Bihu"], a: 3 },
+            { q: "Ugadi is the New Year festival for which linguistic group?", options: ["Tamil", "Malayalam", "Telugu", "Kannada"], a: 2 },
+            { q: "Mohiniyattam is a classical dance form of which state?", options: ["Tamil Nadu", "Andhra Pradesh", "Kerala", "Karnataka"], a: 2 },
+            { q: "Yakshagana is a traditional dance-drama of which state?", options: ["Maharashtra", "Karnataka", "Odisha", "Telangana"], a: 1 },
+            { q: "Jallikattu is a traditional bull-taming sport of which state?", options: ["Karnataka", "Kerala", "Tamil Nadu", "Andhra Pradesh"], a: 2 },
+            { q: "Pung Cholom is an important classical/traditional dance of which state?", options: ["Mizoram", "Nagaland", "Manipur", "Meghalaya"], a: 2 },
+            { q: "Wangala, the '100 Drums Festival', is celebrated by which people?", options: ["Khasi", "Jaintia", "Garo", "Bodo"], a: 2 },
+            { q: "Cheraw is the famous bamboo dance of which state?", options: ["Nagaland", "Mizoram", "Tripura", "Manipur"], a: 1 },
+            { q: "Which dance from Gujarat is inscribed on the UNESCO Intangible Cultural Heritage list?", options: ["Bhavai", "Tippani", "Garba", "Dandiya Raas"], a: 2 },
+            { q: "Lavani is a famous traditional performance form of which state?", options: ["Goa", "Gujarat", "Maharashtra", "Madhya Pradesh"], a: 2 },
+            { q: "The famous Rath Yatra is associated with which temple in Odisha?", options: ["Lingaraj Temple", "Sun Temple", "Jagannath Temple", "Mukteshvara Temple"], a: 2 },
+            { q: "Fugdi is a famous folk dance of which state?", options: ["Maharashtra", "Goa", "Karnataka", "Kerala"], a: 1 },
+            { q: "Bonalu is a major traditional festival of which state?", options: ["Andhra Pradesh", "Telangana", "Karnataka", "Odisha"], a: 1 },
+            { q: "Sita Devi received the Padma Shri in 1981 for her expertise in which art form?", options: ["Chikankari", "Madhubani Painting", "Sujani Embroidery", "Pattachitra"], a: 1 },
+            { q: "The famous painting 'Bani Thani' belongs to which school of painting?", options: ["Mewar", "Marwar", "Kishangarh", "Bundi"], a: 2 },
+            { q: "Ambubachi Mela is held annually at which temple?", options: ["Kashi Vishwanath Temple", "Kamakhya Temple", "Meenakshi Temple", "Brihadeeswarar Temple"], a: 1 },
+            { q: "Chapchar Kut is a major spring festival of which state?", options: ["Mizoram", "Meghalaya", "Nagaland", "Manipur"], a: 0 },
+            { q: "Nongkrem Dance Festival is a religious festival associated with which people?", options: ["Garo", "Khasi", "Jaintia", "Ao Naga"], a: 1 }
+        ]
+    },
+    {
+        title: "Set 4: Legislature & Leadership Firsts (Hard)",
+        questions: [
+            { q: "How many Lok Sabha seats does Uttar Pradesh have?", options: ["40", "60", "80", "100"], a: 2 },
+            { q: "How many Vidhan Sabha seats does Bihar have?", options: ["243", "288", "403", "200"], a: 0 },
+            { q: "Who was the first Chief Minister of Greater Rajasthan (April 1949)?", options: ["Tika Ram Paliwal", "Gurumukh Nihal Singh", "Heera Lal Shastri", "Bhajan Lal Sharma"], a: 2 },
+            { q: "How many Vidhan Sabha seats does Himachal Pradesh have?", options: ["60", "68", "75", "126"], a: 1 },
+            { q: "Who was the first Premier of West Bengal after Independence?", options: ["Bidhan Chandra Roy", "Chakravarti Rajagopalachari", "Prafulla Chandra Ghosh", "Suvendu Adhikari"], a: 2 },
+            { q: "How many Lok Sabha seats does Sikkim have?", options: ["1", "2", "3", "4"], a: 0 },
+            { q: "How many Vidhan Sabha seats does Arunachal Pradesh have?", options: ["32", "40", "60", "68"], a: 2 },
+            { q: "Who was the first Chief Minister of Tripura?", options: ["Dr. Manik Saha", "B. K. Nehru", "Sachindra Lal Singh", "P. Shilu Ao"], a: 2 },
+            { q: "Who was the first Governor of Assam?", options: ["Sir Akbar Hydari", "Gopinath Bordoloi", "Lakshman Prasad Acharya", "S. Chakravarti"], a: 0 },
+            { q: "Who was the first CM of Andhra State formed in 1953?", options: ["Neelam Sanjiva Reddy", "Chandulal Madhavlal Trivedi", "Tanguturi Prakasam", "Nara Chandrababu Naidu"], a: 2 },
+            { q: "How many Rajya Sabha seats does Kerala have?", options: ["7", "9", "11", "12"], a: 1 },
+            { q: "Who was the first Chief Minister of Mysore State?", options: ["S. Nijalingappa", "D. Devaraj Urs", "K. Chengalaraya Reddy", "Jayachamaraja Wadiyar"], a: 2 },
+            { q: "How many Vidhan Sabha seats does Tamil Nadu have?", options: ["224", "234", "288", "294"], a: 1 },
+            { q: "Who was the first Governor of Manipur?", options: ["Mohammed Alimuddin", "B. K. Nehru", "Ajay Kumar Bhalla", "Vishnu Sahay"], a: 1 },
+            { q: "Who was the first Chief Minister of Nagaland?", options: ["P. Shilu Ao", "Neiphiu Rio", "Vishnu Sahay", "Dr. Gopal Singh"], a: 0 },
+            { q: "How many Vidhan Sabha seats does Meghalaya have?", options: ["32", "40", "60", "68"], a: 2 },
+            { q: "Who was the first Chief Minister of Mizoram?", options: ["Hiteswar Saikia", "Lalduhoma", "Laldenga", "Williamson A. Sangma"], a: 2 },
+            { q: "Who was the first Chief Minister of Gujarat?", options: ["Mehdi Nawaz Jung", "Bhupendra Patel", "Dr. Jivraj Narayan Mehta", "Yashwantrao Chavan"], a: 2 },
+            { q: "How many Vidhan Parishad seats does Maharashtra have?", options: ["58", "75", "78", "100"], a: 2 },
+            { q: "Who was the first Governor of Orissa when it became a separate province in 1936?", options: ["Sir John Austen Hubback", "Harekrushna Mahatab", "Dr. Hari Babu Kambhampati", "B. B. Lal"], a: 0 },
+            { q: "Who was the first Chief Minister of Goa, Daman and Diu?", options: ["Dr. Pramod Sawant", "T. Sivasankar", "Gopal Singh", "Dayanand Bandodkar"], a: 3 },
+            { q: "Who was the first Chief Minister of Telangana?", options: ["A. Revanth Reddy", "K. Chandrashekar Rao", "E. S. L. Narasimhan", "Shiv Pratap Shukla"], a: 1 },
+            { q: "Who was the first Chief Minister of Uttarakhand?", options: ["Pushkar Singh Dhami", "Surjit Singh Barnala", "Nityanand Swami", "Govind Ballabh Pant"], a: 2 },
+            { q: "Who was the first Governor of West Bengal?", options: ["Bidhan Chandra Roy", "Chakravarti Rajagopalachari", "R. N. Ravi", "P. C. Ghosh"], a: 1 },
+            { q: "How many Rajya Sabha seats does Assam have?", options: ["7", "10", "14", "16"], a: 0 }
+        ]
+    },
+    {
+        title: "Set 5: Complex Facts & Traps (Very Hard)",
+        questions: [
+            { q: "Sonbhadra in UP borders how many states?", options: ["2", "3", "4", "5"], a: 2 },
+            { q: "In which year did Madhubani Painting receive a Geographical Indication (GI) registration?", options: ["1981", "2006", "2007", "2014"], a: 2 },
+            { q: "Who was the first *elected* Chief Minister of Rajasthan?", options: ["Heera Lal Shastri", "Gurumukh Nihal Singh", "Tika Ram Paliwal", "Bhajan Lal Sharma"], a: 2 },
+            { q: "Bara-Lacha La pass connects Lahaul towards which region?", options: ["Manali", "Ladakh", "Kinnaur", "Tibet"], a: 1 },
+            { q: "In which year was IIT Kharagpur (India's first IIT) established at Hijli?", options: ["1947", "1948", "1950", "1956"], a: 2 },
+            { q: "Which constitutional amendment act provided full statehood to Sikkim in 1975?", options: ["35th", "36th", "55th", "56th"], a: 1 },
+            { q: "What was the previous name of Arunachal Pradesh before becoming a UT?", options: ["North East Frontier Corridor", "North-East Frontier Agency", "Kamarupa", "Lushai Hills"], a: 1 },
+            { q: "How many National Parks does Tripura have according to the notes?", options: ["1", "2", "3", "5"], a: 1 },
+            { q: "The Bhupen Hazarika Setu (Dhola-Sadiya bridge) is built over which river?", options: ["Brahmaputra", "Subansiri", "Manas", "Lohit"], a: 3 },
+            { q: "When was the present Andhra Pradesh formed after the States Reorganisation Act?", options: ["1 October 1953", "1 November 1956", "2 June 2014", "1 May 1960"], a: 1 },
+            { q: "E. M. S. Namboodiripad became the first CM of Kerala in which year?", options: ["1950", "1953", "1956", "1957"], a: 3 },
+            { q: "On what exact date was Mysore State renamed to Karnataka?", options: ["1 November 1956", "1 November 1973", "14 January 1969", "21 January 1972"], a: 1 },
+            { q: "Madras State was officially renamed Tamil Nadu on which date?", options: ["1 November 1956", "14 January 1969", "21 January 1972", "1996"], a: 1 },
+            { q: "What is the 'Sangai' in Manipur?", options: ["A traditional dance", "A floating phumdi", "The state flower", "The state animal (brow-antlered deer)"], a: 3 },
+            { q: "The Moatsu Festival is celebrated by which Naga tribe?", options: ["Konyak", "Angami", "Ao", "Sema"], a: 2 },
+            { q: "Meghalaya became an autonomous state on which date before full statehood?", options: ["21 January 1972", "2 April 1970", "20 February 1987", "1 December 1963"], a: 1 },
+            { q: "Which festival of Mizoram is particularly associated with the maize harvest?", options: ["Chapchar Kut", "Mim Kut", "Pawl Kut", "Wangala"], a: 1 },
+            { q: "What is the approximate length of the main dam of Hirakud?", options: ["2.4 km", "4.8 km", "15.5 km", "25.8 km"], a: 1 },
+            { q: "Goa Liberation Day is celebrated on which date?", options: ["30th May", "19th December", "15th August", "26th January"], a: 1 },
+            { q: "Where is the headquarters of the National Turmeric Board inaugurated in 2025?", options: ["Hyderabad", "Amaravati", "Nizamabad", "Visakhapatnam"], a: 2 },
+            { q: "Which paramilitary force is officially described as the oldest in India?", options: ["CRPF", "Border Security Force", "Assam Rifles", "Indo-Tibetan Border Police"], a: 2 },
+            { q: "What was the original name of the Assam Rifles when raised in 1835?", options: ["Cachar Levy", "Frontier Police", "Assam Military Police", "Northeast Guards"], a: 0 },
+            { q: "Which state is regarded as India's first state formed primarily on a linguistic basis in 1953?", options: ["Andhra Pradesh", "Andhra State", "Gujarat", "Maharashtra"], a: 1 },
+            { q: "How many total National Parks are there in Assam currently?", options: ["2", "5", "7", "9"], a: 2 },
+            { q: "Which of the following is NOT listed as a core official language of Sikkim?", options: ["Nepali", "Hindi", "Bhutia", "Lepcha"], a: 1 }
+        ]
+    }
+];
+
+let currentSetIndex = -1;
+let userAnswers = [];
+let timerInterval;
+let timeRemaining = 1500; // 25 minutes = 1500 seconds
+
+const selectionScreen = document.getElementById('selection-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const setButtonsContainer = document.getElementById('set-buttons');
+const questionsWrapper = document.getElementById('questions-wrapper');
+const timerDisplay = document.getElementById('timer-display');
+const submitBtn = document.getElementById('submit-btn');
+const retryBtn = document.getElementById('retry-btn');
+const backBtn = document.getElementById('back-btn');
+const scoreDisplay = document.getElementById('score-display');
+const currentSetTitle = document.getElementById('current-set-title');
+
+// Initialize set buttons
+quizData.forEach((set, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'set-btn';
+    btn.innerText = set.title;
+    btn.onclick = () => loadSet(index);
+    setButtonsContainer.appendChild(btn);
+});
+
+function loadSet(index) {
+    currentSetIndex = index;
+    userAnswers = new Array(25).fill(null);
+    const set = quizData[index];
+    
+    currentSetTitle.innerText = set.title;
+    questionsWrapper.innerHTML = '';
+    
+    set.questions.forEach((qObj, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = `${qIndex + 1}. ${qObj.q}`;
+        card.appendChild(qText);
+        
+        const optionsGrid = document.createElement('div');
+        optionsGrid.className = 'options-grid';
+        optionsGrid.id = `options-grid-${qIndex}`;
+        
+        qObj.options.forEach((optText, optIndex) => {
+            const label = document.createElement('label');
+            label.className = 'option-label';
+            label.id = `label-${qIndex}-${optIndex}`;
+            
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = `q${qIndex}`;
+            radio.value = optIndex;
+            radio.onchange = () => {
+                userAnswers[qIndex] = optIndex;
+            };
+            
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(optText));
+            optionsGrid.appendChild(label);
+        });
+        
+        card.appendChild(optionsGrid);
+        questionsWrapper.appendChild(card);
+    });
+    
+    selectionScreen.style.display = 'none';
+    quizScreen.style.display = 'block';
+    submitBtn.style.display = 'block';
+    retryBtn.style.display = 'none';
+    scoreDisplay.style.display = 'none';
+    timerDisplay.style.display = 'block';
+    
+    startTimer();
+    window.scrollTo(0, 0);
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    timeRemaining = 1500;
+    updateTimerUI();
+    
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerUI();
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert("Time's up! Submitting your answers automatically.");
+            submitQuiz();
+        }
+    }, 1000);
+}
+
+function updateTimerUI() {
+    const mins = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+    const secs = (timeRemaining % 60).toString().padStart(2, '0');
+    timerDisplay.innerText = `${mins}:${secs}`;
+    if (timeRemaining < 300) {
+        timerDisplay.style.color = 'var(--danger)';
+    } else {
+        timerDisplay.style.color = 'var(--primary)';
+    }
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    let score = 0;
+    const set = quizData[currentSetIndex];
+    
+    // Disable all inputs and highlight answers
+    set.questions.forEach((qObj, qIndex) => {
+        const correctOpt = qObj.a;
+        const selectedOpt = userAnswers[qIndex];
+        
+        const correctLabel = document.getElementById(`label-${qIndex}-${correctOpt}`);
+        if(correctLabel) correctLabel.classList.add('correct-ans');
+        
+        if (selectedOpt !== null && selectedOpt !== correctOpt) {
+            const wrongLabel = document.getElementById(`label-${qIndex}-${selectedOpt}`);
+            if(wrongLabel) wrongLabel.classList.add('wrong-ans');
+        }
+        
+        if (selectedOpt === correctOpt) score++;
+        
+        // Disable radios
+        const radios = document.getElementsByName(`q${qIndex}`);
+        radios.forEach(r => r.disabled = true);
+    });
+    
+    scoreDisplay.innerText = `Your Score: ${score} / 25 (${((score/25)*100).toFixed(0)}%)`;
+    scoreDisplay.style.display = 'block';
+    
+    submitBtn.style.display = 'none';
+    retryBtn.style.display = 'block';
+    timerDisplay.style.display = 'none';
+    window.scrollTo(0, 0);
+}
+
+function retrySet() {
+    loadSet(currentSetIndex);
+}
+
+function goBack() {
+    clearInterval(timerInterval);
+    quizScreen.style.display = 'none';
+    selectionScreen.style.display = 'block';
+    timerDisplay.style.display = 'none';
+}
+</script>
+</body>
+</html>

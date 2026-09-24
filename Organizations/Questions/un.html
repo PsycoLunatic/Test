@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UN & International Organizations - Exam Revision Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-700 p-2 rounded-lg text-amber-400 font-bold text-xl">
+                    🇺🇳
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight">UN & International Organizations</h1>
+                    <p class="text-xs text-indigo-200">Government Exam Special Revision Portal (30 High-Yield Questions)</p>
+                </div>
+            </div>
+
+            <!-- Timer Display -->
+            <div class="flex items-center gap-4 bg-indigo-950/70 px-4 py-2 rounded-xl border border-indigo-700">
+                <div class="text-right">
+                    <span class="block text-[10px] text-indigo-300 font-medium uppercase tracking-wider">Time Elapsed / Left</span>
+                    <span id="timer-display" class="font-mono text-lg font-bold text-amber-400">00:00</span>
+                </div>
+                <button id="timer-toggle-btn" onclick="toggleTimer()" class="p-1.5 bg-indigo-800 hover:bg-indigo-700 text-indigo-200 rounded-lg transition" title="Pause/Play Timer">
+                    <svg id="timer-icon-pause" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg id="timer-icon-play" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left / Top Controls & Question Area -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+
+            <!-- Control Bar -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                <!-- Mode Toggle -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Mode:</span>
+                    <div class="bg-slate-100 p-1 rounded-lg flex gap-1">
+                        <button id="mode-exam-btn" onclick="setMode('exam')" class="px-3 py-1 text-xs font-medium rounded-md transition bg-indigo-600 text-white shadow-sm">Exam Mode</button>
+                        <button id="mode-practice-btn" onclick="setMode('practice')" class="px-3 py-1 text-xs font-medium rounded-md transition text-slate-600 hover:text-indigo-600">Practice Mode</button>
+                    </div>
+                </div>
+
+                <!-- Topic Filter -->
+                <div class="flex items-center gap-2">
+                    <label for="topic-filter" class="text-xs font-semibold text-slate-500 uppercase">Topic:</label>
+                    <select id="topic-filter" onchange="filterTopic(this.value)" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option value="all">All Topics (30 Questions)</option>
+                        <option value="League & WWII">League of Nations & WWII</option>
+                        <option value="UN Origin & Charter">UN Origin & Charter</option>
+                        <option value="Principal Organs">6 Principal Organs</option>
+                        <option value="Agencies & Facts">UN Agencies & Key Facts</option>
+                    </select>
+                </div>
+
+                <!-- Timer Selector -->
+                <div class="flex items-center gap-2">
+                    <label for="timer-select" class="text-xs font-semibold text-slate-500 uppercase">Timer Set:</label>
+                    <select id="timer-select" onchange="setTimerDuration(this.value)" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option value="stopwatch">Stopwatch (Count Up)</option>
+                        <option value="900">15 Minutes</option>
+                        <option value="1800">30 Minutes</option>
+                        <option value="2700">45 Minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col min-h-[420px]">
+
+                <!-- Question Header -->
+                <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span id="q-number-badge" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-md">Q1 of 30</span>
+                        <span id="q-category-badge" class="bg-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1 rounded-md">League & WWII</span>
+                    </div>
+                    <button id="bookmark-btn" onclick="toggleBookmark()" class="text-slate-400 hover:text-amber-500 transition flex items-center gap-1 text-xs font-medium">
+                        <svg id="bookmark-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                        <span id="bookmark-text">Flag for Review</span>
+                    </button>
+                </div>
+
+                <!-- Question Text -->
+                <div id="question-text" class="text-slate-800 font-medium leading-relaxed text-sm md:text-base mb-6">
+                    <!-- Dynamic Question Text -->
+                </div>
+
+                <!-- Options List -->
+                <div id="options-container" class="flex flex-col gap-3 mb-6">
+                    <!-- Dynamic Options -->
+                </div>
+
+                <!-- Explanation Box (In Practice Mode or Post-Exam) -->
+                <div id="explanation-box" class="hidden mt-auto bg-slate-50 border border-indigo-100 p-4 rounded-xl text-xs md:text-sm text-slate-700">
+                    <div class="flex items-center gap-2 font-bold text-indigo-900 mb-1">
+                        <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        Official Explanation & Exam Fact
+                    </div>
+                    <p id="explanation-text" class="leading-relaxed"></p>
+                    <div id="exam-tip" class="mt-2 text-indigo-700 font-medium bg-indigo-50/80 p-2 rounded border-l-2 border-indigo-500"></div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100 mt-auto">
+                    <button id="prev-btn" onclick="navigateQuestion(-1)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs md:text-sm rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1">
+                        ← Previous
+                    </button>
+
+                    <button onclick="clearCurrentAnswer()" class="text-xs text-slate-500 hover:text-rose-600 font-medium transition">
+                        Clear Selection
+                    </button>
+
+                    <button id="next-btn" onclick="navigateQuestion(1)" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs md:text-sm rounded-lg shadow-sm transition flex items-center gap-1">
+                        Next →
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Question Palette & Summary -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+
+            <!-- Question Palette Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-bold text-slate-800">Question Palette</h2>
+                    <span id="answered-count-badge" class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2 py-0.5 rounded-full">0/30 Answered</span>
+                </div>
+
+                <!-- Color Key -->
+                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 mb-4 pb-3 border-b border-slate-100">
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-indigo-600"></span> Answered</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-200"></span> Unvisited</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-400"></span> Flagged</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full border-2 border-indigo-600 bg-white"></span> Current</div>
+                </div>
+
+                <!-- Palette Grid -->
+                <div id="palette-grid" class="grid grid-cols-5 gap-2 max-h-60 overflow-y-auto custom-scrollbar p-1">
+                    <!-- Dynamic Palette Buttons -->
+                </div>
+
+                <!-- Action Submit Button -->
+                <div class="mt-6 flex flex-col gap-2">
+                    <button id="submit-quiz-btn" onclick="confirmSubmitQuiz()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow transition">
+                        Submit Test & View Results
+                    </button>
+                    <button onclick="resetQuiz()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs rounded-xl transition">
+                        Reset / Re-attempt Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Revision Cheat Sheet Card -->
+            <div class="bg-indigo-950 text-white rounded-xl shadow-sm p-5 border border-indigo-900">
+                <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    ⚡ High-Yield Memory Chain
+                </h3>
+                <ul class="text-xs space-y-2 text-indigo-200 leading-relaxed">
+                    <li><strong class="text-white">1920:</strong> League of Nations formed (Geneva)</li>
+                    <li><strong class="text-white">26 June 1945:</strong> UN Charter signed (San Francisco)</li>
+                    <li><strong class="text-white">24 Oct 1945:</strong> UN Day (Entry into force)</li>
+                    <li><strong class="text-white">30 Oct 1945:</strong> India ratified UN Charter</li>
+                    <li><strong class="text-white">1953:</strong> Vijaya Lakshmi Pandit (1st woman UNGA President)</li>
+                    <li><strong class="text-white">1 Nov 1994:</strong> Trusteeship Council suspended (Palau)</li>
+                    <li><strong class="text-white">ACEFRS:</strong> 6 UN Official Languages</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Score Summary Modal -->
+    <div id="score-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 text-center relative animate-fade-in">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                🎯
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">Test Completed!</h2>
+            <p class="text-xs text-slate-500 mb-6">Here is your performance breakdown for UN & Organizations</p>
+
+            <div class="grid grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div>
+                    <span class="block text-[10px] uppercase font-semibold text-slate-400">Score</span>
+                    <span id="modal-score" class="text-lg font-bold text-indigo-600">0/30</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] uppercase font-semibold text-slate-400">Accuracy</span>
+                    <span id="modal-accuracy" class="text-lg font-bold text-emerald-600">0%</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] uppercase font-semibold text-slate-400">Time Taken</span>
+                    <span id="modal-time" class="text-lg font-bold text-slate-700">00:00</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <button onclick="closeModalAndReview()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition">
+                    Review Solutions & Rationales
+                </button>
+                <button onclick="resetQuiz(); closeModal();" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition">
+                    Try Again / Restart Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Bank from PDF
+        const questionBank = [
+            {
+                id: 1,
+                category: "League & WWII",
+                question: "Consider the following statements regarding the League of Nations:\n\n1. It was formally created in 1920 following World War I.\n2. Its Covenant was incorporated into the Treaty of Versailles (1919).\n3. The United States was a founding permanent member and ratified the Covenant in 1920.\n\nWhich of the statements given above is/are correct?",
+                options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
+                answer: 0,
+                explanation: "Statements 1 and 2 are correct. Statement 3 is incorrect because although U.S. President Woodrow Wilson strongly advocated for the League (Point XIV), the United States Senate refused to ratify it and the US NEVER joined the League of Nations.",
+                examTip: "Exam Fact: League HQ was in Geneva, Switzerland. Dissolved in 1946."
+            },
+            {
+                id: 2,
+                category: "League & WWII",
+                question: "Which of the following were major structural weaknesses that led to the eventual failure and dissolution of the League of Nations?",
+                options: [
+                    "Absence of the United States as a member state",
+                    "Lack of an effective military enforcement mechanism",
+                    "Dependence on voluntary cooperation of member states",
+                    "All of the above"
+                ],
+                answer: 3,
+                explanation: "The League failed primarily due to the absence of the US, lack of its own standing military enforcement mechanism, dependence on voluntary cooperation, and inability to prevent aggression by major Axis powers prior to WWII.",
+                examTip: "League dissolved formally in 1946, transferring its assets to the UN."
+            },
+            {
+                id: 3,
+                category: "League & WWII",
+                question: "With reference to World War II Axis powers, consider the following ideological pairs:\n\n1. Italian Fascism - Emphasized authoritarian nationalism and state supremacy under Benito Mussolini.\n2. German Nazism - Combined extreme nationalism, dictatorial rule, and antisemitism based on 'Aryan' superiority under Adolf Hitler.\n\nWhich of the pairs given above is/are correctly matched?",
+                options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+                answer: 2,
+                explanation: "Both statements accurately reflect the historical ideologies of WWII Axis powers as highlighted in government exam notes.",
+                examTip: "Italian Fascism = Supremacy of the State; German Nazism = Racial superiority."
+            },
+            {
+                id: 4,
+                category: "UN Origin & Charter",
+                question: "Regarding the founding of the United Nations, which country was NOT represented at the San Francisco Conference (April–June 1945) but signed the Charter later as one of the 51 original member states?",
+                options: ["India", "Poland", "Canada", "Australia"],
+                answer: 1,
+                explanation: "50 countries attended the San Francisco Conference. Poland was not represented at the conference but later signed the Charter, becoming the 51st original founding member.",
+                examTip: "San Francisco Conference: 25 April – 26 June 1945."
+            },
+            {
+                id: 5,
+                category: "UN Origin & Charter",
+                question: "Match List-I (Dates) with List-II (Events):\n\nList-I:\na. 26 June 1945\nb. 24 October 1945\nc. 30 October 1945\nd. 1 November 1994\n\nList-II:\n1. India ratified the UN Charter\n2. UN Charter signed in San Francisco\n3. Trusteeship Council suspended operations\n4. UN official creation (UN Day)\n\nSelect the correct code:",
+                options: ["a-2, b-4, c-1, d-3", "a-4, b-2, c-1, d-3", "a-2, b-1, c-4, d-3", "a-3, b-4, c-1, d-2"],
+                answer: 0,
+                explanation: "26 June 1945 = Charter Signed; 24 Oct 1945 = UN came into existence (UN Day); 30 Oct 1945 = India ratified Charter; 1 Nov 1994 = Trusteeship Council suspended.",
+                examTip: "UN Day is celebrated annually on 24th October."
+            },
+            {
+                id: 6,
+                category: "UN Origin & Charter",
+                question: "Consider the following statements regarding India's relation with the United Nations founding:\n\n1. India was an original founding member of the United Nations.\n2. India signed the UN Charter on 26 June 1945 and ratified it on 30 October 1945.\n\nWhich of the statements given above is/are correct?",
+                options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+                answer: 2,
+                explanation: "Both statements are correct. India signed the UN Charter at San Francisco on 26 June 1945 and ratified it on 30 October 1945 as an original member.",
+                examTip: "India joined before gaining independence in 1947."
+            },
+            {
+                id: 7,
+                category: "UN Origin & Charter",
+                question: "What was the total number of original founding UN members in 1945, and what is the current total number of UN Member States today?",
+                options: ["Original: 50 | Today: 192", "Original: 51 | Today: 193", "Original: 51 | Today: 195", "Original: 54 | Today: 193"],
+                answer: 1,
+                explanation: "The UN had 51 original member states in 1945 and has expanded to 193 member states today.",
+                examTip: "Memory shortcut: UN = 51 ➔ 193."
+            },
+            {
+                id: 8,
+                category: "UN Origin & Charter",
+                question: "Where is the official main Headquarters of the United Nations located, and which cities host major UN duty stations/offices?",
+                options: [
+                    "HQ: Geneva | Offices: New York, Vienna, London",
+                    "HQ: New York City | Offices: Geneva, Vienna, Nairobi",
+                    "HQ: The Hague | Offices: Geneva, Paris, Tokyo",
+                    "HQ: Washington D.C. | Offices: Geneva, Vienna, Rome"
+                ],
+                answer: 1,
+                explanation: "Main UN Headquarters is located in New York City, USA. Major duty stations/offices are located in Geneva (Switzerland), Vienna (Austria), and Nairobi (Kenya).",
+                examTip: "Do not confuse regional/duty offices with HQ."
+            },
+            {
+                id: 9,
+                category: "UN Origin & Charter",
+                question: "Which of the following correct combination represents the 6 official languages of the United Nations?",
+                options: [
+                    "Arabic, Chinese, English, French, Russian, Spanish",
+                    "Arabic, Chinese, English, French, German, Spanish",
+                    "Arabic, Chinese, English, French, Russian, Portuguese",
+                    "Hindi, Chinese, English, French, Russian, Spanish"
+                ],
+                answer: 0,
+                explanation: "The 6 official UN languages are Arabic, Chinese, English, French, Russian, and Spanish.",
+                examTip: "Use Mnemonic: ACEFRS (Arabic, Chinese, English, French, Russian, Spanish)."
+            },
+            {
+                id: 10,
+                category: "Principal Organs",
+                question: "How many principal organs were established under the UN Charter, and which organ is situated at The Hague, Netherlands (outside New York)?",
+                options: [
+                    "6 Organs | International Court of Justice (ICJ)",
+                    "6 Organs | United Nations Security Council (UNSC)",
+                    "5 Organs | Economic and Social Council (ECOSOC)",
+                    "7 Organs | International Criminal Court (ICC)"
+                ],
+                answer: 0,
+                explanation: "The UN Charter established 6 principal organs. Five are based at UN HQ in New York; only the International Court of Justice (ICJ) is located at The Hague, Netherlands.",
+                examTip: "ICJ is the only principal organ NOT located in New York."
+            },
+            {
+                id: 11,
+                category: "Principal Organs",
+                question: "Consider the following statements regarding the United Nations General Assembly (UNGA):\n\n1. It is the main deliberative and representative organ composed of all 193 member states, each having one vote.\n2. All UNGA resolutions are legally binding on member states and must be approved by the Security Council.\n\nWhich of the statements given above is/are correct?",
+                options: ["1 only", "2 only", "Both 1 and 2", "Neither 1 nor 2"],
+                answer: 0,
+                explanation: "Statement 1 is correct. Statement 2 is incorrect because UNGA resolutions do not require Security Council approval and are generally recommendations, not legally binding in the way UNSC decisions under Chapter VII can be.",
+                examTip: "UNGA = Deliberative & Recommendations; UNSC = Binding Decisions."
+            },
+            {
+                id: 12,
+                category: "Principal Organs",
+                question: "Who was the first woman President of the United Nations General Assembly (UNGA) and in which year was she elected?",
+                options: [
+                    "Sarojini Naidu (1947)",
+                    "Eleanor Roosevelt (1948)",
+                    "Vijaya Lakshmi Pandit (1953)",
+                    "Indira Gandhi (1966)"
+                ],
+                answer: 2,
+                explanation: "Vijaya Lakshmi Pandit of India became the first woman President of the UN General Assembly in 1953 (during the 8th session).",
+                examTip: "Super high-yield exam fact for competitive exams!"
+            },
+            {
+                id: 13,
+                category: "Principal Organs",
+                question: "Who among the following was elected as the President of the 81st Session of the UN General Assembly (2026–2027)?",
+                options: ["Dennis Francis", "Csaba Kőrösi", "Khalilur Rahman of Bangladesh", "António Guterres"],
+                answer: 2,
+                explanation: "As specified in current affairs notes, Khalilur Rahman of Bangladesh was appointed President of the 81st UNGA session (opened Sept 2026).",
+                examTip: "UNGA 81st session runs from Sept 2026 to Sept 2027."
+            },
+            {
+                id: 14,
+                category: "Principal Organs",
+                question: "With reference to the UN Security Council (UNSC), consider the following statements:\n\n1. It consists of 15 members: 5 Permanent (P5) and 10 non-permanent members.\n2. Non-permanent members are elected by the General Assembly for 2-year terms.\n3. A negative vote by any of the 5 permanent members on a substantive matter constitutes a veto.\n\nWhich of the statements given above are correct?",
+                options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
+                answer: 3,
+                explanation: "All three statements are correct. UNSC has 15 total members. P5 members (China, France, Russia, UK, US) hold veto power, while 10 non-permanent members serve 2-year terms.",
+                examTip: "P5 = China, France, Russia, UK, USA."
+            },
+            {
+                id: 15,
+                category: "Principal Organs",
+                question: "Which of the following statements regarding UN Peacekeeping operations ('Blue Helmets') is CORRECT?",
+                options: [
+                    "UN Peacekeepers form a permanent standing army directly maintained by the UN Secretariat.",
+                    "Blue Helmets are non-permanent members of the Security Council.",
+                    "The UN does not have its own standing army; personnel are contributed by Member States.",
+                    "Peacekeeping operations are controlled solely by the Trusteeship Council."
+                ],
+                answer: 2,
+                explanation: "The UN does not have its own military or police force. UN peacekeepers ('Blue Helmets') include military, police, and civilian personnel contributed voluntarily by member states.",
+                examTip: "Blue Helmets are operational forces, not UNSC council members."
+            },
+            {
+                id: 16,
+                category: "Principal Organs",
+                question: "What is the total membership strength of the Economic and Social Council (ECOSOC) and what is the term duration of its elected members?",
+                options: [
+                    "15 members | 2-year terms",
+                    "54 members | 3-year terms",
+                    "54 members | 5-year terms",
+                    "193 members | 1-year terms"
+                ],
+                answer: 1,
+                explanation: "ECOSOC consists of 54 members elected by the General Assembly for overlapping 3-year terms.",
+                examTip: "ECOSOC key numbers: 54 members + 3-year terms."
+            },
+            {
+                id: 17,
+                category: "Principal Organs",
+                question: "Consider the following statements regarding the International Court of Justice (ICJ):\n\n1. It consists of 15 judges elected for 9-year terms.\n2. Judges are elected independently by both the UN General Assembly and the UN Security Council.\n3. The ICJ deals primarily with prosecuting individual criminals for international war crimes.\n\nWhich of the statements given above is/are correct?",
+                options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
+                answer: 0,
+                explanation: "Statements 1 and 2 are correct. Statement 3 is incorrect because ICJ settles legal disputes between sovereign States. Prosecution of individuals for international crimes is handled by the International Criminal Court (ICC).",
+                examTip: "ICJ = State vs State; ICC = Individual criminal prosecution."
+            },
+            {
+                id: 18,
+                category: "Principal Organs",
+                question: "Under which Chapter of the UN Charter was the Trusteeship Council established, and why did it suspend its regular operations on 1 November 1994?",
+                options: [
+                    "Chapter V | Due to lack of UN funding",
+                    "Chapter XIII | Because Palau, the last Trust Territory, became independent",
+                    "Chapter VII | Replaced by the Security Council",
+                    "Chapter XV | Merged into ECOSOC"
+                ],
+                answer: 1,
+                explanation: "Trusteeship Council was established under Chapter XIII of the UN Charter. Operations suspended on 1 Nov 1994 after Palau, the last UN Trust Territory, achieved independence in Oct 1994.",
+                examTip: "Last UN Trust Territory = Palau (1994)."
+            },
+            {
+                id: 19,
+                category: "Agencies & Facts",
+                question: "With reference to UNICEF, consider the following statements:\n\n1. It was established on 11 December 1946 to assist children after World War II.\n2. In 1953, it became a permanent part of the UN system and shortened its official name to United Nations Children's Fund.\n3. It is one of the 6 principal organs created by the UN Charter.\n\nWhich of the statements given above is/are correct?",
+                options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"],
+                answer: 0,
+                explanation: "Statements 1 and 2 are correct. Statement 3 is incorrect because UNICEF is a specialized fund/programme, NOT one of the six principal organs of the UN.",
+                examTip: "UNICEF HQ = New York City."
+            },
+            {
+                id: 20,
+                category: "Agencies & Facts",
+                question: "Which of the following is NOT one of the six principal organs of the United Nations?",
+                options: [
+                    "UN Secretariat",
+                    "Economic and Social Council (ECOSOC)",
+                    "United Nations Educational, Scientific and Cultural Organization (UNESCO)",
+                    "Trusteeship Council"
+                ],
+                answer: 2,
+                explanation: "UNESCO is a Specialized Agency of the UN, not one of the six principal organs. The six organs are UNGA, UNSC, ECOSOC, ICJ, Secretariat, and Trusteeship Council.",
+                examTip: "Frequent trick question in government exams!"
+            },
+            {
+                id: 21,
+                category: "League & WWII",
+                question: "Woodrow Wilson's proposal that specifically called for a 'general association of nations' leading to the League of Nations was contained in which of his Fourteen Points?",
+                options: ["Point I", "Point X", "Point XIV", "Point XII"],
+                answer: 2,
+                explanation: "Point XIV (Fourteen) explicitly advocated for a general association of nations under specific covenants to afford mutual guarantees of political independence.",
+                examTip: "League Advocate = US President Woodrow Wilson (Point XIV)."
+            },
+            {
+                id: 22,
+                category: "Agencies & Facts",
+                question: "Match the Specialized Agency / Body with its main area of operation:\n\na. FAO\nb. ILO\nc. WHO\nd. IMF\n\n1. Health\n2. Labour & Work Standards\n3. Food & Agriculture\n4. Financial & Monetary Stability\n\nSelect the correct code:",
+                options: ["a-3, b-2, c-1, d-4", "a-2, b-3, c-1, d-4", "a-3, b-1, c-2, d-4", "a-4, b-2, c-1, d-3"],
+                answer: 0,
+                explanation: "FAO = Food & Agriculture; ILO = Labour; WHO = Health; IMF = Financial & Monetary cooperation.",
+                examTip: "All these are specialized bodies, not principal organs."
+            },
+            {
+                id: 23,
+                category: "UN Origin & Charter",
+                question: "Which organ carries out the day-to-day administrative work of the United Nations and who is its chief administrative officer?",
+                options: [
+                    "UNGA | President of General Assembly",
+                    "Secretariat | Secretary-General",
+                    "UNSC | UNSC President",
+                    "ECOSOC | President of ECOSOC"
+                ],
+                answer: 1,
+                explanation: "The Secretariat carries out day-to-day administration. The Secretary-General is the chief administrative officer of the UN.",
+                examTip: "Secretariat HQ in New York with major offices in Geneva, Vienna, Nairobi."
+            },
+            {
+                id: 24,
+                category: "Agencies & Facts",
+                question: "In which year was the Treaty of Versailles signed, incorporating the Covenant of the League of Nations?",
+                options: ["1914", "1918", "1919", "1920"],
+                answer: 2,
+                explanation: "The Treaty of Versailles was signed in 1919. The League of Nations was subsequently established on 10 January 1920.",
+                examTip: "Treaty signed in 1919; League founded in 1920."
+            },
+            {
+                id: 25,
+                category: "Principal Organs",
+                question: "Which country is NOT a Permanent Member (P5) of the UN Security Council?",
+                options: ["France", "China", "Germany", "United Kingdom"],
+                answer: 2,
+                explanation: "Germany is NOT a permanent member. The P5 are China, France, Russia, UK, and USA.",
+                examTip: "Germany and Japan were Axis powers in WWII and are not in P5."
+            },
+            {
+                id: 26,
+                category: "UN Origin & Charter",
+                question: "When the UN Charter entered into force on 24 October 1945, how many ratifications were required for it to come into legal existence?",
+                options: [
+                    "Ratification by major 5 powers plus majority of other signatories",
+                    "Simple majority of all 50 signatories",
+                    "Unanimous ratification by all 51 members",
+                    "Ratification solely by the United States"
+                ],
+                answer: 0,
+                explanation: "Under Charter Article 110, the UN officially came into existence upon ratification by the 5 permanent Security Council members and a majority of other signatory states.",
+                examTip: "24 October is celebrated worldwide as UN Day."
+            },
+            {
+                id: 27,
+                category: "Principal Organs",
+                question: "What is the frequency of regular meetings/sessions of the UN General Assembly?",
+                options: ["Meets continuously every month", "Meets in regular annual sessions starting every September", "Meets once every 2 years", "Meets only when summoned by UNSC"],
+                answer: 1,
+                explanation: "The General Assembly meets in regular annual sessions opening every September.",
+                examTip: "Session starts annually in September (e.g., 81st session opened Sept 2026)."
+            },
+            {
+                id: 28,
+                category: "Agencies & Facts",
+                question: "What does the abbreviation UNEP stand for in the UN system?",
+                options: [
+                    "United Nations Educational Programme",
+                    "United Nations Environment Programme",
+                    "United Nations Emergency Policy",
+                    "United Nations Economic Plan"
+                ],
+                answer: 1,
+                explanation: "UNEP stands for United Nations Environment Programme.",
+                examTip: "UNEP headquarters is located in Nairobi, Kenya."
+            },
+            {
+                id: 29,
+                category: "Agencies & Facts",
+                question: "Which of the following original UNICEF details is correct regarding its acronym retention?",
+                options: [
+                    "Original: United Nations International Children's Emergency Fund | Kept UNICEF acronym in 1953",
+                    "Original: United Nations Infra Child Emergency Fund | Changed acronym to UNCF",
+                    "Original: United Nations Infant Care Foundation | Kept UNICF acronym",
+                    "Original: United Nations Emergency Fund | Changed to UNICEF in 1990"
+                ],
+                answer: 0,
+                explanation: "In 1953, the official name was shortened to 'United Nations Children's Fund', but the popular acronym 'UNICEF' was retained.",
+                examTip: "UNICEF was originally created for post-WWII emergency relief in Europe & China."
+            },
+            {
+                id: 30,
+                category: "League & WWII",
+                question: "Arrange the following events in correct chronological sequence:\n\n1. Treaty of Versailles signed\n2. League of Nations established\n3. UN Charter signed in San Francisco\n4. Trusteeship Council suspended",
+                options: ["1 ➔ 2 ➔ 3 ➔ 4", "2 ➔ 1 ➔ 3 ➔ 4", "1 ➔ 3 ➔ 2 ➔ 4", "3 ➔ 1 ➔ 2 ➔ 4"],
+                answer: 0,
+                explanation: "1. Treaty of Versailles (1919) ➔ 2. League of Nations (1920) ➔ 3. UN Charter Signed (26 June 1945) ➔ 4. Trusteeship Council suspended (1 Nov 1994).",
+                examTip: "Super High-Yield Timeline!"
+            }
+        ];
+
+        // State Variables
+        let currentFilteredQuestions = [...questionBank];
+        let currentIndex = 0;
+        let userAnswers = {}; // { qId: optionIndex }
+        let bookmarked = new Set();
+        let currentMode = 'exam'; // 'exam' or 'practice'
+
+        // Timer Variables
+        let timerDuration = 'stopwatch'; // 'stopwatch' or seconds integer
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            initTimer();
+            renderPalette();
+            loadQuestion(0);
+        });
+
+        // Timer Logic
+        function initTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = (timerDuration === 'stopwatch') ? 0 : parseInt(timerDuration);
+            updateTimerDisplay();
+            startTimer();
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+            document.getElementById('timer-icon-pause').classList.remove('hidden');
+            document.getElementById('timer-icon-play').classList.add('hidden');
+
+            timerInterval = setInterval(() => {
+                if (timerDuration === 'stopwatch') {
+                    timerSeconds++;
+                } else {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                    } else {
+                        clearInterval(timerInterval);
+                        alert("Time is up! Submitting test automatically.");
+                        submitQuiz();
+                    }
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                document.getElementById('timer-icon-pause').classList.add('hidden');
+                document.getElementById('timer-icon-play').classList.remove('hidden');
+            } else {
+                startTimer();
+            }
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timerSeconds / 60);
+            let s = timerSeconds % 60;
+            document.getElementById('timer-display').innerText =
+                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function setTimerDuration(val) {
+            timerDuration = val;
+            initTimer();
+        }
+
+        // Mode Controller
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-exam-btn').className = mode === 'exam'
+                ? 'px-3 py-1 text-xs font-medium rounded-md transition bg-indigo-600 text-white shadow-sm'
+                : 'px-3 py-1 text-xs font-medium rounded-md transition text-slate-600 hover:text-indigo-600';
+
+            document.getElementById('mode-practice-btn').className = mode === 'practice'
+                ? 'px-3 py-1 text-xs font-medium rounded-md transition bg-indigo-600 text-white shadow-sm'
+                : 'px-3 py-1 text-xs font-medium rounded-md transition text-slate-600 hover:text-indigo-600';
+
+            loadQuestion(currentIndex);
+        }
+
+        // Topic Filter
+        function filterTopic(topic) {
+            if (topic === 'all') {
+                currentFilteredQuestions = [...questionBank];
+            } else {
+                currentFilteredQuestions = questionBank.filter(q => q.category === topic);
+            }
+            currentIndex = 0;
+            renderPalette();
+            loadQuestion(0);
+        }
+
+        // Load Question Data
+        function loadQuestion(index) {
+            if (currentFilteredQuestions.length === 0) return;
+            currentIndex = index;
+            const q = currentFilteredQuestions[currentIndex];
+
+            // Header Badges
+            document.getElementById('q-number-badge').innerText = `Q${currentIndex + 1} of ${currentFilteredQuestions.length}`;
+            document.getElementById('q-category-badge').innerText = q.category;
+
+            // Bookmark State
+            updateBookmarkBtnState(q.id);
+
+            // Question Text
+            document.getElementById('question-text').innerText = q.question;
+
+            // Options
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const selectedOpt = userAnswers[q.id];
+
+            q.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectOption(q.id, optIdx);
+
+                let baseClasses = "w-full text-left p-3.5 rounded-xl border text-xs md:text-sm transition flex items-center justify-between gap-3 ";
+
+                if (currentMode === 'practice' && selectedOpt !== undefined) {
+                    if (optIdx === q.answer) {
+                        baseClasses += "bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold";
+                    } else if (optIdx === selectedOpt) {
+                        baseClasses += "bg-rose-50 border-rose-400 text-rose-900 font-semibold";
+                    } else {
+                        baseClasses += "bg-white border-slate-200 text-slate-600 opacity-60";
+                    }
+                } else {
+                    if (selectedOpt === optIdx) {
+                        baseClasses += "bg-indigo-50 border-indigo-600 text-indigo-900 font-semibold shadow-sm";
+                    } else {
+                        baseClasses += "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300";
+                    }
+                }
+
+                btn.className = baseClasses;
+
+                const letter = String.fromCharCode(65 + optIdx);
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-600 border border-slate-200">${letter}</span>
+                        <span>${optText}</span>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Explanation Box
+            const expBox = document.getElementById('explanation-box');
+            if (currentMode === 'practice' && selectedOpt !== undefined) {
+                expBox.classList.remove('hidden');
+                document.getElementById('explanation-text').innerText = q.explanation;
+                document.getElementById('exam-tip').innerText = q.examTip;
+            } else {
+                expBox.classList.add('hidden');
+            }
+
+            // Prev/Next Nav States
+            document.getElementById('prev-btn').disabled = currentIndex === 0;
+            document.getElementById('next-btn').innerText = (currentIndex === currentFilteredQuestions.length - 1) ? "Finish →" : "Next →";
+
+            renderPalette();
+        }
+
+        function selectOption(qId, optIdx) {
+            userAnswers[qId] = optIdx;
+            loadQuestion(currentIndex);
+            updateAnsweredCount();
+        }
+
+        function clearCurrentAnswer() {
+            const q = currentFilteredQuestions[currentIndex];
+            delete userAnswers[q.id];
+            loadQuestion(currentIndex);
+            updateAnsweredCount();
+        }
+
+        function navigateQuestion(direction) {
+    const newIdx = currentIndex + direction;
+    if (newIdx >= 0 && newIdx < currentFilteredQuestions.length) {
+        loadQuestion(newIdx);
+    } else if (direction > 0 && newIdx === currentFilteredQuestions.length) {
+        confirmSubmitQuiz();
+    }
+}
+
+        // Bookmark / Flagging
+        function toggleBookmark() {
+            const qId = currentFilteredQuestions[currentIndex].id;
+            if (bookmarked.has(qId)) {
+                bookmarked.delete(qId);
+            } else {
+                bookmarked.add(qId);
+            }
+            updateBookmarkBtnState(qId);
+            renderPalette();
+        }
+
+        function updateBookmarkBtnState(qId) {
+            const isBookmarked = bookmarked.has(qId);
+            document.getElementById('bookmark-text').innerText = isBookmarked ? "Flagged" : "Flag for Review";
+            document.getElementById('bookmark-btn').className = isBookmarked
+                ? "text-amber-500 font-bold flex items-center gap-1 text-xs"
+                : "text-slate-400 hover:text-amber-500 transition flex items-center gap-1 text-xs font-medium";
+        }
+
+        // Render Question Palette Grid
+        function renderPalette() {
+            const grid = document.getElementById('palette-grid');
+            grid.innerHTML = '';
+
+            currentFilteredQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => loadQuestion(idx);
+
+                const isCurrent = idx === currentIndex;
+                const isAnswered = userAnswers[q.id] !== undefined;
+                const isFlagged = bookmarked.has(q.id);
+
+                let btnClasses = "h-8 w-full rounded-lg font-semibold text-xs flex items-center justify-center transition border ";
+
+                if (isCurrent) {
+                    btnClasses += "border-2 border-indigo-600 text-indigo-900 bg-white shadow-sm";
+                } else if (isFlagged) {
+                    btnClasses += "bg-amber-400 border-amber-500 text-slate-900";
+                } else if (isAnswered) {
+                    btnClasses += "bg-indigo-600 border-indigo-600 text-white";
+                } else {
+                    btnClasses += "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200";
+                }
+
+                btn.className = btnClasses;
+                btn.innerText = idx + 1;
+                grid.appendChild(btn);
+            });
+
+            updateAnsweredCount();
+        }
+
+        function updateAnsweredCount() {
+            const answeredTotal = Object.keys(userAnswers).length;
+            document.getElementById('answered-count-badge').innerText = `${answeredTotal}/${questionBank.length} Answered`;
+        }
+
+        // Submit & Score Evaluation
+        function confirmSubmitQuiz() {
+            const answeredCount = Object.keys(userAnswers).length;
+            if (answeredCount < currentFilteredQuestions.length) {
+                if (!confirm(`You have answered ${answeredCount} out of ${currentFilteredQuestions.length} questions. Do you want to submit?`)) {
+                    return;
+                }
+            }
+            submitQuiz();
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+
+            let score = 0;
+            currentFilteredQuestions.forEach(q => {
+                if (userAnswers[q.id] === q.answer) {
+                    score++;
+                }
+            });
+
+            const accuracy = Math.round((score / currentFilteredQuestions.length) * 100);
+
+            let elapsedFormatted = document.getElementById('timer-display').innerText;
+
+            document.getElementById('modal-score').innerText = `${score}/${currentFilteredQuestions.length}`;
+            document.getElementById('modal-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('modal-time').innerText = elapsedFormatted;
+
+            document.getElementById('score-modal').classList.remove('hidden');
+        }
+
+        function closeModalAndReview() {
+            document.getElementById('score-modal').classList.add('hidden');
+            setMode('practice');
+        }
+
+        function closeModal() {
+            document.getElementById('score-modal').classList.add('hidden');
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            bookmarked.clear();
+            initTimer();
+            renderPalette();
+            loadQuestion(0);
+        }
+    </script>
+</body>
+</html>
