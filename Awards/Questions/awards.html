@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awards & Honors - Government Exam Practice</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #1e3c72;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-group button {
+            padding: 10px 15px;
+            border: none;
+            background: #e0e0e0;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-group button.active, .btn-group button:hover {
+            background: #1e3c72;
+            color: white;
+        }
+        .timer-badge {
+            background: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .question-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+        .question-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 10px 0;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .options label:hover {
+            background: #ececec;
+        }
+        .options input {
+            margin-right: 10px;
+        }
+        .action-btns {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .submit-btn, .reset-btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        .submit-btn { background: #5cb85c; }
+        .submit-btn:hover { background: #4cae4c; }
+        .reset-btn { background: #f0ad4e; }
+        .reset-btn:hover { background: #eea236; }
+        
+        .result-section {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #dff0d8;
+            color: #3c763d;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9ecef;
+            border-left: 4px solid #1e3c72;
+            font-size: 0.95em;
+        }
+        .correct-ans { color: green; font-weight: bold; }
+        .wrong-ans { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Awards & Honors Practice Portal</h1>
+    <p>Targeted Revision for Competitive Exams based on Awards.pdf</p>
+</header>
+
+<div class="container">
+    <div class="controls">
+        <div class="btn-group" id="set-buttons">
+            <button class="active" onclick="loadSet(0)">Set 1 (Easy)</button>
+            <button onclick="loadSet(1)">Set 2 (Moderate)</button>
+            <button onclick="loadSet(2)">Set 3 (Advanced)</button>
+            <button onclick="loadSet(3)">Set 4 (Challenging)</button>
+            <button onclick="loadSet(4)">Set 5 (Expert)</button>
+        </div>
+        <div class="timer-badge" id="timer">25:00</div>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="action-btns">
+        <button class="submit-btn" onclick="submitQuiz()">Submit Answers</button>
+        <button class="reset-btn" onclick="resetQuiz()">Retake / Reset</button>
+    </div>
+
+    <div class="result-section" id="result-box"></div>
+</div>
+
+<script>
+    const quizData = [
+        // SET 1: Easy (Bharat Ratna & Padma Awards)
+        [
+            { q: "What is the highest civilian award of India?", options: ["Padma Vibhushan", "Bharat Ratna", "Param Vir Chakra", "Jnanpith Award"], a: 1, exp: "Bharat Ratna is the highest civilian award of India.[cite: 1]" },
+            { q: "In which year was the Bharat Ratna instituted?", options: ["1950", "1952", "1954", "1960"], a: 2, exp: "Instituted: 2 January 1954.[cite: 1]" },
+            { q: "Which of the following is true regarding the monetary compensation of the Bharat Ratna?", options: ["₹11 lakh is given", "₹15 lakh is given", "₹5 lakh is given", "No monetary prize is awarded"], a: 3, exp: "No monetary prize/cash grant is awarded.[cite: 1]" },
+            { q: "What is the shape of the Bharat Ratna medallion?", options: ["Lotus leaf", "Peepal leaf", "Banyan leaf", "Ashoka Chakra"], a: 1, exp: "The Bharat Ratna is a single medallion shaped like a Peepal leaf.[cite: 1]" },
+            { q: "Who was the first person to receive the Bharat Ratna posthumously?", options: ["Indira Gandhi", "C. V. Raman", "Lal Bahadur Shastri", "B. R. Ambedkar"], a: 2, exp: "Lal Bahadur Shastri was the first person to receive Bharat Ratna posthumously.[cite: 1]" },
+            { q: "Who was the first woman to receive the Bharat Ratna?", options: ["Aruna Asaf Ali", "M. S. Subbulakshmi", "Indira Gandhi", "Mother Teresa"], a: 2, exp: "Indira Gandhi became the first woman to receive Bharat Ratna in 1971.[cite: 1]" },
+            { q: "Who was the first foreign citizen to receive the Bharat Ratna?", options: ["Nelson Mandela", "Khan Abdul Ghaffar Khan", "Annie Besant", "Mother Teresa"], a: 1, exp: "Khan Abdul Ghaffar Khan became the first foreign citizen/non-Indian citizen to receive Bharat Ratna in 1987.[cite: 1]" },
+            { q: "In which year was Sachin Tendulkar awarded the Bharat Ratna?", options: ["2011", "2013", "2014", "2015"], a: 2, exp: "Sachin Ramesh Tendulkar received Bharat Ratna in 2014.[cite: 1]" },
+            { q: "How many people were awarded the Bharat Ratna in 2024?", options: ["3", "4", "5", "6"], a: 2, exp: "In 2024, Bharat Ratna was awarded to 5 people — the highest number in a single year so far.[cite: 1]" },
+            { q: "Who was the first actor to receive the Bharat Ratna?", options: ["Satyajit Ray", "M. G. Ramachandran", "Dilip Kumar", "Prithviraj Kapoor"], a: 1, exp: "M. G. Ramachandran (MGR) became the first actor to receive Bharat Ratna in 1988.[cite: 1]" },
+            { q: "Where does a Bharat Ratna recipient stand in the Indian Table of Precedence?", options: ["5A", "7A", "9", "Cabinet Minister equivalent"], a: 1, exp: "Bharat Ratna has a very high position in the Indian Table of Precedence; recipients are placed at 7A.[cite: 1]" },
+            { q: "Which of the following original fields was NOT among the 1954 criteria for the Bharat Ratna?", options: ["Arts", "Literature", "Sports", "Science"], a: 2, exp: "Originally, the fields were arts, literature, science and public service.[cite: 1]" },
+            { q: "Which of the following was NOT among the first three recipients of the Bharat Ratna in 1954?", options: ["C. V. Raman", "Dr. Sarvepalli Radhakrishnan", "C. Rajagopalachari", "Jawaharlal Nehru"], a: 3, exp: "For the first time, Bharat Ratna was awarded to three people in 1954: C. V. Raman, Dr. Sarvepalli Radhakrishnan, C. Rajagopalachari.[cite: 1]" },
+            { q: "What was the original name of the Padma Vibhushan before January 1955?", options: ["Padma Pahela Varg", "Bharat Vibhushan", "Padma Vibhushan - Pahela Varg", "Ati Vishisht Padma"], a: 2, exp: "Originally, there was one award called Padma Vibhushan with three classes: Pahela Varg, Dusra Varg and Tisra Varg.[cite: 1]" },
+            { q: "Who confers the Padma Awards?", options: ["Prime Minister of India", "President of India", "Chief Justice of India", "Home Minister"], a: 1, exp: "Conferred by: President of India.[cite: 1]" },
+            { q: "When are the Padma Awards traditionally announced?", options: ["Independence Day", "Eve of Republic Day", "Gandhi Jayanti", "New Year's Day"], a: 1, exp: "Announced: On the eve of Republic Day 25 January.[cite: 1]" },
+            { q: "How many people received the first Padma Vibhushan in 1954?", options: ["3", "5", "6", "10"], a: 2, exp: "These six are officially recognized as the first Padma Vibhushan recipients (1954).[cite: 1]" },
+            { q: "Who was the first transgender woman to receive the Padma Shri?", options: ["Narthaki Nataraj", "Laxmi Narayan Tripathi", "Gauri Sawant", "Manjamma Jogathi"], a: 0, exp: "Narthaki Nataraj became the first transgender woman to receive the Padma Shri in 2019.[cite: 1]" },
+            { q: "Which of the following was a 1954 Padma Vibhushan recipient from Bhutan?", options: ["Jigme Singye Wangchuck", "Jigme Dorji Wangchuck", "Jigme Khesar Namgyel", "Tshering Tobgay"], a: 1, exp: "Jigme Dorji Wangchuck - Public Affairs, Bhutan.[cite: 1]" },
+            { q: "In 1999, how many individuals were awarded the Bharat Ratna, breaking the usual guideline of 3?", options: ["2", "4", "5", "6"], a: 1, exp: "1999 → 4 awardees. This was the first time the usual 3-person guideline was exceeded.[cite: 1]" },
+            { q: "Who was the first singer/musician to receive the Bharat Ratna?", options: ["Lata Mangeshkar", "Ravi Shankar", "M. S. Subbulakshmi", "Bhupen Hazarika"], a: 2, exp: "M. S. Subbulakshmi received Bharat Ratna in 1998... first singer/musician to receive Bharat Ratna.[cite: 1]" },
+            { q: "Which of the following is true about using the Bharat Ratna or Padma Awards with one's name?", options: ["They can be used as prefixes only", "They can be used as suffixes only", "They can be used as both", "They cannot be used as prefixes or suffixes"], a: 3, exp: "The award is not a title and cannot be used as a prefix/suffix to the recipient's name.[cite: 1]" },
+            { q: "Which of the following 2024 Bharat Ratna recipients was a former Chief Minister of Bihar?", options: ["Chaudhary Charan Singh", "P. V. Narasimha Rao", "L. K. Advani", "Karpoori Thakur"], a: 3, exp: "Karpoori Thakur - Former Bihar CM; posthumous.[cite: 1]" },
+            { q: "Which agricultural scientist received the Bharat Ratna posthumously in 2024?", options: ["Norman Borlaug", "M. S. Swaminathan", "Verghese Kurien", "A. P. J. Abdul Kalam"], a: 1, exp: "M. S. Swaminathan - Agricultural scientist; posthumous.[cite: 1]" },
+            { q: "In which year did Nelson Mandela receive the Bharat Ratna?", options: ["1987", "1990", "1992", "1999"], a: 1, exp: "Nelson Mandela became the second foreign citizen to receive Bharat Ratna in 1990.[cite: 1]" }
+        ],
+        // SET 2: Moderate (Gallantry Awards & Jnanpith)
+        [
+            { q: "What is the highest wartime gallantry award in India?", options: ["Ashoka Chakra", "Mahavir Chakra", "Param Vir Chakra", "Vir Chakra"], a: 2, exp: "Param Vir Chakra (PVC) - Highest wartime gallantry award.[cite: 1]" },
+            { q: "When was the Param Vir Chakra established?", options: ["15 August 1947", "26 January 1950", "4 January 1952", "26 January 1960"], a: 1, exp: "Established: 26 January 1950.[cite: 1]" },
+            { q: "Who was the first recipient of the Param Vir Chakra?", options: ["Major Shaitan Singh", "Yogendra Singh Yadav", "Major Somnath Sharma", "Abdul Hamid"], a: 2, exp: "First recipient: Major Somnath Sharma.[cite: 1]" },
+            { q: "What is the highest peacetime gallantry award in India?", options: ["Shaurya Chakra", "Kirti Chakra", "Ashoka Chakra", "Sena Medal"], a: 2, exp: "Ashoka Chakra - Highest peacetime gallantry award.[cite: 1]" },
+            { q: "The Kirti Chakra roughly corresponds to which wartime gallantry award?", options: ["Param Vir Chakra", "Mahavir Chakra", "Vir Chakra", "Sena Medal"], a: 1, exp: "Kirti Chakra ≈ Mahavir Chakra. This equivalence is useful for exams.[cite: 1]" },
+            { q: "What was the original name of the Shaurya Chakra?", options: ["Ashoka Chakra, Class I", "Ashoka Chakra, Class II", "Ashoka Chakra, Class III", "Distinguished Service Medal"], a: 2, exp: "Originally: Ashoka Chakra, Class III. Renamed: 1967.[cite: 1]" },
+            { q: "Who is the youngest recipient of the Param Vir Chakra?", options: ["Vikram Batra", "Arun Khetarpal", "Sanjay Kumar", "Yogendra Singh Yadav"], a: 3, exp: "Youngest PVC recipient: Yogendra Singh Yadav. He received it at the age of 19.[cite: 1]" },
+            { q: "Who was the first recipient of the Ashoka Chakra?", options: ["Major Somnath Sharma", "Naik Narbahadur Thapa", "Neerja Bhanot", "Hemant Karkare"], a: 1, exp: "First recipient Naik Narbahadur Thapa — 1952.[cite: 1]" },
+            { q: "Flight Lieutenant Minty Agarwal received which award in 2019?", options: ["Sena Medal", "Vir Chakra", "Yudh Seva Medal", "Vishisht Seva Medal"], a: 2, exp: "Minty Agarwal → Yudh Seva Medal → 2019 Balakot air operations.[cite: 1]" },
+            { q: "The Jnanpith Award was instituted in which year?", options: ["1954", "1961", "1965", "1969"], a: 1, exp: "Instituted: 1961.[cite: 1]" },
+            { q: "Who was the first recipient of the Jnanpith Award in 1965?", options: ["Tarashankar Bandyopadhyay", "Sumitranandan Pant", "G. Sankara Kurup", "Amrita Pritam"], a: 2, exp: "First recipient: G. Sankara Kurup.[cite: 1]" },
+            { q: "For which language did the first Jnanpith winner receive the award?", options: ["Bengali", "Hindi", "Malayalam", "Tamil"], a: 2, exp: "Language: Malayalam. Work: Odakkuzhal.[cite: 1]" },
+            { q: "What is the cash prize currently given with the Jnanpith Award?", options: ["₹5 lakh", "₹11 lakh", "₹15 lakh", "₹25 lakh"], a: 1, exp: "The current Jnanpith Award consists of: ₹11 lakh cash prize.[cite: 1]" },
+            { q: "Who was the first woman to receive the Jnanpith Award?", options: ["Mahadevi Varma", "Amrita Pritam", "Ashapurna Devi", "Krishna Sobti"], a: 2, exp: "Ashapurna Devi — 1976. She was the first woman to receive the Jnanpith Award.[cite: 1]" },
+            { q: "Which bronze statue is given as part of the Jnanpith Award?", options: ["Nataraja", "Goddess Saraswati (Vagdevi)", "Lord Ganesha", "Ashoka Pillar"], a: 1, exp: "Bronze statue of Goddess Saraswati (Vagdevi).[cite: 1]" },
+            { q: "Who was the first Jnanpith recipient for the English language?", options: ["Arundhati Roy", "Amitav Ghosh", "Salman Rushdie", "R. K. Narayan"], a: 1, exp: "Amitav Ghosh (2018) → English → First Jnanpith Award for English.[cite: 1]" },
+            { q: "What crucial change in the Jnanpith Award criteria occurred in 1982?", options: ["English was added", "Prize money was doubled", "Emphasis shifted to overall contribution", "It could be awarded posthumously"], a: 2, exp: "From 1982 onwards: The emphasis shifted to the overall contribution of the writer to Indian literature.[cite: 1]" },
+            { q: "Who was the first Hindi writer to win the Jnanpith Award?", options: ["Mahadevi Varma", "Ramdhari Singh Dinkar", "Sumitranandan Pant", "Vinod Kumar Shukla"], a: 2, exp: "Sumitranandan Pant - 1968 - Hindi.[cite: 1]" },
+            { q: "Who was the first recipient of the Jnanpith Award for Urdu?", options: ["Gulzar", "Firaq Gorakhpuri", "Asghar Wajahat", "Josh Malihabadi"], a: 1, exp: "1969 → Firaq Gorakhpuri. First Jnanpith recipient for Urdu.[cite: 1]" },
+            { q: "Who won the 60th Jnanpith Award for the year 2025?", options: ["Vinod Kumar Shukla", "Gulzar", "R. Vairamuthu", "Damodar Mauzo"], a: 2, exp: "R. Vairamuthu → 60th Jnanpith Award → 2025. Language → Tamil.[cite: 1]" },
+            { q: "Is English included in the Eighth Schedule of the Indian Constitution?", options: ["Yes, since 1992", "Yes, since 2018", "No, it is not included", "Yes, it was originally included"], a: 2, exp: "English is NOT included in the Eighth Schedule of the Constitution.[cite: 1]" },
+            { q: "Can a person receive the Jnanpith Award multiple times?", options: ["Yes, after 3 years", "Yes, after 5 years", "No, an awardee is not eligible again", "Yes, for different languages"], a: 2, exp: "A person who has already received the Jnanpith Award is not eligible to receive it again.[cite: 1]" },
+            { q: "Neerja Bhanot received which award in 1987?", options: ["Param Vir Chakra", "Vir Chakra", "Ashoka Chakra", "Kirti Chakra"], a: 2, exp: "Neerja Bhanot 1987 Civilian recipient of Ashoka Chakra.[cite: 1]" },
+            { q: "Which medal is given for distinguished service of an exceptional order during wartime?", options: ["Vishisht Seva Medal", "Sena Medal", "Yudh Seva Medal", "Param Vishisht Seva Medal"], a: 2, exp: "Yudh Seva Medal → Wartime distinguished service.[cite: 1]" },
+            { q: "Which organization formally established Bharatiya Jnanpith in 1944?", options: ["Sahitya Akademi", "Sahu Shanti Prasad Jain", "K. K. Birla Foundation", "Ministry of Culture"], a: 1, exp: "Sahu Shanti Prasad Jain was the founder of Bharatiya Jnanpith.[cite: 1]" }
+        ],
+        // SET 3: Advanced (Moortidevi, Vyas, Saraswati, Phalke)
+        [
+            { q: "The Moortidevi Award is given for an outstanding literary work that reflects what?", options: ["Scientific temper", "Indian philosophy, culture, heritage and values", "International relations", "Folklore and mythology exclusively"], a: 1, exp: "Given for an outstanding literary work reflecting Indian philosophy, culture, heritage and values.[cite: 1]" },
+            { q: "What is the current prize money for the Moortidevi Award?", options: ["₹4 lakh", "₹11 lakh", "₹15 lakh", "₹25,000"], a: 0, exp: "Prize money: ₹4 lakh.[cite: 1]" },
+            { q: "Who was the first recipient of the Moortidevi Award in 1983?", options: ["Pratibha Ray", "C. K. Nagaraja Rao", "Vishwanath Prasad Tiwari", "Ram Vilas Sharma"], a: 1, exp: "1983 → C. K. Nagaraja Rao. First recipient of the Moortidevi Award.[cite: 1]" },
+            { q: "Who became the first woman recipient of the Moortidevi Award in 1991?", options: ["Ashapurna Devi", "Chitra Mudgal", "Pratibha Ray", "Mahadevi Varma"], a: 2, exp: "1991 → Pratibha Ray became the first woman recipient of the Moortidevi Award.[cite: 1]" },
+            { q: "The Vyas Samman is awarded exclusively for literary works in which language?", options: ["Sanskrit", "22 Eighth Schedule languages", "Hindi only", "English and Hindi"], a: 2, exp: "Given for an outstanding literary work in Hindi.[cite: 1]" },
+            { q: "To be eligible for the Vyas Samman, the work must have been published within the preceding how many years?", options: ["5 years", "10 years", "15 years", "There is no limit"], a: 1, exp: "The work must have been published within the preceding 10 years.[cite: 1]" },
+            { q: "Which organization instituted the Vyas Samman in 1991?", options: ["Bharatiya Jnanpith", "Sahitya Akademi", "K. K. Birla Foundation", "Ministry of Culture"], a: 2, exp: "Organisation: K. K. Birla Foundation.[cite: 1]" },
+            { q: "Who was the first recipient of the Vyas Samman in 1991?", options: ["Ram Vilas Sharma", "Harivansh Rai Bachchan", "Chitra Mudgal", "Asghar Wajahat"], a: 0, exp: "First winner: Ram Vilas Sharma — 1991.[cite: 1]" },
+            { q: "Who won the 34th Vyas Samman in 2024 for 'Kaun Des Ko Vasi: Venu Ki Diary'?", options: ["Pushpa Bharti", "Suryabala", "Gyan Chaturvedi", "Chitra Mudgal"], a: 1, exp: "34th Vyas Samman — 2024: Suryabala.[cite: 1]" },
+            { q: "The Saraswati Samman is awarded for literary works in how many eligible languages?", options: ["Only Hindi", "Only Sanskrit", "Languages in the Eighth Schedule", "All Indian languages including English"], a: 2, exp: "Given for: Outstanding literary works in the languages included in the Eighth Schedule of the Constitution.[cite: 1]" },
+            { q: "What is the prize money for the Saraswati Samman?", options: ["₹4 lakh", "₹11 lakh", "₹15 lakh", "₹25 lakh"], a: 2, exp: "Prize: ₹15 lakh + citation + plaque.[cite: 1]" },
+            { q: "Who was the first recipient of the Saraswati Samman in 1991?", options: ["Ramakant Rath", "Harivansh Rai Bachchan", "Ram Vilas Sharma", "G. Sankara Kurup"], a: 1, exp: "First Winner: Harivansh Rai Bachchan — 1991.[cite: 1]" },
+            { q: "Who won the Saraswati Samman for the year 2025?", options: ["Prabha Varma", "Sivasankari", "Bhadreshdas Swami", "Ramkumar Mukhopadhyay"], a: 3, exp: "2025: Ramkumar Mukhopadhyay (Hara Parbati Katha).[cite: 1]" },
+            { q: "The Dadasaheb Phalke Award is India's highest award in which field?", options: ["Literature", "Cinema", "Classical Music", "Visual Arts"], a: 1, exp: "Highest Indian award in the field of cinema.[cite: 1]" },
+            { q: "What is the current prize money for the Dadasaheb Phalke Award?", options: ["₹10 lakh", "₹11 lakh", "₹15 lakh", "₹25 lakh"], a: 2, exp: "Currently: Swarna Kamal (Golden Lotus), 15 lakh, Shawl.[cite: 1]" },
+            { q: "Who was the first recipient of the Dadasaheb Phalke Award in 1969?", options: ["Prithviraj Kapoor", "Devika Rani", "Satyajit Ray", "Amitabh Bachchan"], a: 1, exp: "First recipient: Devika Rani 1969.[cite: 1]" },
+            { q: "Which actor received the Dadasaheb Phalke Award posthumously in 1971?", options: ["Sanjeev Kumar", "M. G. Ramachandran", "Prithviraj Kapoor", "Raj Kapoor"], a: 2, exp: "First male recipient: Prithviraj Kapoor (1971, posthumously).[cite: 1]" },
+            { q: "Who was announced as the 55th Dadasaheb Phalke Award recipient for the year 2023?", options: ["Mithun Chakraborty", "Waheeda Rehman", "Mohanlal", "Asha Parekh"], a: 2, exp: "55th | 2023 | Mohanlal.[cite: 1]" },
+            { q: "India's first full-length feature film, directed by Dadasaheb Phalke in 1913, was?", options: ["Alam Ara", "Raja Harishchandra", "Kisan Kanya", "Mother India"], a: 1, exp: "India's first full-length feature film: Raja Harishchandra (1913).[cite: 1]" },
+            { q: "Which ministry presents the Dadasaheb Phalke Award?", options: ["Ministry of Culture", "Ministry of Home Affairs", "Ministry of Information & Broadcasting", "Ministry of Tourism"], a: 2, exp: "Ministry of Information & Broadcasting, Government of India.[cite: 1]" },
+            { q: "In which language was Harivansh Rai Bachchan's four-volume autobiography written?", options: ["Sanskrit", "Hindi", "Bengali", "Bhojpuri"], a: 1, exp: "Hindi. He is a prominent Hindi poet and writer.[cite: 1]" },
+            { q: "What was the name of the first woman Vyas Samman winner's (Chitra Mudgal) work?", options: ["Aavaan", "Yaadein, Yaadein Aur Yaadein", "Kaun Des Ko Vasi", "Pagalkhana"], a: 0, exp: "Work: Aavaan.[cite: 1]" },
+            { q: "Which award is primarily given for 'lifetime achievement' recognising outstanding contribution to the growth of Indian cinema?", options: ["National Film Award for Best Feature", "Dadasaheb Phalke Award", "Nishagandhi Puraskaram", "Lalit Kala Akademi Fellowship"], a: 1, exp: "It is a lifetime achievement award, recognising outstanding contribution to the growth and development of Indian cinema.[cite: 1]" },
+            { q: "Who won the Vyas Samman in 2023 (33rd) for 'Yaadein, Yaadein Aur Yaadein'?", options: ["Gyan Chaturvedi", "Asghar Wajahat", "Pushpa Bharti", "Sharad Pagare"], a: 2, exp: "2023: Pushpa Bharti.[cite: 1]" },
+            { q: "Ramkumar Mukhopadhyay won the 2025 Saraswati Samman for a work in which language?", options: ["Hindi", "Sanskrit", "Bengali", "Malayalam"], a: 2, exp: "2025 Ramkumar Mukhopadhyay, Hara Parbati Katha, Bengali.[cite: 1]" }
+        ],
+        // SET 4: Challenging (International, Kalidas, Lalit Kala, Nishagandhi)
+        [
+            { q: "The Ramon Magsaysay Award is named after a former President of which country?", options: ["Indonesia", "Malaysia", "Philippines", "Thailand"], a: 2, exp: "Named after Ramon Magsaysay, the 7th President of the Philippines.[cite: 1]" },
+            { q: "Who was the first Indian recipient of the Ramon Magsaysay Award in 1958?", options: ["Mother Teresa", "Acharya Vinoba Bhave", "Jayaprakash Narayan", "Satyajit Ray"], a: 1, exp: "Acharya Vinoba Bhave — India (1958).[cite: 1]" },
+            { q: "Which Indian organization is listed among the 2025 Ramon Magsaysay Awardees?", options: ["Pratham", "Foundation to Educate Girls Globally", "Goonj", "Akshaya Patra"], a: 1, exp: "Foundation to Educate Girls Globally - India.[cite: 1]" },
+            { q: "The Abel Prize is awarded in which field?", options: ["Physics", "Literature", "Architecture", "Mathematics"], a: 3, exp: "Abel Prize - Field: Mathematics.[cite: 1]" },
+            { q: "Who is currently the only Indian-origin mathematician to have won the Abel Prize?", options: ["Srinivasa Ramanujan", "Manjul Bhargava", "Srinivasa S. R. Varadhan", "Harish-Chandra"], a: 2, exp: "Srinivasa S. R. Varadhan (2007 Abel Prize).[cite: 1]" },
+            { q: "Who was announced as the Abel Prize winner for 2026?", options: ["Masaki Kashiwara", "Gerd Faltings", "Jean-Pierre Serre", "John Nash"], a: 1, exp: "2026 — Gerd Faltings.[cite: 1]" },
+            { q: "The Pulitzer Prize was established in 1917 and is primarily considered the highest honor in American...?", options: ["Science and Technology", "Journalism and Arts/Literature", "Architecture and Design", "Film and Television"], a: 1, exp: "Highest and most prestigious awards in American journalism and arts/literature.[cite: 1]" },
+            { q: "Who was the first Indian to win a Pulitzer Prize (in 1937)?", options: ["Jhumpa Lahiri", "Geeta Anand", "Gobind Behari Lal", "Siddhartha Mukherjee"], a: 2, exp: "First Indian Winner: Gobind Behari Lal — 1937.[cite: 1]" },
+            { q: "The Pritzker Prize is considered the highest honor in which profession?", options: ["Journalism", "Mathematics", "Architecture", "Music"], a: 2, exp: "Considered the highest honour in the profession of architecture.[cite: 1]" },
+            { q: "Who was the first Indian to receive the Pritzker Architecture Prize in 2018?", options: ["Charles Correa", "Balkrishna Doshi", "Raj Rewal", "B. V. Doshi & Le Corbusier"], a: 1, exp: "Balkrishna Doshi — 2018. First Indian to receive the Pritzker Prize.[cite: 1]" },
+            { q: "Which state government instituted the Rashtriya Kalidas Samman?", options: ["Uttar Pradesh", "Maharashtra", "Madhya Pradesh", "Rajasthan"], a: 2, exp: "Given by: Government of Madhya Pradesh.[cite: 1]" },
+            { q: "Who was the first female recipient of the Rashtriya Kalidas Samman?", options: ["M. S. Subbulakshmi", "Rukmini Devi Arundale", "Padma Subrahmanyam", "Kelucharan Mohapatra"], a: 1, exp: "Rukmini Devi Arundale (1983–84).[cite: 1]" },
+            { q: "Which visual artist received the Kalidas Samman in 2024 for Ganjifa Art?", options: ["Himmat Shah", "Raghupati Bhat", "Jyoti Bhatt", "Shyam Sharma"], a: 1, exp: "Raghupati Bhat — 2024 — Ganjifa Art.[cite: 1]" },
+            { q: "The Lalit Kala Akademi Fellowship (Ratna) is given in which field?", options: ["Literature", "Performing Arts", "Visual Arts / Fine Arts", "Classical Music"], a: 2, exp: "Field: Visual Arts / Fine Arts.[cite: 1]" },
+            { q: "Who was the first elected Fellow (recipient) of the Lalit Kala Akademi in 1955?", options: ["Nandalal Bose", "Amrita Sher-Gil", "Jamini Roy", "M. F. Husain"], a: 2, exp: "Jamini Roy - 1955. First elected Fellow.[cite: 1]" },
+            { q: "Who became the first female recipient of the Lalit Kala Akademi Fellowship in 1995?", options: ["Arpita Singh", "Kapila Vatsyayan", "Anjolie Ela Menon", "Bharti Kher"], a: 1, exp: "Kapila Vatsyayan - 1995.[cite: 1]" },
+            { q: "The Nishagandhi Puraskaram is given by the tourism department of which state?", options: ["Karnataka", "Tamil Nadu", "Kerala", "Andhra Pradesh"], a: 2, exp: "Given by: Kerala Tourism (Government of Kerala).[cite: 1]" },
+            { q: "Who was the first recipient of the Nishagandhi Puraskaram in 2013?", options: ["Kalamandalam Gopi", "Mrinalini Sarabhai", "Lalith J. Rao", "Padma Subrahmanyam"], a: 1, exp: "Mrinalini Sarabhai - 2013.[cite: 1]" },
+            { q: "Who received the Nishagandhi Puraskaram in 2025 for Kathak?", options: ["Birju Maharaj", "Pandit Rajendra Gangani", "Kalamandalam Gopi", "Chitra Visweswaran"], a: 1, exp: "Pandit Rajendra Gangani - 2025 - Kathak.[cite: 1]" },
+            { q: "Who presents the Abel Prize at the award ceremony?", options: ["President of France", "King of Sweden", "King Harald V of Norway", "Prime Minister of Norway"], a: 2, exp: "Presented by: King Harald V of Norway.[cite: 1]" },
+            { q: "What is the prize money for the Pritzker Prize?", options: ["US$50,000", "US$100,000", "NOK 7.5 million", "US$1 million"], a: 1, exp: "Prize: US$100,000.[cite: 1]" },
+            { q: "In what year did the Golden Globes start?", options: ["1929", "1944", "1947", "1959"], a: 1, exp: "First Golden Globe Awards → 1944.[cite: 1]" },
+            { q: "Which was the first British film to win a BAFTA Award in 1949?", options: ["The Best Years of Our Lives", "The Fallen Idol", "Hamnet", "The Third Man"], a: 1, exp: "British Film: The Fallen Idol.[cite: 1]" },
+            { q: "Who won the Pulitzer Prize for Fiction in 2000 for 'Interpreter of Maladies'?", options: ["Geeta Anand", "Jhumpa Lahiri", "Siddhartha Mukherjee", "Vijay Seshadri"], a: 1, exp: "Jhumpa Lahiri — 2000 - Fiction - Interpreter of Maladies.[cite: 1]" },
+            { q: "The Ramon Magsaysay award was historically associated with a cash prize of what amount?", options: ["US$10,000", "US$25,000", "US$50,000", "US$100,000"], a: 2, exp: "Historically: US$50,000 cash prize.[cite: 1]" }
+        ],
+        // SET 5: Expert (Nobel, Grammys, BAFTA, Golden Globes, Mixed Statements)
+        [
+            { q: "How many original Nobel Prize categories were specified in Alfred Nobel's 1895 will?", options: ["4", "5", "6", "7"], a: 1, exp: "Nobel originally specified 5 prize categories.[cite: 1]" },
+            { q: "Which category was added to the Nobel Prizes in 1968 by Sweden's central bank?", options: ["Literature", "Peace", "Economics", "Computer Science"], a: 2, exp: "Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel. Established: 1968.[cite: 1]" },
+            { q: "Where is the Nobel Peace Prize awarded?", options: ["Stockholm, Sweden", "Oslo, Norway", "Copenhagen, Denmark", "Geneva, Switzerland"], a: 1, exp: "Oslo, Norway: Peace.[cite: 1]" },
+            { q: "Who was the first woman to win a Nobel Prize, and in what field?", options: ["Selma Lagerlöf (Literature)", "Marie Curie (Physics)", "Mother Teresa (Peace)", "Gerty Cori (Medicine)"], a: 1, exp: "Marie Curie - 1903 Physics. First woman to win the Nobel Prize.[cite: 1]" },
+            { q: "Who remains the only person to receive two unshared Nobel Prizes in two different fields?", options: ["Marie Curie", "John Bardeen", "Linus Pauling", "Frederick Sanger"], a: 2, exp: "Linus Pauling (Chemistry 1954, Peace 1962).[cite: 1]" },
+            { q: "Who is the youngest Nobel Laureate ever?", options: ["Kailash Satyarthi", "Nadia Murad", "Malala Yousafzai", "Lawrence Bragg"], a: 2, exp: "Malala Yousafzai - 17 years old.[cite: 1]" },
+            { q: "What did the 2024 Nobel Prize in Physics recognize?", options: ["Quantum entanglement", "mRNA Technology", "CRISPR gene editing", "Machine learning with artificial neural networks"], a: 3, exp: "2024 Physics: Discoveries and inventions that enable machine learning with artificial neural networks.[cite: 1]" },
+            { q: "Who was the first Asian to win a Nobel Prize?", options: ["C. V. Raman", "Hideki Yukawa", "Rabindranath Tagore", "Mother Teresa"], a: 2, exp: "Rabindranath Tagore - 1913 Literature. First Asian Nobel laureate.[cite: 1]" },
+            { q: "Which organization presents the Grammy Awards?", options: ["Hollywood Foreign Press Association", "British Academy", "Recording Academy", "Billboard"], a: 2, exp: "Given by: Recording Academy.[cite: 1]" },
+            { q: "Who was the first female artist to win multiple Grammys at the inaugural ceremony in 1959?", options: ["Billie Holiday", "Ella Fitzgerald", "Aretha Franklin", "Patsy Cline"], a: 1, exp: "Ella Fitzgerald - 1959.[cite: 1]" },
+            { q: "Who won the Grammy for Album of the Year at the 68th Annual Grammy Awards in 2026?", options: ["Taylor Swift", "Bad Bunny", "Kendrick Lamar", "Billie Eilish"], a: 1, exp: "Latest Album of the Year winner → Bad Bunny (2026).[cite: 1]" },
+            { q: "Which film won Best Film at the 2026 BAFTA Film Awards?", options: ["The Fallen Idol", "Hamnet", "One Battle After Another", "Sentimental Value"], a: 2, exp: "One Battle After Another.[cite: 1]" },
+            { q: "Who was the first Best Actress winner at the inaugural Golden Globe Awards in 1944?", options: ["Ingrid Bergman", "Jennifer Jones", "Bette Davis", "Joan Fontaine"], a: 1, exp: "First Best Actress: Jennifer Jones (The Song of Bernadette).[cite: 1]" },
+            { q: "Consider the statement: 'Dynamite was invented by Alfred Nobel using TNT.' Is this statement correct based on the PDF?", options: ["Yes, patented in 1867", "No, it used nitroglycerin, not TNT", "No, it used atomic radiation", "Yes, he created TNT"], a: 1, exp: "Dynamite ≠ TNT. It was made by absorbing nitroglycerin into an absorbent material.[cite: 1]" },
+            { q: "Which Indian-origin scientist won the Nobel Prize in Chemistry in 2009 for studies of the ribosome?", options: ["Har Gobind Khorana", "Subrahmanyan Chandrasekhar", "Venkatraman Ramakrishnan", "Abhijit Banerjee"], a: 2, exp: "2009 Venkatraman Ramakrishnan - Chemistry.[cite: 1]" },
+            { q: "Who won the 2020 Nobel Prize in Chemistry for the development of CRISPR-Cas9?", options: ["Katalin Karikó & Drew Weissman", "Emmanuelle Charpentier & Jennifer A. Doudna", "David Baker & Demis Hassabis", "John Goodenough"], a: 1, exp: "Emmanuelle Charpentier & Jennifer A. Doudna - 2020 Chemistry.[cite: 1]" },
+            { q: "Who received the 2026 Golden Globe for Best Female Actor — Motion Picture, Drama?", options: ["Jessie Buckley", "Jennifer Jones", "Waheeda Rehman", "Asha Parekh"], a: 0, exp: "Jessie Buckley (Hamnet).[cite: 1]" },
+            { q: "Which organization has won the Nobel Peace Prize the most times (three times)?", options: ["UNHCR", "Amnesty International", "International Committee of the Red Cross (ICRC)", "UNICEF"], a: 2, exp: "ICRC: 1917, 1944, 1963.[cite: 1]" },
+            { q: "Which statement about the Dadasaheb Phalke award is FALSE?", options: ["It was instituted in 1969", "Prithviraj Kapoor received it posthumously", "It includes ₹15 lakh", "It is given by the Sahitya Akademi"], a: 3, exp: "It is given by the Ministry of Information & Broadcasting, not Sahitya Akademi.[cite: 1]" },
+            { q: "Amartya Sen won the Nobel Memorial Prize in Economic Sciences in which year?", options: ["1990", "1998", "2009", "2019"], a: 1, exp: "1998 - Economic Sciences.[cite: 1]" },
+            { q: "Which of the following persons won BOTH the Bharat Ratna and the Nobel Prize?", options: ["Sachin Tendulkar", "A. P. J. Abdul Kalam", "Nelson Mandela", "Jawaharlal Nehru"], a: 2, exp: "People who have won both: CV Raman, Mother Teresa, Amartya Sen, Nelson Mandela.[cite: 1]" },
+            { q: "When are the Nobel Prizes ceremonially awarded?", options: ["21 October", "27 November", "10 December", "1 January"], a: 2, exp: "Award ceremonies: 10 December every year (anniversary of Nobel's death).[cite: 1]" },
+            { q: "Who won the first Nobel Prize in Physics in 1901 for the discovery of X-rays?", options: ["Henri Becquerel", "Wilhelm Conrad Röntgen", "Pierre Curie", "Heike Kamerlingh Onnes"], a: 1, exp: "Wilhelm Conrad Röntgen - 1901 Physics.[cite: 1]" },
+            { q: "Who won the BAFTA EE Rising Star award in 2026?", options: ["Paul Thomas Anderson", "Robert Aramayo", "Ludwig Göransson", "Jessie Buckley"], a: 1, exp: "EE Rising Star: Robert Aramayo.[cite: 1]" },
+            { q: "Which movie won the first Golden Globe for Best Motion Picture in 1944?", options: ["The Best Years of Our Lives", "Watch on the Rhine", "The Song of Bernadette", "Raja Harishchandra"], a: 2, exp: "First Best Motion Picture: The Song of Bernadette (1944).[cite: 1]" }
+        ]
+    ];
+
+    let currentSet = 0;
+    let timerInterval;
+    let timeLeft = 1500; // 25 mins in seconds
+    let submitted = false;
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 1500;
+        document.getElementById("timer").innerText = formatTime(timeLeft);
+        timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            } else {
+                timeLeft--;
+                document.getElementById("timer").innerText = formatTime(timeLeft);
+            }
+        }, 1000);
+    }
+
+    function loadSet(index) {
+        currentSet = index;
+        submitted = false;
+        
+        // Update Buttons
+        const buttons = document.querySelectorAll("#set-buttons button");
+        buttons.forEach((btn, i) => {
+            if (i === index) btn.classList.add("active");
+            else btn.classList.remove("active");
+        });
+
+        // Load Quiz
+        const container = document.getElementById("quiz-container");
+        container.innerHTML = "";
+        
+        const setQuestions = quizData[index];
+        setQuestions.forEach((qObj, qIndex) => {
+            let optionsHTML = "";
+            qObj.options.forEach((opt, oIndex) => {
+                optionsHTML += `
+                    <li>
+                        <label>
+                            <input type="radio" name="q${qIndex}" value="${oIndex}">
+                            ${opt}
+                        </label>
+                    </li>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="question-card" id="card-${qIndex}">
+                    <h3>Q${qIndex + 1}. ${qObj.q}</h3>
+                    <ul class="options">
+                        ${optionsHTML}
+                    </ul>
+                    <div class="explanation" id="exp-${qIndex}"></div>
+                </div>
+            `;
+        });
+
+        document.getElementById("result-box").style.display = "none";
+        document.querySelector(".submit-btn").disabled = false;
+        startTimer();
+        window.scrollTo(0, 0);
+    }
+
+    function submitQuiz() {
+        if (submitted) return;
+        submitted = true;
+        clearInterval(timerInterval);
+        document.querySelector(".submit-btn").disabled = true;
+
+        const setQuestions = quizData[currentSet];
+        let score = 0;
+
+        setQuestions.forEach((qObj, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const expDiv = document.getElementById(`exp-${qIndex}`);
+            const cardDiv = document.getElementById(`card-${qIndex}`);
+            
+            expDiv.style.display = "block";
+            
+            if (selected && parseInt(selected.value) === qObj.a) {
+                score++;
+                expDiv.innerHTML = `<span class="correct-ans">Correct!</span> ${qObj.exp}`;
+                cardDiv.style.borderLeft = "5px solid #5cb85c";
+            } else {
+                expDiv.innerHTML = `<span class="wrong-ans">Incorrect.</span> <strong>Correct Answer:</strong> ${qObj.options[qObj.a]}<br><br>${qObj.exp}`;
+                cardDiv.style.borderLeft = "5px solid #d9534f";
+            }
+            
+            // Disable all radios
+            document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(el => el.disabled = true);
+        });
+
+        const resBox = document.getElementById("result-box");
+        resBox.style.display = "block";
+        resBox.innerHTML = `You scored ${score} out of 25 in Set ${currentSet + 1}.`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+        loadSet(currentSet);
+    }
+
+    // Initialize
+    window.onload = () => loadSet(0);
+</script>
+
+</body>
+</html>
