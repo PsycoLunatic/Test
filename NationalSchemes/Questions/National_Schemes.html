@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Schemes Interactive Quiz</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0 0 10px 0; font-size: 1.8rem; }
+        p { margin: 0; opacity: 0.9; }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 24px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .set-selector select {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+        }
+
+        .option.selected {
+            border-color: var(--primary-light);
+            background-color: #eff6ff;
+        }
+
+        .option.correct {
+            background-color: #dcfce7 !important;
+            border-color: var(--success) !important;
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .option.incorrect {
+            background-color: #fee2e2 !important;
+            border-color: var(--error) !important;
+            color: #7f1d1d;
+        }
+
+        .explanation {
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #f8fafc;
+            border-left: 4px solid var(--primary-light);
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .actions {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit { background-color: var(--primary); color: white; }
+        .btn-reset { background-color: #64748b; color: white; }
+        button:hover { opacity: 0.9; }
+
+        #score-board {
+            display: none;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>National Schemes Comprehensive Revision Quiz</h1>
+        <p>Test your preparation across 5 difficulty levels based on Central Government Schemes.</p>
+    </header>
+
+    <div class="controls">
+        <div class="set-selector">
+            <label for="set-select"><b>Select Level:</b> </label>
+            <select id="set-select" onchange="loadSet(this.value)">
+                <option value="0">Set 1: Basic Facts & Launch Dates</option>
+                <option value="1">Set 2: Full Forms & Key Objectives</option>
+                <option value="2">Set 3: Moderate - Financial Limits & Rules</option>
+                <option value="3">Set 4: Advanced - Numerical Parameters & Features</option>
+                <option value="4">Set 5: Expert - Statement & Analytical Questions</option>
+            </select>
+        </div>
+        <div class="timer" id="timer">Time Spent: 00:00</div>
+    </div>
+
+    <div id="score-board"></div>
+
+    <div id="quiz-container"></div>
+
+    <div class="actions">
+        <button class="btn-reset" onclick="resetCurrentSet()">Reset Set</button>
+        <button class="btn-submit" onclick="submitQuiz()">Submit & Check Answers</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    // SET 1: BASIC FACTS & LAUNCH DATES
+    {
+        setName: "Set 1: Basic Facts & Launch Dates",
+        questions: [
+            { q: "1. In which year was the Pradhan Mantri Jan Dhan Yojana (PMJDY) launched?", options: ["2013", "2014", "2015", "2016"], answer: 1, exp: "PMJDY was launched on 15th August, 2014." },
+            { q: "2. The PMJJBY scheme was launched in which year?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY) was started in 2015." },
+            { q: "3. Pradhan Mantri Suraksha Bima Yojana (PMSBY) was introduced in which year?", options: ["2014", "2015", "2016", "2018"], answer: 1, exp: "PMSBY was launched in 2015." },
+            { q: "4. When was the Atal Pension Yojana (APY) launched?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "Atal Pension Yojana (APY) was launched in 2015." },
+            { q: "5. In which year was the Pradhan Mantri Mudra Yojana (PMMY) launched?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "Pradhan Mantri Mudra Yojana was started in 2015." },
+            { q: "6. When was the Stand Up India scheme officially launched?", options: ["2014", "2015", "2016", "2017"], answer: 2, exp: "Stand Up India scheme was launched in 2016." },
+            { q: "7. In which year was Pradhan Mantri Vaya Vandana Yojana (PMVVY) launched?", options: ["2015", "2016", "2017", "2018"], answer: 2, exp: "PMVVY was introduced in 2017." },
+            { q: "8. Mission Indradhanush was initiated by the government in which year?", options: ["2014", "2015", "2016", "2017"], answer: 0, exp: "Mission Indradhanush was started in 2014." },
+            { q: "9. In which year was the Sansad Adarsh Gram Yojana launched?", options: ["2014", "2015", "2016", "2017"], answer: 0, exp: "Sansad Adarsh Gram Yojana was launched in 2014." },
+            { q: "10. When was the Namami Gange Programme launched?", options: ["2014", "2015", "2016", "2017"], answer: 0, exp: "Namami Gange Programme was created in 2014." },
+            { q: "11. Swachh Bharat Abhiyan was launched in which year?", options: ["2013", "2014", "2015", "2016"], answer: 1, exp: "Swachh Bharat Abhiyan was launched in 2014." },
+            { q: "12. Atal Mission for Rejuvenation and Urban Transformation (AMRUT) was launched in which year?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "AMRUT was launched in 2015." },
+            { q: "13. In which year was Deen Dayal Upadhyay Gram Jyoti Yojana (DDUGJY) started?", options: ["2014", "2015", "2016", "2017"], answer: 0, exp: "DDUGJY was launched in 2014." },
+            { q: "14. Pradhan Mantri Kaushal Vikas Yojana (PMKVY) began in which month and year?", options: ["May 2014", "July 2015", "August 2016", "January 2017"], answer: 1, exp: "PMKVY began in July 2015." },
+            { q: "15. When was the Sukanya Samriddhi Yojana (SSY) launched?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "SSY was launched in 2015." },
+            { q: "16. The HRIDAY scheme was launched on which specific date?", options: ["January 21, 2015", "August 15, 2014", "May 1, 2016", "July 1, 2015"], answer: 0, exp: "HRIDAY scheme was launched on January 21, 2015." },
+            { q: "17. Unnat Jyoti by Affordable LEDs for All (UJALA) was launched in which year?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "UJALA scheme was launched in 2015." },
+            { q: "18. Pradhan Mantri Awas Yojana - Urban (PMAY-U) was launched in which year?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "PMAY-U was launched in 2015." },
+            { q: "19. The Smart City Mission was launched in which year?", options: ["2014", "2015", "2016", "2017"], answer: 1, exp: "Smart City Mission was launched in 2015." },
+            { q: "20. The Digital India Programme was officially launched on which date?", options: ["August 15, 2014", "January 1, 2015", "July 1, 2015", "May 1, 2016"], answer: 2, exp: "Digital India was launched on July 1, 2015." },
+            { q: "21. Pradhan Mantri Krishi Sinchai Yojana (PMKSY) was launched on which date?", options: ["July 1, 2015", "May 1, 2016", "August 15, 2014", "January 21, 2015"], answer: 0, exp: "PMKSY was launched on July 1, 2015." },
+            { q: "22. In which year was the Pradhan Mantri Fasal Bima Yojana (PMFBY) launched?", options: ["2014", "2015", "2016", "2017"], answer: 2, exp: "PMFBY was launched in 2016." },
+            { q: "23. Pradhan Mantri Ujjwala Yojana (PMUY 1.0) was launched from Ballia, UP on which date?", options: ["May 1, 2016", "July 1, 2015", "August 15, 2014", "January 1, 2015"], answer: 0, exp: "Ujjwala 1.0 started from Ballia, UP on 1st May 2016." },
+            { q: "24. Ayushman Bharat PM-JAY was launched in which year?", options: ["2016", "2017", "2018", "2019"], answer: 2, exp: "Ayushman Bharat PM-JAY was started in 2018." },
+            { q: "25. From which city was Ayushman Bharat PM-JAY launched?", options: ["Ballia, UP", "Ranchi, Jharkhand", "Mahoba, UP", "Varanasi, UP"], answer: 1, exp: "Ayushman Bharat PM-JAY was started from Ranchi, Jharkhand." }
+        ]
+    },
+    // SET 2: FULL FORMS & KEY OBJECTIVES
+    {
+        setName: "Set 2: Full Forms & Key Objectives",
+        questions: [
+            { q: "1. What is the main aim of PMJDY?", options: ["Skill development", "Financial inclusion", "Provide LED bulbs", "Agriculture insurance"], answer: 1, exp: "PMJDY is a national mission for financial inclusion of people." },
+            { q: "2. What is the primary objective of PM Kisan Samman Nidhi?", options: ["Provide pension", "Provide financial assistance to farmers", "Provide LPG connection", "Provide free loans"], answer: 1, exp: "Under PM Kisan Samman Nidhi, farmers receive 2000 rupees every 4 months (3 times a year)." },
+            { q: "3. What is the full form of PAHAL scheme?", options: ["Pratyaksh Awas Yojana", "Pratyaksh Hastantarit Yojana", "Pradhan Awas Labh Yojana", "Pradhan Hastantarit Labh"], answer: 1, exp: "PAHAL stands for Pratyaksh Hastantarit Yojana." },
+            { q: "4. What does APY stand for?", options: ["Atal Pension Yojana", "Awas Pension Yojana", "Atal Pragati Yojana", "Atal Parivar Yojana"], answer: 0, exp: "APY stands for Atal Pension Yojana." },
+            { q: "5. What is the target group for Stand Up India scheme?", options: ["Senior citizens", "At least 1 SC/ST and 1 woman borrower per branch", "School dropouts", "Street vendors"], answer: 1, exp: "Stand Up India aims to grant loans to at least 1 SC/ST borrower and at least 1 woman borrower per bank branch." },
+            { q: "6. What is the primary objective of PMVVY?", options: ["Provide life insurance to youth", "Provide guaranteed pension to senior citizens", "Provide interest-free crop loan", "Skill training"], answer: 1, exp: "PMVVY (Pradhan Mantri Vaya Vandana Yojana) provides a guaranteed pension every month to senior citizens." },
+            { q: "7. How many preventable diseases does Mission Indradhanush protect against?", options: ["5", "7", "10", "12"], answer: 1, exp: "Mission Indradhanush ensures immunization against 7 preventable diseases." },
+            { q: "8. What is the main objective of Sansad Adarsh Gram Yojana?", options: ["Provide urban housing", "Overall development of selected Village Panchayats", "Build national highways", "Electrify metro cities"], answer: 1, exp: "Ministers take up one Village Panchayat at a time to oversee its overall development." },
+            { q: "9. Which river rejuvenation is targeted under Namami Gange Programme?", options: ["Yamuna", "Godavari", "Ganga", "Narmada"], answer: 2, exp: "It is targeted at the abatement of pollution, conservation, and rejuvenation of National River Ganga." },
+            { q: "10. What is the main objective of Swachh Bharat Abhiyan?", options: ["Eliminate open defecation & improve solid waste management", "Provide free health insurance", "Build smart cities", "Promote digital banking"], answer: 0, exp: "Its main aim is to eliminate open defecation and improve solid waste management." },
+            { q: "11. What is the full form of AMRUT?", options: ["Atal Mission for Rejuvenation and Urban Transformation", "Atal Mission for Rural Urban Training", "Advanced Mission for Rejuvenation and Urban Transport", "Atal Management for Rural Urban Trade"], answer: 0, exp: "AMRUT stands for Atal Mission for Rejuvenation and Urban Transformation." },
+            { q: "12. What is the primary goal of DDUGJY?", options: ["Continuous & uninterrupted supply of electricity in villages", "Free cooking gas", "Urban housing", "Micro-irrigation"], answer: 0, exp: "Deen Dayal Upadhyay Gram Jyoti Yojana aims at continuous and uninterrupted power supply in villages." },
+            { q: "13. What is the primary focus of PMKVY?", options: ["Free health checkups", "Industry-relevant skill training for youth", "Provide agricultural loans", "Provide pensions"], answer: 1, exp: "PMKVY provides industry-relevant skill training to make youth employable." },
+            { q: "14. Sukanya Samriddhi Yojana (SSY) is primarily aimed at benefiting whom?", options: ["Senior Citizens", "Girl Child", "Pregnant Women", "Small Farmers"], answer: 1, exp: "SSY is a small savings scheme to build a fund for the future education and marriage of a girl child." },
+            { q: "15. What does HRIDAY scheme stand for?", options: ["Heritage City Development and Augmentation Yojana", "Health and Rural Infrastructure Development Yojana", "Housing and Rejuvenation Infrastructure Development Yojana", "Heritage Renewal and Industrial Development Agency"], answer: 0, exp: "HRIDAY stands for National Heritage City Development and Augmentation Yojana." },
+            { q: "16. What is the full form of UJALA?", options: ["Unnat Jyoti by Affordable Light for All", "Unnat Jyoti by Affordable LEDs for All", "Urban Jyoti for All Local Areas", "Universal Joint Action for LED Awareness"], answer: 1, exp: "UJALA stands for Unnat Jyoti by Affordable LEDs for All." },
+            { q: "17. What is the primary aim of PMAY-U?", options: ["Provide pucca houses for eligible urban households", "Provide clean drinking water in villages", "Provide street light facility", "Free LPG connection"], answer: 0, exp: "PMAY-U addresses urban housing shortage to ensure a pucca house for eligible urban households." },
+            { q: "18. What is the goal of the Smart City Mission?", options: ["Core urban infrastructure & decent quality of life using smart solutions", "100% rural electrification", "Free crop insurance", "Higher education loans"], answer: 0, exp: "Smart City Mission aims to provide core urban infrastructure, clean environment, and smart solutions." },
+            { q: "19. Which program aims to transform India into a digitally empowered society?", options: ["Digital India", "PMKVY", "AMRUT", "HRIDAY"], answer: 0, exp: "Digital India Programme aims to transform the country into a digitally empowered society and knowledge economy." },
+            { q: "20. What are the twin mottos/visions of PMKSY?", options: ["Har Khet ko Pani & Per Drop More Crop", "Swachh Bharat & Swasth Bharat", "One Nation One Scheme", "Beti Bachao Beti Padhao"], answer: 0, exp: "PMKSY was launched with the vision of 'Har Khet ko Pani' and 'Per Drop More Crop'." },
+            { q: "21. What is the core principle behind Pradhan Mantri Fasal Bima Yojana (PMFBY)?", options: ["One Nation, One Scheme, One Premium", "Har Khet Ko Pani", "Subsidized LPG for all", "Free Healthcare for All"], answer: 0, exp: "PMFBY operates on the principle of 'One Nation, One Scheme, One Premium'." },
+            { q: "22. What is the main objective of Pradhan Mantri Ujjwala Yojana (PMUY)?", options: ["Provide clean fuel (LPG) for households", "Electrify rural homes", "Provide safe drinking water", "Provide toilets"], answer: 0, exp: "PMUY aims to provide clean cooking fuel (LPG) to households." },
+            { q: "23. What is Ayushman Bharat PM-JAY?", options: ["World's largest government-funded healthcare program", "Skill certification scheme", "Urban rejuvenation program", "Small savings scheme"], answer: 0, exp: "AB PM-JAY is the world's largest government-funded healthcare program." },
+            { q: "24. What coverage is offered under AB PM-JAY?", options: ["Secondary and tertiary hospitalization", "Primary OPD checkups only", "Free medicine distribution only", "Vaccination only"], answer: 0, exp: "AB PM-JAY provides coverage for secondary and tertiary hospitalization." },
+            { q: "25. Which agency implements the PMKVY scheme?", options: ["National Skill Development Corporation (NSDC)", "EESL", "PFRDA", "SEBI"], answer: 0, exp: "PMKVY is operated by the National Skill Development Corporation (NSDC)." }
+        ]
+    },
+    // SET 3: MODERATE - FINANCIAL LIMITS & RULES
+    {
+        setName: "Set 3: Moderate - Financial Limits & Rules",
+        questions: [
+            { q: "1. What is the annual premium amount for PMJJBY?", options: ["Rs 12", "Rs 20", "Rs 436", "Rs 500"], answer: 2, exp: "The annual premium for PMJJBY is Rs 436/year." },
+            { q: "2. What is the annual premium amount for PMSBY?", options: ["Rs 12", "Rs 20", "Rs 436", "Rs 500"], answer: 1, exp: "The annual premium for PMSBY is Rs 20 per year." },
+            { q: "3. Under PMJJBY, what is the insurance coverage provided in case of death?", options: ["Rs 1 Lakh", "Rs 2 Lakh", "Rs 5 Lakh", "Rs 10 Lakh"], answer: 1, exp: "Under PMJJBY, a person gets Rs 2 lakh for death." },
+            { q: "4. Under PMSBY, what sum is assured for partial loss/terminal injury of one hand/eye?", options: ["Rs 50,000", "Rs 1 Lakh", "Rs 2 Lakh", "Rs 5 Lakh"], answer: 1, exp: "Under PMSBY, if one hand/eye/leg gets injured, the coverage is Rs 1 lakh." },
+            { q: "5. What is the minimum monthly pension guaranteed under Atal Pension Yojana (APY)?", options: ["Rs 500", "Rs 1,000 to 5,000", "Rs 2,000 to 5,000", "Rs 10,000"], answer: 2, exp: "Under APY, beneficiaries can get a pension ranging from Rs 2000 to 5000 based on contribution." },
+            { q: "6. What is the maximum loan limit for the 'Shishu' category under Pradhan Mantri Mudra Yojana?", options: ["Up to Rs 50,000", "Up to Rs 5 Lakh", "Up to Rs 10 Lakh", "Up to Rs 20 Lakh"], answer: 0, exp: "Under PMMY, loan for 'Shishu' (referred as child in summary) is up to Rs 50,000." },
+            { q: "7. Under PM Mudra Yojana, what is the maximum loan limit under the 'Kishore' category?", options: ["Rs 50,000", "Up to Rs 5 Lakh", "Up to Rs 10 Lakh", "Up to Rs 20 Lakh"], answer: 1, exp: "Under PMMY, loan for Kishore is up to Rs 5 Lakh." },
+            { q: "8. What is the loan range available under Stand Up India scheme?", options: ["Rs 50,000 to 5 Lakh", "Rs 5 Lakh to 10 Lakh", "Rs 10 Lakh to 1 Crore", "Rs 1 Crore to 5 Crore"], answer: 2, exp: "Stand Up India grants loans from Rs 10 lakh to Rs 1 crore." },
+            { q: "9. What is the financial budget allocation for a single village under Sansad Adarsh Gram Yojana?", options: ["Rs 25 Lakh", "Rs 50 Lakh", "Rs 1 Crore", "Rs 5 Crore"], answer: 2, exp: "The budget for Sansad Adarsh Gram Yojana is 1 crore for 1 village." },
+            { q: "10. What is the minimum and maximum deposit limit per financial year under Sukanya Samriddhi Yojana (SSY)?", options: ["Rs 100 to Rs 1 Lakh", "Rs 250 to Rs 1.5 Lakh", "Rs 500 to Rs 2 Lakh", "Rs 1,000 to Rs 5 Lakh"], answer: 1, exp: "Deposit range for SSY is Min Rs 250 to Max Rs 1.5 lakh per financial year." },
+            { q: "11. What is the current interest rate mentioned for Sukanya Samriddhi Yojana (SSY) in the notes?", options: ["7.5% p.a.", "8.0% p.a.", "8.2% p.a.", "8.5% p.a."], answer: 2, exp: "The interest rate specified for SSY is 8.2% per annum." },
+            { q: "12. What is the total central outlay allocated for the HRIDAY scheme?", options: ["Rs 100 crore", "Rs 500 crore", "Rs 1,000 crore", "Rs 5,000 crore"], answer: 1, exp: "HRIDAY scheme was fully funded by the central government with an outlay of Rs 500 crore." },
+            { q: "13. Under the UJALA scheme, what was the price fixed for a 9W LED Bulb?", options: ["Rs 50", "Rs 70", "Rs 220", "Rs 1,110"], answer: 1, exp: "Price of 9W LED Bulb under UJALA was Rs 70." },
+            { q: "14. Under UJALA, what was the price of an Energy-Efficient Fan?", options: ["Rs 220", "Rs 500", "Rs 700", "Rs 1,110"], answer: 3, exp: "Price of an Energy-Efficient Fan under UJALA was Rs 1,110." },
+            { q: "15. Under PMKSY micro-irrigation, what percentage of financial assistance is provided to small and marginal farmers?", options: ["35%", "45%", "55%", "75%"], answer: 2, exp: "Small and marginal farmers get financial assistance up to about 55% under PMKSY." },
+            { q: "16. What percentage of financial assistance is provided to 'Other Farmers' (non-small/marginal) under PMKSY?", options: ["35%", "45%", "55%", "65%"], answer: 1, exp: "Other farmers get financial assistance up to 45% under PMKSY." },
+            { q: "17. What maximum premium rate is paid by farmers for Kharif crops under PMFBY?", options: ["1.0%", "1.5%", "2.0%", "5.0%"], answer: 2, exp: "For Kharif season crops, the maximum premium paid by farmers is 2.0% of Sum Insured." },
+            { q: "18. What maximum premium rate is paid by farmers for Rabi crops under PMFBY?", options: ["1.0%", "1.5%", "2.0%", "5.0%"], answer: 1, exp: "For Rabi season crops, the maximum premium paid by farmers is 1.5% of Sum Insured." },
+            { q: "19. What maximum premium rate is paid by farmers for Commercial / Horticultural crops under PMFBY?", options: ["1.5%", "2.0%", "3.0%", "5.0%"], answer: 3, exp: "For Annual Commercial / Horticultural crops, the premium rate is 5.0% of Sum Insured." },
+            { q: "20. Under PM-JAY, what is the health insurance cover amount provided per family per year?", options: ["Rs 1 Lakh", "Rs 2 Lakh", "Rs 5 Lakh", "Rs 10 Lakh"], answer: 2, exp: "PM-JAY provides health insurance coverage of Rs 5 lakhs per family." },
+            { q: "21. What is the lowest monthly premium rate for Atal Pension Yojana (APY)?", options: ["Rs 10", "Rs 20", "Rs 42", "Rs 100"], answer: 2, exp: "Lowest premium for APY is Rs 42/month." },
+            { q: "22. What is the loan limit for 'Tarun+' under Pradhan Mantri Mudra Yojana?", options: ["Up to Rs 5 Lakh", "Up to Rs 10 Lakh", "Up to Rs 20 Lakh", "Up to Rs 50 Lakh"], answer: 2, exp: "Under PMMY, loan for 'Tarun+' is up to Rs 20 lakh." },
+            { q: "23. Under PM-Kisan Samman Nidhi, what total annual amount is transferred to eligible farmers?", options: ["Rs 4,000", "Rs 6,000", "Rs 8,000", "Rs 12,000"], answer: 1, exp: "Farmers receive Rs 2000 thrice a year, totaling Rs 6,000 per year." },
+            { q: "24. What outlay was approved for the expansion of the Digital India program?", options: ["Rs 5,000 crore", "Rs 10,000 crore", "Rs 14,903 crore", "Rs 20,000 crore"], answer: 2, exp: "The Cabinet approved expansion of Digital India with an outlay of Rs 14,903 crore." },
+            { q: "25. How many Common Service Centres (CSCs) were planned for delivering e-governance under Digital India?", options: ["1 Lakh", "2.5 Lakh", "5 Lakh", "Over 6.5 Lakh"], answer: 3, exp: "E-governance and banking services are delivered via over 6.5 lakh Common Service Centres (CSCs)." }
+        ]
+    },
+    // SET 4: ADVANCED - NUMERICAL PARAMETERS & FEATURES
+    {
+        setName: "Set 4: Advanced - Numerical Parameters & Features",
+        questions: [
+            { q: "1. What is the age criteria for subscribers to join PMJJBY?", options: ["18-40 years", "18-50 years", "18-70 years", "60 years and above"], answer: 1, exp: "PMJJBY is for individuals between the age of 18 and 50 years." },
+            { q: "2. What is the age criteria for subscribers to join PMSBY?", options: ["18-40 years", "18-50 years", "18-70 years", "60 years and above"], answer: 2, exp: "PMSBY is for individuals between the age of 18 and 70 years." },
+            { q: "3. What is the entry age group for joining Atal Pension Yojana (APY)?", options: ["18-40 years", "18-50 years", "18-60 years", "21-55 years"], answer: 0, exp: "APY is open to people between the age of 18 and 40 years." },
+            { q: "4. At what age does the pension payout begin under Atal Pension Yojana?", options: ["50 years", "55 years", "60 years", "65 years"], answer: 2, exp: "Under APY, beneficiaries start receiving pensions after completing 60 years." },
+            { q: "5. What is the entry age requirement for Pradhan Mantri Vaya Vandana Yojana (PMVVY)?", options: ["50 years", "55 years", "60 years", "No entry age"], answer: 2, exp: "PMVVY entry age is 60 years, with no maximum age limit." },
+            { q: "6. Children up to what age are covered for immunization under Mission Indradhanush?", options: ["Up to 1 year", "Up to 2 years", "Up to 5 years", "Up to 10 years"], answer: 1, exp: "Mission Indradhanush ensures immunization of pregnant women and children up to 2 years of age." },
+            { q: "7. What is the target age group for PMKVY skill development training?", options: ["10-35 years", "15-45 years", "18-50 years", "21-60 years"], answer: 1, exp: "Target group for PMKVY is school/college dropouts and unemployed youth aged approximately 15 to 45 years." },
+            { q: "8. Before what age must an SSY account be opened for a girl child?", options: ["Before turning 5 years", "Before turning 10 years", "Before turning 12 years", "Before turning 18 years"], answer: 1, exp: "An SSY account can be opened before the girl child turns 10 years old." },
+            { q: "9. For how many years are financial contributions mandatory from account opening under SSY?", options: ["10 years", "15 years", "18 years", "21 years"], answer: 1, exp: "Contributions to SSY are required for 15 years from the date of account opening." },
+            { q: "10. When does a Sukanya Samriddhi Yojana (SSY) account reach full maturity?", options: ["15 years from opening", "18 years from opening", "21 years from opening", "25 years from opening"], answer: 2, exp: "The account matures after 21 years from opening (or upon marriage after turning 18)." },
+            { q: "11. How many cities were covered under the HRIDAY scheme?", options: ["10", "12", "50", "500"], answer: 1, exp: "The HRIDAY scheme was implemented across 12 heritage cities." },
+            { q: "12. How many towns and cities were selected for development under AMRUT?", options: ["100", "200", "500", "1000"], answer: 2, exp: "AMRUT targeted 500 selected towns and cities." },
+            { q: "13. What target year was set by PMAY-U to provide pucca houses for all eligible urban households?", options: ["2020", "2022", "2024", "2030"], answer: 2, exp: "PMAY-U aimed to ensure a pucca house for eligible households by the year 2024." },
+            { q: "14. Up to how many days post-harvest does PMFBY provide coverage for dried crops destroyed in fields?", options: ["7 days", "14 days", "21 days", "30 days"], answer: 1, exp: "PMFBY provides post-harvest loss coverage for up to 14 days after harvesting." },
+            { q: "15. Within how many hours must a farmer report crop damage due to localized calamities under PMFBY?", options: ["24 hours", "48 hours", "72 hours", "96 hours"], answer: 2, exp: "Crop damage must be reported to the insurance company/officials within 72 hours." },
+            { q: "16. Which regulatory body oversees and regulates the Atal Pension Yojana (APY)?", options: ["SEBI", "RBI", "PFRDA", "IRDAI"], answer: 2, exp: "APY is regulated by the Pension Fund Regulatory and Development Authority (PFRDA)." },
+            { q: "17. Which Ministry implements the AMRUT and HRIDAY schemes?", options: ["Ministry of Rural Development", "Ministry of Housing and Urban Affairs", "Ministry of Jal Shakti", "Ministry of Finance"], answer: 1, exp: "Both AMRUT and HRIDAY are implemented by the Ministry of Housing and Urban Affairs." },
+            { q: "18. Which Ministry manages the Digital India initiative?", options: ["Ministry of Information and Broadcasting", "Ministry of Electronics and Information Technology (MeitY)", "Ministry of Science and Technology", "Ministry of Communication"], answer: 1, exp: "Digital India is coordinated by MeitY." },
+            { q: "19. Which Ministry oversees Deen Dayal Upadhyay Gram Jyoti Yojana (DDUGJY)?", options: ["Ministry of New and Renewable Energy", "Ministry of Power", "Ministry of Rural Development", "Ministry of Electronics"], answer: 1, exp: "DDUGJY falls under the Ministry of Power." },
+            { q: "20. Which Ministry administers the Pradhan Mantri Fasal Bima Yojana (PMFBY)?", options: ["Ministry of Consumer Affairs", "Ministry of Agriculture & Farmers Welfare", "Ministry of Finance", "Ministry of Rural Development"], answer: 1, exp: "PMFBY was launched under the Ministry of Agriculture & Farmers Welfare." },
+            { q: "21. How is the subsidized premium balance shared between Central and State Governments for non-NE/Himalayan states in PMFBY?", options: ["50:50", "60:40", "75:25", "90:10"], answer: 0, exp: "The remaining premium is shared 50:50 between Central and State Governments (90:10 for NE/Himalayan states)." },
+            { q: "22. What tax status category does Sukanya Samriddhi Yojana (SSY) enjoy?", options: ["Taxable", "EEE (Exempt-Exempt-Exempt)", "EET", "Partial Tax Exempt"], answer: 1, exp: "SSY enjoys EEE status (contributions qualify under 80C, interest & maturity amounts are tax-free)." },
+            { q: "23. Ujjwala 2.0 scheme was launched from which location in 2021?", options: ["Ballia, UP", "Mahoba, UP", "Ranchi, Jharkhand", "Varanasi, UP"], answer: 1, exp: "Ujjwala 2.0 was started from Mahoba, UP in 2021." },
+            { q: "24. How many total beneficiaries are estimated under Ayushman Bharat PM-JAY?", options: ["10 Crore", "25 Crore", "50 Crore", "100 Crore"], answer: 2, exp: "PM-JAY is the world's largest funded healthcare program with over 50 crore beneficiaries." },
+            { q: "25. Which version of PMKVY is currently active, covering modern subjects like AI and Robotics?", options: ["PMKVY 1.0", "PMKVY 2.0", "PMKVY 3.0", "PMKVY 4.0"], answer: 3, exp: "The current phase is PMKVY 4.0, which includes AI, Drone Tech, Robotics, and Coding." }
+        ]
+    },
+    // SET 5: EXPERT - STATEMENT & ANALYTICAL QUESTIONS
+    {
+        setName: "Set 5: Expert - Statement & Analytical Questions",
+        questions: [
+            {
+                q: "1. Consider the following statements regarding PMJJBY and PMSBY:<br>1. PMJJBY covers death due to any reason for ages 18-50.<br>2. PMSBY offers accidental death/disability insurance up to age 70.<br>Which statement(s) is/are correct?",
+                options: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"], answer: 2,
+                exp: "Both statements are correct. PMJJBY covers death (18-50 yrs) and PMSBY covers accidental risk (18-70 yrs)."
+            },
+            {
+                q: "2. Which of the following diseases is NOT among the 7 preventable diseases covered under Mission Indradhanush?",
+                options: ["Tuberculosis", "Hepatitis B", "Malaria", "Pertussis"], answer: 2,
+                exp: "The 7 diseases are Diphtheria, Pertussis, Tetanus, Hepatitis B, Polio, Measles, and Tuberculosis. Malaria is not included."
+            },
+            {
+                q: "3. Under Sansad Adarsh Gram Yojana, which of the following conditions must a Member of Parliament follow while choosing a village?",
+                options: ["Must pick a village from another State", "Cannot choose their own village or their wife's village", "Must select an urban slum", "Must select a capital city village"], answer: 1,
+                exp: "MPs cannot select their own village or their spouse's village for development under SAGY."
+            },
+            {
+                q: "4. Consider the following statements regarding Sukanya Samriddhi Yojana (SSY):<br>1. Account can be opened for up to two girl children per family.<br>2. Exceptions allow accounts for more than two children in case of twin/triplet births.<br>Which of the statements given above is/are correct?",
+                options: ["Only 1", "Only 2", "Both 1 and 2", "Neither 1 nor 2"], answer: 2,
+                exp: "Both statements are correct according to the eligibility criteria of SSY."
+            },
+            {
+                q: "5. Which of the following is NOT one of the 12 heritage cities covered under HRIDAY scheme?",
+                options: ["Badami", "Warangal", "Varanasi", "Ahmedabad"], answer: 3,
+                exp: "The 12 cities were Ajmer, Amaravati, Amritsar, Badami, Dwarka, Gaya, Kancheepuram, Mathura, Puri, Varanasi, Velankanni, and Warangal. Ahmedabad is not in the list."
+            },
+            {
+                q: "6. Consider the following regarding PMKSY components:<br>1. Accelerated Irrigation Benefits Programme (AIBP)<br>2. Per Drop More Crop (PDMC)<br>3. Har Khet Ko Pani (HKKP)<br>Which of the above are official components of PMKSY?",
+                options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"], answer: 3,
+                exp: "PMKSY has 4 main components: AIBP, HKKP, PDMC, and Watershed Development."
+            },
+            {
+                q: "7. Which of the following is eligible to apply for Ujjwala Scheme LPG connections?",
+                options: ["All Indian Citizens", "Only High Income Group", "Only BPL Card Holders", "Taxpayers only"], answer: 2,
+                exp: "Only BPL (Below Poverty Line) card holders are eligible to apply under Ujjwala scheme."
+            },
+            {
+                q: "8. Statement 1: Stand Up India scheme facilitates bank loans between 10 Lakhs to 1 Crore.<br>Statement 2: It applies to setting up brownfield enterprises only.<br>Which of the statements is/are correct?",
+                options: ["Only Statement 1 is correct", "Only Statement 2 is correct", "Both are correct", "Neither is correct"], answer: 0,
+                exp: "Statement 1 is correct. Statement 2 is false because Stand Up India is meant specifically for greenfield enterprises."
+            },
+            {
+                q: "9. Identify the incorrect pair of Scheme and Ministry:",
+                options: ["AMRUT - Ministry of Housing and Urban Affairs", "Namami Gange - Ministry of Jal Shakti", "PMKVY - Ministry of Skill Development & Entrepreneurship", "Mission Indradhanush - Ministry of Finance"], answer: 3,
+                exp: "Mission Indradhanush is initiated by the Ministry of Health and Family Welfare, not Finance."
+            },
+            {
+                q: "10. What is the maximum loan limit provided under 'Tarun' category of PM Mudra Yojana?",
+                options: ["Up to Rs 50,000", "Up to Rs 5 Lakh", "Up to Rs 10 Lakh", "Up to Rs 20 Lakh"], answer: 2,
+                exp: "Under PMMY, loan limits are: Shishu (up to 50k), Kishore (up to 5 Lakh), Tarun (up to 10 Lakh)."
+            },
+            {
+                q: "11. Under PMFBY, which of the following risks is/are covered?<br>1. Prevented Sowing<br>2. Post-Harvest Losses (up to 14 days)<br>3. Localized Calamities like hailstorms<br>Select the correct code:",
+                options: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2, and 3"], answer: 3,
+                exp: "PMFBY provides comprehensive coverage including prevented sowing, standing crop loss, localized calamities, and post-harvest losses."
+            },
+            {
+                q: "12. What was the official end date of the HRIDAY mission period?",
+                options: ["December 31, 2017", "March 31, 2019", "August 15, 2020", "March 31, 2022"], answer: 1,
+                exp: "The HRIDAY mission period officially ended on March 31, 2019."
+            },
+            {
+                q: "13. Under UJALA scheme, energy-efficient LED tube lights (20W) were provided at what price?", options: ["Rs 70", "Rs 220", "Rs 300", "Rs 1,110"], answer: 1, exp: "LED Tube Light (20W) was priced at Rs 220 under UJALA." },
+            {
+                q: "14. Which agency manages the UJALA program?", options: ["NSDC", "EESL (Energy Efficiency Services Limited)", "PFRDA", "NITI Aayog"], answer: 1, exp: "UJALA is managed by Energy Efficiency Services Limited (EESL) under the Ministry of Power." },
+            {
+                q: "15. Which AI initiative and language tool are specifically mentioned under the Digital India expansion plan?",
+                options: ["'Yuva AI for All' and BHASHINI", "AI-India & BhashaSetu", "TechYuva & Sugamya", "Digital Shiksha & AI-Sathi"], answer: 0,
+                exp: "Digital India promotes 'Yuva AI for All' and expanding local language tools like BHASHINI."
+            },
+            {
+                q: "16. Which document is NOT mandatory for registering under Pradhan Mantri Fasal Bima Yojana (PMFBY)?",
+                options: ["Aadhaar Card", "Bank Passbook", "Land Records / Sowing Certificate", "Passport / Driving License mandatory"], answer: 3,
+                exp: "Required docs are Aadhaar, Bank Passbook, Land Records, and Sowing Certificate/Sharecropper Agreement. Passport is not listed."
+            },
+            {
+                q: "17. What is the frequency of installment payouts under PM Kisan Samman Nidhi?",
+                options: ["Rs 1000 every month", "Rs 2000 every 4 months", "Rs 3000 every 6 months", "Rs 6000 once a year"], answer: 1,
+                exp: "Under PM Kisan Samman Nidhi, farmers receive Rs 2000 at intervals of 4 months (3 times a year)."
+            },
+            {
+                q: "18. PMJJBY provides what benefit amount in case of serious injury?",
+                options: ["Rs 50,000", "Rs 1 Lakh", "Rs 2 Lakh", "No injury benefit, death only"], answer: 1,
+                exp: "Under PMJJBY, a person gets 2 lakh for death and 1 lakh for serious injury."
+            },
+            {
+                q: "19. Under PMSBY, what benefit is paid if BOTH eyes or BOTH hands/legs are terminally injured?",
+                options: ["Rs 50,000", "Rs 1 Lakh", "Rs 2 Lakh", "Rs 5 Lakh"], answer: 2,
+                exp: "Under PMSBY, if both limbs/eyes get terminally injured, the insured gets Rs 2 lakh."
+            },
+            {
+                q: "20. Under Atal Pension Yojana, what is the age limit for subscribers?",
+                options: ["18 to 40 years", "18 to 50 years", "18 to 60 years", "60 years and above"], answer: 0,
+                exp: "APY is strictly for people between age 18-40."
+            },
+            {
+                q: "21. Which scheme was originally launched by UPA government in 2013 and relaunched on Jan 1, 2015 by the Modi Government?",
+                options: ["PAHAL Scheme", "PMJDY", "Ujjwala", "AMRUT"], answer: 0,
+                exp: "PAHAL Scheme (Pratyaksh Hastantarit Yojana) was started in June 2013 and relaunched in Jan 2015."
+            },
+            {
+                q: "22. Match the scheme with its sector: <br>A. PMKVY -> 1. Healthcare<br>B. PM-JAY -> 2. Skill Certification<br>C. PMKSY -> 3. Irrigation",
+                options: ["A-2, B-1, C-3", "A-1, B-2, C-3", "A-3, B-1, C-2", "A-2, B-3, C-1"], answer: 0,
+                exp: "PMKVY relates to skill certification, PM-JAY to healthcare, and PMKSY to irrigation."
+            },
+            {
+                q: "23. What payment flexibility is offered under the UJALA scheme for buying appliances?",
+                options: ["Upfront cash only", "EMI choices added directly to electricity bills", "Both upfront cash and EMI on electricity bills", "Bank Loan only"], answer: 2,
+                exp: "Consumers can buy appliances via upfront cash payments or through convenient EMI choices added directly to electricity bills."
+            },
+            {
+                q: "24. Participation of farmers in Pradhan Mantri Fasal Bima Yojana (PMFBY) is:",
+                options: ["Compulsory for all farmers", "Compulsory for loanee farmers only", "Completely voluntary for all categories of farmers", "Mandatory for large farmers only"], answer: 2,
+                exp: "PMFBY operates on a completely voluntary enrolment basis for all categories of farmers."
+            },
+            {
+                q: "25. Which scheme addresses urban housing shortages specifically among EWS/LIG and MIG categories including slum dwellers?",
+                options: ["AMRUT", "HRIDAY", "PMAY-U", "Smart City Mission"], answer: 2,
+                exp: "PMAY-U (Pradhan Mantri Awas Yojana - Urban) addresses urban housing shortages for EWS/LIG/MIG and slum dwellers."
+            }
+        ]
+    }
+];
+
+let currentSetIndex = 0;
+let userAnswers = {};
+let timerInterval = null;
+let secondsElapsed = 0;
+
+function startTimer() {
+    clearInterval(timerInterval);
+    secondsElapsed = 0;
+    timerInterval = setInterval(() => {
+        secondsElapsed++;
+        let m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+        let s = (secondsElapsed % 60).toString().padStart(2, '0');
+        document.getElementById('timer').innerText = `Time Spent: ${m}:${s}`;
+    }, 1000);
+}
+
+function loadSet(index) {
+    currentSetIndex = parseInt(index);
+    userAnswers = {};
+    document.getElementById('score-board').style.display = 'none';
+    startTimer();
+
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+
+    const currentQuestions = quizData[currentSetIndex].questions;
+
+    currentQuestions.forEach((qObj, qIdx) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `q-card-${qIdx}`;
+
+        let optionsHTML = '';
+        qObj.options.forEach((opt, oIdx) => {
+            optionsHTML += `
+                <div class="option" id="opt-${qIdx}-${oIdx}" onclick="selectOption(${qIdx}, ${oIdx})">
+                    ${String.fromCharCode(65 + oIdx)}. ${opt}
+                </div>
+            `;
+        });
+
+        card.innerHTML = `
+            <div class="question-title">${qObj.q}</div>
+            <div class="options">${optionsHTML}</div>
+            <div class="explanation" id="exp-${qIdx}">
+                <b>Explanation:</b> ${qObj.exp}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function selectOption(qIdx, oIdx) {
+    userAnswers[qIdx] = oIdx;
+    const qObj = quizData[currentSetIndex].questions[qIdx];
+    for (let i = 0; i < qObj.options.length; i++) {
+        const optEl = document.getElementById(`opt-${qIdx}-${i}`);
+        optEl.classList.remove('selected');
+    }
+    document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    const currentQuestions = quizData[currentSetIndex].questions;
+    let score = 0;
+
+    currentQuestions.forEach((qObj, qIdx) => {
+        const selected = userAnswers[qIdx];
+        const correct = qObj.answer;
+
+        for (let i = 0; i < qObj.options.length; i++) {
+            const optEl = document.getElementById(`opt-${qIdx}-${i}`);
+            optEl.onclick = null; // Disable further clicking
+
+            if (i === correct) {
+                optEl.classList.add('correct');
+            }
+            if (selected === i && selected !== correct) {
+                optEl.classList.add('incorrect');
+            }
+        }
+
+        if (selected === correct) {
+            score++;
+        }
+
+        document.getElementById(`exp-${qIdx}`).style.display = 'block';
+    });
+
+    const scoreBoard = document.getElementById('score-board');
+    scoreBoard.style.display = 'block';
+    scoreBoard.innerHTML = `You scored ${score} out of ${currentQuestions.length}! (${((score/currentQuestions.length)*100).toFixed(1)}%)`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetCurrentSet() {
+    loadSet(currentSetIndex);
+}
+
+// Initial Load
+window.onload = () => {
+    loadSet(0);
+};
+</script>
+
+</body>
+</html>

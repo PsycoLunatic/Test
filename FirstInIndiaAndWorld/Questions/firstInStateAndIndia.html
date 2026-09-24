@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First in India & World - Revision Portal</title>
+<style>
+    :root {
+        --primary: #1e3a8a;
+        --secondary: #2563eb;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text: #0f172a;
+        --success: #16a34a;
+        --success-bg: #dcfce7;
+        --danger: #dc2626;
+        --danger-bg: #fee2e2;
+        --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        line-height: 1.5;
+    }
+
+    header {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-left h1 { margin: 0; font-size: 1.4rem; }
+    .header-left p { margin: 0.2rem 0 0; font-size: 0.85rem; opacity: 0.85; }
+
+    #timer-display {
+        font-size: 1.4rem;
+        font-weight: 700;
+        background: #ffffff;
+        color: var(--primary);
+        padding: 0.4rem 1rem;
+        border-radius: 6px;
+        display: none;
+        font-family: monospace;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .set-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+    }
+
+    .set-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .set-card:hover {
+        border-color: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+
+    .set-card h3 { margin: 0 0 0.5rem 0; color: var(--primary); }
+    .set-card p { margin: 0; font-size: 0.9rem; color: #64748b; }
+
+    .quiz-container {
+        display: none;
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+    }
+
+    .question-card {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .question-text {
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+
+    .options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }
+
+    .option-label:hover { background: #f1f5f9; }
+    .option-label input { margin-right: 0.8rem; accent-color: var(--secondary); }
+
+    .correct-ans {
+        background-color: var(--success-bg) !important;
+        border-color: var(--success) !important;
+        color: #14532d;
+        font-weight: 600;
+    }
+
+    .wrong-ans {
+        background-color: var(--danger-bg) !important;
+        border-color: var(--danger) !important;
+        color: #7f1d1d;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        color: white;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+
+    .btn-submit { background-color: var(--success); }
+    .btn-submit:hover { background-color: #15803d; }
+    .btn-retry { background-color: var(--secondary); display: none; }
+    .btn-retry:hover { background-color: #1d4ed8; }
+    .btn-back { background-color: #64748b; }
+    .btn-back:hover { background-color: #475569; }
+
+    #score-display {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-top: 1.5rem;
+        text-align: center;
+        color: var(--primary);
+        display: none;
+        padding: 1rem;
+        background: #eff6ff;
+        border-radius: 6px;
+        border: 1px solid #bfdbfe;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <h1>First in India & World Revision Portal</h1>
+        <p>Target Exam Preparation (125 Questions Across 5 Sets)</p>
+    </div>
+    <div id="timer-display">25:00</div>
+</header>
+
+<div class="container">
+    <div id="selection-screen">
+        <h2 style="margin-bottom: 0.5rem; color: var(--primary);">Select a Practice Set</h2>
+        <p style="color: #64748b; margin-top: 0;">Each set contains 25 questions with a 25-minute time limit.</p>
+        <div class="set-grid" id="set-cards"></div>
+    </div>
+
+    <div class="quiz-container" id="quiz-screen">
+        <h2 id="current-set-title" style="margin-top: 0; color: var(--primary);"></h2>
+        <div id="questions-wrapper"></div>
+        
+        <div id="score-display"></div>
+        
+        <div class="action-btns">
+            <button class="btn btn-submit" id="submit-btn" onclick="submitQuiz()">Submit & Review Answers</button>
+            <button class="btn btn-retry" id="retry-btn" onclick="retrySet()">Retry This Set</button>
+            <button class="btn btn-back" id="back-btn" onclick="goBack()">Back to Main Menu</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        title: "Set 1: Basic Science, Space & Political Firsts (Easy)",
+        desc: "Fundamental GK facts covering early scientific breakthroughs and core constitutional positions.",
+        questions: [
+            { q: "Where was India's first hydroelectric power plant commissioned in 1897?", options: ["Shimla", "Sidrapong (Darjeeling)", "Mettur", "Bhakra Nangal"], a: 1 },
+            { q: "Who was the first Indian to go into space in 1984?", options: ["Kalpana Chawla", "Sunita Williams", "Rakesh Sharma", "Ravish Malhotra"], a: 2 },
+            { q: "Which is India's first nuclear reactor, operationalized at Trombay in 1956?", options: ["Kamini", "Apsara", "Cirus", "Dhruva"], a: 1 },
+            { q: "India's first satellite, Aryabhata, was launched in which year?", options: ["1971", "1975", "1980", "1984"], a: 1 },
+            { q: "Which was India's first successful indigenous satellite launch vehicle?", options: ["PSLV-C1", "SLV-3", "GSLV-MK1", "ASLV"], a: 1 },
+            { q: "Who was the first Indian to receive the Nobel Prize in Physics (1930)?", options: ["Homi Bhabha", "S. Chandrasekhar", "C. V. Raman", "J. C. Bose"], a: 2 },
+            { q: "National Science Day (28 February) commemorates which scientific event?", options: ["Launch of Aryabhata", "Discovery of Raman Effect", "Commissioning of Apsara", "Rakesh Sharma's Spaceflight"], a: 1 },
+            { q: "Who was the first President of independent India?", options: ["Dr. S. Radhakrishnan", "Dr. Rajendra Prasad", "C. Rajagopalachari", "Dr. Zakir Husain"], a: 1 },
+            { q: "Who served as the first Vice-President of India?", options: ["V. V. Giri", "Dr. S. Radhakrishnan", "Dr. Zakir Husain", "G. S. Pathak"], a: 1 },
+            { q: "Who was the first Prime Minister of independent India?", options: ["Sardar Vallabhbhai Patel", "Jawaharlal Nehru", "Lal Bahadur Shastri", "C. Rajagopalachari"], a: 1 },
+            { q: "Who was the first Chief Election Commissioner of India?", options: ["K. V. K. Sundaram", "Sukumar Sen", "T. N. Seshan", "H. J. Kania"], a: 1 },
+            { q: "Who served as the first Chief Justice of India?", options: ["M. Patanjali Sastri", "H. J. Kania", "Mehr Chand Mahajan", "B. K. Mukherjea"], a: 1 },
+            { q: "Who was the first Speaker of the Lok Sabha?", options: ["M. A. Ayyangar", "Hukam Singh", "G. V. Mavalankar", "K. S. Hegde"], a: 2 },
+            { q: "Who was independent India's first Home Minister?", options: ["Sardar Baldev Singh", "Sardar Vallabhbhai Patel", "Maulana Abul Kalam Azad", "C. Rajagopalachari"], a: 1 },
+            { q: "Who was the first Education Minister of independent India?", options: ["Dr. B. R. Ambedkar", "Maulana Abul Kalam Azad", "Dr. John Matthai", "C. Rajagopalachari"], a: 1 },
+            { q: "Who was appointed as the first Chairperson of Lokpal in India?", options: ["Justice Pinaki Chandra Ghose", "Justice Ranjan Gogoi", "Justice N. V. Ramana", "Justice H. L. Dattu"], a: 0 },
+            { q: "Who was appointed as the first Governor-General of Bengal (1774-1785)?", options: ["Lord Cornwallis", "Lord William Bentinck", "Warren Hastings", "Lord Clive"], a: 2 },
+            { q: "Who was the first Governor-General of India (under Charter Act 1833)?", options: ["Lord Dalhousie", "Lord William Bentinck", "Warren Hastings", "Lord Canning"], a: 1 },
+            { q: "Who served as the first Viceroy of India following the 1857 Revolt?", options: ["Lord Canning", "Lord Elgin", "Lord Mountbatten", "Lord Curzon"], a: 0 },
+            { q: "Who was the last Viceroy of British India?", options: ["Lord Linlithgow", "Lord Wavell", "Lord Mountbatten", "C. Rajagopalachari"], a: 2 },
+            { q: "Who was the first Governor-General of independent India?", options: ["C. Rajagopalachari", "Lord Mountbatten", "Dr. Rajendra Prasad", "Jawaharlal Nehru"], a: 1 },
+            { q: "Who was the first and last Indian Governor-General of independent India?", options: ["Dr. Rajendra Prasad", "C. Rajagopalachari", "Sardar Patel", "Dr. S. Radhakrishnan"], a: 1 },
+            { q: "Who was the first Indian (and Asian) to win a Nobel Prize (Literature, 1913)?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Sarojini Naidu", "C. V. Raman"], a: 1 },
+            { q: "Which was the first printed newspaper published in India (1780)?", options: ["The Times of India", "Hicky's Bengal Gazette", "Samachar Darpan", "Amrita Bazar Patrika"], a: 1 },
+            { q: "Who was the first Indian to win the Nobel Prize in Economics (1998)?", options: ["Abhijit Banerjee", "Amartya Sen", "Manmohan Singh", "Raghuram Rajan"], a: 1 }
+        ]
+    },
+    {
+        title: "Set 2: Defence, Sports, Architecture & Historical Firsts (Moderate-Easy)",
+        desc: "Covers defence appointments, Olympic achievements, monolithic architecture, and early expeditions.",
+        questions: [
+            { q: "Who was independent India's first Defence Minister?", options: ["K. M. Cariappa", "Sardar Baldev Singh", "Sam Manekshaw", "Jagjivan Ram"], a: 1 },
+            { q: "Who was the first officer to be promoted to Field Marshal in the Indian Army?", options: ["K. M. Cariappa", "Sam Manekshaw", "K. S. Thimayya", "Arjan Singh"], a: 1 },
+            { q: "Who was the first recipient of the Param Vir Chakra (PVC)?", options: ["Major Somnath Sharma", "Gurbachan Singh Salaria", "Shaitan Singh", "Vikram Batra"], a: 0 },
+            { q: "Who is widely recognized as the first female jawan in the Indian Army?", options: ["Avani Chaturvedi", "Shanti Tigga", "Divya Ajith Kumar", "Puneeta Arora"], a: 1 },
+            { q: "Who was the first Indian woman fighter pilot to fly a solo fighter mission?", options: ["Bhawana Kanth", "Mohana Singh", "Avani Chaturvedi", "Gunjan Saxena"], a: 2 },
+            { q: "Who was the first female officer in the Indian Army to receive the Sword of Honour?", options: ["Divya Ajith Kumar", "Priya Jhingan", "Mitali Madhumita", "Shanti Tigga"], a: 0 },
+            { q: "Who was the first Indian Commander-in-Chief of the Indian Army?", options: ["General Maharaja Rajendra Singhji", "K. M. Cariappa", "Subroto Mukerjee", "Sam Manekshaw"], a: 1 },
+            { q: "Who was the first Chief of Army Staff after the post's designation changed from C-in-C?", options: ["K. M. Cariappa", "General Maharaja Rajendra Singhji", "S. M. Shrinagesh", "K. S. Thimayya"], a: 1 },
+            { q: "Who was the first Indian Chief of Air Staff?", options: ["Subroto Mukerjee", "Aspy Engineer", "Arjan Singh", "Pratap Chandra Lal"], a: 0 },
+            { q: "In which Olympics did the Indian Hockey Team win its first team gold medal?", options: ["1920 Antwerp", "1928 Amsterdam", "1932 Los Angeles", "1936 Berlin"], a: 1 },
+            { q: "Who won India's first individual Olympic gold medal (2008 Beijing)?", options: ["Rajyavardhan Singh Rathore", "Gagan Narang", "Abhinav Bindra", "Neeraj Chopra"], a: 2 },
+            { q: "Who was the first Indian woman wrestler to win an Asian Games gold medal?", options: ["Vinesh Phogat", "Sakshi Malik", "Navjot Kaur", "Babita Kumari"], a: 2 },
+            { q: "Who was the first Indian woman to win an Olympic silver medal (Badminton, 2016)?", options: ["Saina Nehwal", "P. V. Sindhu", "Jwala Gutta", "Mary Kom"], a: 1 },
+            { q: "Who was the first woman to represent India at the Summer Olympics (1924)?", options: ["Kamaljeet Sandhu", "Nora Polley", "P. T. Usha", "Karnam Malleswari"], a: 1 },
+            { q: "Who was the first Indian female wrestler to win an Olympic medal (2016 Bronze)?", options: ["Geeta Phogat", "Vinesh Phogat", "Sakshi Malik", "Babita Kumari"], a: 2 },
+            { q: "Which monolithic rock-cut temple at Ellora was carved out of a single rock?", options: ["Brihadeeswara Temple", "Kailasa Temple", "Shore Temple", "Sun Temple"], a: 1 },
+            { q: "Which church in Kerala is traditionally regarded as established in 52 CE by St. Thomas?", options: ["St. Francis Church, Kochi", "St. Thomas Church, Palayur", "San Thome Church", "All Saints Church"], a: 1 },
+            { q: "Which structure is traditionally regarded as the first mosque in India?", options: ["Jama Masjid, Delhi", "Cheraman Juma Masjid, Kodungallur", "Adina Mosque", "Quwwat-ul-Islam"], a: 1 },
+            { q: "Which is the oldest functioning dam in India, built across river Kaveri?", options: ["Tehri Dam", "Hirakud Dam", "Kallanai Dam (Grand Anicut)", "Nagarjuna Sagar Dam"], a: 2 },
+            { q: "The famous Dravidian Brihadeeswara Temple at Thanjavur was built by which Chola king?", options: ["Rajendra Chola I", "Raja Raja Chola I", "Karikala Chola", "Parantaka I"], a: 1 },
+            { q: "Who was the first Chinese pilgrim to visit India during the Gupta period?", options: ["Xuanzang (Hiuen Tsang)", "Faxian (Fa-Hien)", "Yijing (I-Tsing)", "Hwui Li"], a: 1 },
+            { q: "Who was the first Indian judge to serve at the International Court of Justice (ICJ)?", options: ["B. N. Rau", "Dr. Nagendra Singh", "R. S. Pathak", "Dalveer Bhandari"], a: 1 },
+            { q: "Who led India's first scientific expedition to Antarctica in 1981-82?", options: ["Dr. S. Z. Qasim", "Lt. Ram Charan", "Dr. Harsh Gupta", "Dr. K. Kasturirangan"], a: 0 },
+            { q: "Which was the first Open University established in India (1982)?", options: ["IGNOU", "Dr. B. R. Ambedkar Open University", "NSOU", "UPRTOU"], a: 1 },
+            { q: "Which ancient seat of learning is commonly regarded as India's first university?", options: ["Takshashila", "Nalanda University", "Vikramashila", "Vallabhi"], a: 1 }
+        ]
+    },
+    {
+        title: "Set 3: Female Firsts in Administration, Law, Aviation & Politics (Moderate)",
+        desc: "Focuses on trailblazing milestones by Indian women across judiciary, civil service, and governance.",
+        questions: [
+            { q: "Who was India's first woman IPS officer?", options: ["Kanchan Chaudhary Bhattacharya", "Kiran Bedi", "Sanjukta Parashar", "Vimla Mehra"], a: 1 },
+            { q: "Who was the first woman Director General of Police (DGP) of an Indian state?", options: ["Kiran Bedi", "Kanchan Chaudhary Bhattacharya", "Archana Ramasundaram", "Letika Saran"], a: 1 },
+            { q: "Who was the first woman Air Marshal and Lieutenant General in the Indian Armed Forces?", options: ["Puneeta Arora", "Padmavathy Bandopadhyay", "Mitali Madhumita", "Madhuri Kanitkar"], a: 0 },
+            { q: "Who was the first female ambassador of independent India?", options: ["Vijaya Lakshmi Pandit", "C. B. Muthamma", "Nirupama Rao", "Ruchi Ghanashyam"], a: 1 },
+            { q: "Who was the first woman Chairperson of UPSC?", options: ["Rose Millian Bethew", "Margaret Alva", "Arundhati Bhattacharya", "Razia Sultan"], a: 0 },
+            { q: "Who became India's first woman judge (1937) and later first woman High Court judge (1959)?", options: ["Justice M. Fathima Beevi", "Anna Chandy", "Leila Seth", "Sujata Manohar"], a: 1 },
+            { q: "Who was appointed as the first female judge of the Supreme Court of India in 1989?", options: ["Justice Leila Seth", "Justice Anna Chandy", "Justice M. Fathima Beevi", "Justice Ruma Pal"], a: 2 },
+            { q: "Who is widely recognized as India's first female advocate/lawyer?", options: ["Cornelia Sorabji", "Mithan Jamshed Lam", "Anna Chandy", "Regina Guha"], a: 0 },
+            { q: "Who were the first female graduates of Calcutta University (1883)?", options: ["Kadambini Ganguly & Chandramukhi Basu", "Kamini Roy & Sarojini Naidu", "Anandi Gopal Joshi & Muthulakshmi Reddy", "Torut Dutt & Swarnakumari Devi"], a: 0 },
+            { q: "Who was the first woman honours graduate in British India (1886)?", options: ["Kadambini Ganguly", "Kamini Roy", "Chandramukhi Basu", "Cornelia Sorabji"], a: 1 },
+            { q: "Who was the first woman Chief Minister of an Indian state (Uttar Pradesh)?", options: ["Nandini Satpathy", "Sucheta Kriplani", "Mayawati", "Sarojini Naidu"], a: 1 },
+            { q: "Who was the first woman President of the Indian National Congress (1917)?", options: ["Sarojini Naidu", "Annie Besant", "Nellie Sengupta", "Indira Gandhi"], a: 1 },
+            { q: "Who was the first female Prime Minister of India?", options: ["Sarojini Naidu", "Pratibha Patil", "Indira Gandhi", "Sucheta Kriplani"], a: 2 },
+            { q: "Who served as the first female Speaker of a State Legislative Assembly in India?", options: ["Shanno Devi", "Meira Kumar", "Sumitra Mahajan", "Sarojini Naidu"], a: 0 },
+            { q: "Who was the first woman Cabinet Minister in independent India (Health Ministry)?", options: ["Rajkumari Amrit Kaur", "Sucheta Kriplani", "Sarojini Naidu", "Vijayalakshmi Pandit"], a: 0 },
+            { q: "Who was the first woman President of the UN General Assembly (1953)?", options: ["Sarojini Naidu", "Vijaya Lakshmi Pandit", "Indira Gandhi", "Hansa Mehta"], a: 1 },
+            { q: "Who was the first Indian woman commercial pilot and first woman pilot of Indian Airlines?", options: ["Harita Kaur Deol", "Durga Banerjee", "Avani Chaturvedi", "Bhawana Kanth"], a: 1 },
+            { q: "Who was the first female pilot to fly solo in the Indian Air Force (1994)?", options: ["Harita Kaur Deol", "Gunjan Saxena", "Avani Chaturvedi", "Durga Banerjee"], a: 0 },
+            { q: "Who was the first Indian woman to win an Olympic medal (Weightlifting, 2000)?", options: ["P. T. Usha", "Karnam Malleswari", "Mary Kom", "Saina Nehwal"], a: 1 },
+            { q: "Who was the first Indian woman to summit Mount Everest (1984)?", options: ["Santosh Yadav", "Bachendri Pal", "Arati Saha", "Premlata Agarwal"], a: 1 },
+            { q: "Who was the first woman in the world to climb Mount Everest twice (1992 & 1993)?", options: ["Bachendri Pal", "Santosh Yadav", "Dickey Dolma", "Arunima Sinha"], a: 1 },
+            { q: "Who was the first Indian (and Asian) woman to swim across the English Channel (1959)?", options: ["Bula Choudhury", "Arati Saha", "Bachendri Pal", "Karnam Malleswari"], a: 1 },
+            { q: "Who was the first woman to receive the Ashoka Chakra award posthumously?", options: ["Neerja Bhanot", "Kiran Bedi", "Kamaljeet Sandhu", "Shanti Tigga"], a: 0 },
+            { q: "Who was the first woman to receive the Jnanpith Award (1976)?", options: ["Mahadevi Varma", "Ashapurna Devi", "Amrita Pritam", "Mahasweta Devi"], a: 1 },
+            { q: "Who was the first Indian woman to receive a Nobel Prize (Peace, 1979)?", options: ["Sarojini Naidu", "Mother Teresa", "Indira Gandhi", "Vijaya Lakshmi Pandit"], a: 1 }
+        ]
+    },
+    {
+        title: "Set 4: INC, Awards, Literature & Academic Firsts (Hard)",
+        desc: "In-depth testing on founding dates, literature awards, foreign travellers, and cabinet resignations.",
+        questions: [
+            { q: "On what exact date was the Indian National Congress (INC) founded in Bombay?", options: ["28 December 1885", "29 December 1885", "26 January 1885", "15 August 1885"], a: 0 },
+            { q: "At which venue was the first session of the INC held in 1885?", options: ["Town Hall, Calcutta", "Gokuldas Tejpal Sanskrit College, Bombay", "Senate House, Madras", "Poona Sarvajanik Sabha"], a: 1 },
+            { q: "Who among the following retired civil servant organized the founding session of INC?", options: ["W. C. Bonnerjee", "A. O. Hume", "George Yule", "Badruddin Tyabji"], a: 1 },
+            { q: "Who presided as the President of the first session of INC in 1885?", options: ["Dadabhai Naoroji", "Womesh Chandra Bonnerjee", "A. O. Hume", "Pherozeshah Mehta"], a: 1 },
+            { q: "How many delegates attended the first session of the Indian National Congress?", options: ["50", "72", "100", "434"], a: 1 },
+            { q: "Who was the first Muslim President of the Indian National Congress (1887 Madras session)?", options: ["Rahimatullah M. Sayani", "Badruddin Tyabji", "Maulana Abul Kalam Azad", "Syed Hasan Imam"], a: 1 },
+            { q: "Who was the first Indian to qualify for the Indian Civil Service (ICS) examination in 1863?", options: ["Subhash Chandra Bose", "Satyendranath Tagore", "Surendranath Banerjee", "R. C. Dutt"], a: 1 },
+            { q: "Who was the first Indian woman to be crowned Miss World (1966)?", options: ["Sushmita Sen", "Reita Faria", "Aishwarya Rai", "Priyanka Chopra"], a: 1 },
+            { q: "Who was the first recipient of the Jnanpith Award (1965 for Odakkuzhal)?", options: ["G. Sankara Kurup", "K. Shivaram Karanth", "Umashankar Joshi", "Tarasankar Bandyopadhyay"], a: 0 },
+            { q: "Who was the first Indian to receive the Ramon Magsaysay Award (Community Leadership, 1958)?", options: ["Baba Amte", "Vinoba Bhave", "Jayaprakash Narayan", "C. D. Deshmukh"], a: 1 },
+            { q: "Who was the first Indian recipient of the Stalin Peace Prize (Lenin Peace Prize)?", options: ["Saifuddin Kitchlew", "Major General S. S. Sokhey", "Aruna Asaf Ali", "C. V. Raman"], a: 0 },
+            { q: "Har Gobind Khorana was awarded the 1968 Nobel Prize in Physiology/Medicine for research on:", options: ["Genetic code and protein synthesis", "Scattering of light", "Welfare economics", "Structure of ribosomes"], a: 0 },
+            { q: "Where was India's first satellite earth station for domestic communication set up?", options: ["Bengaluru", "Secunderabad", "Thiruvananthapuram", "Ahmedabad"], a: 1 },
+            { q: "Who was the first official English ambassador sent by King James I to Mughal Court (1615)?", options: ["William Hawkins", "Sir Thomas Roe", "Ralph Fitch", "John Mildenhall"], a: 1 },
+            { q: "Who was the EIC representative aboard ship Hector who met Emperor Jahangir in 1608?", options: ["Sir Thomas Roe", "William Hawkins", "Thomas Stephens", "Job Charnock"], a: 1 },
+            { q: "Who was the first Englishman known to reach India via the Cape of Good Hope route (1579)?", options: ["Thomas Stephens", "Ralph Fitch", "John Mildenhall", "William Hedges"], a: 0 },
+            { q: "Which English merchant undertook an overland journey to India during c. 1599–1603?", options: ["Ralph Fitch", "John Mildenhall", "William Hawkins", "Thomas Roe"], a: 1 },
+            { q: "In which year did the East India Company establish India's first post office?", options: ["1727", "1774", "1854", "1885"], a: 0 },
+            { q: "In which year was the first General Post Office (GPO) opened at Kolkata?", options: ["1727", "1774", "1854", "1885"], a: 1 },
+            { q: "Who was the first living Indian to have a wax statue displayed at Madame Tussauds?", options: ["Jawaharlal Nehru", "Mahatma Gandhi", "Indira Gandhi", "Amitabh Bachchan"], a: 1 },
+            { q: "Who was the first Indian woman appointed as Deputy Director-General of WHO (2017)?", options: ["Dr. Soumya Swaminathan", "Dr. Kamala Sohonie", "Dr. Gagandeep Kang", "Dr. Indira Nath"], a: 0 },
+            { q: "Who was the first President of India to die while serving in office (1969)?", options: ["Fakhruddin Ali Ahmed", "Dr. Zakir Husain", "Dr. Rajendra Prasad", "Giani Zail Singh"], a: 1 },
+            { q: "Which Prime Minister resigned in 1979 before facing the Lok Sabha for a confidence vote?", options: ["Morarji Desai", "Charan Singh", "V. P. Singh", "Chandra Shekhar"], a: 1 },
+            { q: "Who was the first Prime Minister of India to resign before completing a full 5-year tenure?", options: ["Charan Singh", "Morarji Desai", "Atal Bihari Vajpayee", "H. D. Deve Gowda"], a: 1 },
+            { q: "Who was the first Union Cabinet Minister to resign from Jawaharlal Nehru's Cabinet (1950)?", options: ["Dr. B. R. Ambedkar", "Dr. Syama Prasad Mukherjee", "John Matthai", "C. D. Deshmukh"], a: 1 }
+        ]
+    },
+    {
+        title: "Set 5: Nuanced Firsts, Common Exam Traps & Corrections (Very Hard)",
+        desc: "Designed to eliminate common misconceptions, testing official corrections and precise historical details.",
+        questions: [
+            { q: "Which is the FIRST and ONLY genetically modified (GM) crop approved for commercial cultivation in India?", options: ["Bt Brinjal", "Bt Cotton", "DMH-11 Mustard", "Golden Rice"], a: 1 },
+            { q: "What is the correct regulatory status of Bt Brinjal in India?", options: ["Commercially cultivated since 2002", "Placed under a moratorium; not approved for commercial cultivation", "Fully banned permanently by Supreme Court", "Approved only in southern states"], a: 1 },
+            { q: "Who were the THREE joint recipients of the very first Bharat Ratna awarded in 1954?", options: ["C. Rajagopalachari, S. Radhakrishnan, C. V. Raman", "Jawaharlal Nehru, Rajendra Prasad, B. R. Ambedkar", "S. Radhakrishnan, C. V. Raman, Jawaharlal Nehru", "C. Rajagopalachari, Bhagwan Das, M. Visvesvaraya"], a: 0 },
+            { q: "James Augustus Hicky is historically remembered in India for which accurate achievement?", options: ["Introducing the first printing press in India", "Founding Hicky's Bengal Gazette (India's first newspaper)", "Starting the first Hindi daily newspaper", "Establishing the Calcutta GPO"], a: 1 },
+            { q: "Which is the accurate historical designation for Razia Sultan?", options: ["First and last woman ruler of ancient India", "First and only woman Sultan of the Delhi Sultanate", "First female governor under Mughal rule", "First female ruler of Bengal"], a: 1 },
+            { q: "Who were the first climbers to summit Mount Everest without supplemental oxygen (1978)?", options: ["Tenzing Norgay & Edmund Hillary", "Reinhold Messner & Peter Habeler", "Sherpa Anga Dorjee & Phu Dorjee", "Phu Dorjee & Reinhold Messner"], a: 1 },
+            { q: "Who was the first woman in the WORLD to win a Nobel Prize (Physics 1903)?", options: ["Mother Teresa", "Marie Curie", "Irène Joliot-Curie", "Rosalind Franklin"], a: 1 },
+            { q: "Who was the first Indian woman to win an INDIVIDUAL GOLD medal at the Asian Games (1970 400m)?", options: ["Shanti Soundarajan", "Kamaljeet Sandhu", "P. T. Usha", "Navjot Kaur"], a: 1 },
+            { q: "Which fact accurately describes Santhi Soundarajan's medal at the 2006 Asian Games?", options: ["First Indian woman to win Gold in 800m", "Won Silver in 800m, later controversially stripped following sex verification", "First Indian woman wrestler to win Gold", "Disqualified for doping violations"], a: 1 },
+            { q: "Who was the first Chief of Army Staff after the post designation officially changed from Commander-in-Chief?", options: ["K. M. Cariappa", "General Maharaja Rajendra Singhji", "Sam Manekshaw", "S. M. Shrinagesh"], a: 1 },
+            { q: "Who was the first Indian Commander-in-Chief (C-in-C) of the Indian Army?", options: ["General Maharaja Rajendra Singhji", "K. M. Cariappa", "Subroto Mukerjee", "Baldev Singh"], a: 1 },
+            { q: "Who was the first Governor-General of Bengal (1774–1785)?", options: ["Lord William Hastings", "Warren Hastings", "Lord William Bentinck", "Lord Clive"], a: 1 },
+            { q: "Vijaya Lakshmi Pandit holds which exact historic distinction in international diplomacy?", options: ["First female President of the United Nations organization", "First female President of the UN General Assembly (1953)", "First female Secretary-General of the UN", "First female judge at ICJ"], a: 1 },
+            { q: "Har Gobind Khorana was an Indian-born biochemist who held citizenship of which nation when awarded the 1968 Nobel Prize?", options: ["India", "United States", "United Kingdom", "Canada"], a: 1 },
+            { q: "Hicky's Bengal Gazette, published first on 29 January 1780, was also known as:", options: ["The Calcutta General Advertiser", "The Bengal Journal", "The India Gazette", "The Oriental Magazine"], a: 0 },
+            { q: "India's first satellite Aryabhata was launched on 19 April 1975 from which country?", options: ["United States", "Soviet Union (USSR)", "France", "Indigenous launch site (Sriharikota)"], a: 1 },
+            { q: "National Science Day is celebrated on 28 February to mark C. V. Raman's discovery in which year?", options: ["1928", "1930", "1947", "1956"], a: 0 },
+            { q: "In which year was India's first nuclear reactor, Apsara, commissioned/operationalized?", options: ["1948", "1956", "1974", "1984"], a: 1 },
+            { q: "Who led India's first scientific expedition to Antarctica (January 1982)?", options: ["Lt. Ram Charan", "Dr. S. Z. Qasim", "Dr. K. Kasturirangan", "Dr. A. P. J. Abdul Kalam"], a: 1 },
+            { q: "Which English merchant explorer undertook extensive travels across India between 1583 and 1591?", options: ["Thomas Stephens", "Ralph Fitch", "John Mildenhall", "William Hawkins"], a: 1 },
+            { q: "Shanti Tigga holds which distinction in military history?", options: ["First woman officer in Indian Navy", "First female jawan in the Indian Army", "First woman fighter pilot", "First female Sword of Honour recipient"], a: 1 },
+            { q: "C. V. Raman was awarded the Nobel Prize in Physics (1930) specifically for his work on:", options: ["Thermal ionization", "Scattering of light", "Structure of atoms", "Cosmic radiation"], a: 1 },
+            { q: "Dr. B. R. Ambedkar Open University, India's first open university, was established in 1982 in which state/city?", options: ["New Delhi", "Hyderabad (Andhra Pradesh/Telangana)", "Kolkata", "Mumbai"], a: 1 },
+            { q: "Who was the first woman Chief Justice of a High Court in India (Himachal Pradesh HC, 1991)?", options: ["Justice Anna Chandy", "Justice Leila Seth", "Justice M. Fathima Beevi", "Justice Ruma Pal"], a: 1 },
+            { q: "Who was the first woman President of the UN General Assembly during its 8th session in 1953?", options: ["Eleanor Roosevelt", "Vijaya Lakshmi Pandit", "Sarojini Naidu", "Hansa Mehta"], a: 1 }
+        ]
+    }
+];
+
+let currentSetIndex = -1;
+let userAnswers = [];
+let timerInterval;
+let timeRemaining = 1500;
+
+const selectionScreen = document.getElementById('selection-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const setCardsContainer = document.getElementById('set-cards');
+const questionsWrapper = document.getElementById('questions-wrapper');
+const timerDisplay = document.getElementById('timer-display');
+const submitBtn = document.getElementById('submit-btn');
+const retryBtn = document.getElementById('retry-btn');
+const scoreDisplay = document.getElementById('score-display');
+const currentSetTitle = document.getElementById('current-set-title');
+
+quizData.forEach((set, index) => {
+    const card = document.createElement('div');
+    card.className = 'set-card';
+    card.onclick = () => loadSet(index);
+    card.innerHTML = `
+        <div>
+            <h3>${set.title}</h3>
+            <p>${set.desc}</p>
+        </div>
+        <div style="margin-top: 1rem; font-weight: 600; color: var(--secondary); font-size: 0.85rem;">
+            25 Questions • 25 Mins →
+        </div>
+    `;
+    setCardsContainer.appendChild(card);
+});
+
+function loadSet(index) {
+    currentSetIndex = index;
+    userAnswers = new Array(25).fill(null);
+    const set = quizData[index];
+    
+    currentSetTitle.innerText = set.title;
+    questionsWrapper.innerHTML = '';
+    
+    set.questions.forEach((qObj, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = `${qIndex + 1}. ${qObj.q}`;
+        card.appendChild(qText);
+        
+        const optionsGrid = document.createElement('div');
+        optionsGrid.className = 'options-grid';
+        
+        qObj.options.forEach((optText, optIndex) => {
+            const label = document.createElement('label');
+            label.className = 'option-label';
+            label.id = `label-${qIndex}-${optIndex}`;
+            
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = `q${qIndex}`;
+            radio.value = optIndex;
+            radio.onchange = () => { userAnswers[qIndex] = optIndex; };
+            
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(optText));
+            optionsGrid.appendChild(label);
+        });
+        
+        card.appendChild(optionsGrid);
+        questionsWrapper.appendChild(card);
+    });
+    
+    selectionScreen.style.display = 'none';
+    quizScreen.style.display = 'block';
+    submitBtn.style.display = 'inline-block';
+    retryBtn.style.display = 'none';
+    scoreDisplay.style.display = 'none';
+    timerDisplay.style.display = 'block';
+    
+    startTimer();
+    window.scrollTo(0, 0);
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    timeRemaining = 1500;
+    updateTimerUI();
+    
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerUI();
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert("Time limit reached! Submitting your answers automatically.");
+            submitQuiz();
+        }
+    }, 1000);
+}
+
+function updateTimerUI() {
+    const mins = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+    const secs = (timeRemaining % 60).toString().padStart(2, '0');
+    timerDisplay.innerText = `${mins}:${secs}`;
+    timerDisplay.style.color = timeRemaining < 300 ? 'var(--danger)' : 'var(--primary)';
+}
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    let score = 0;
+    const set = quizData[currentSetIndex];
+    
+    set.questions.forEach((qObj, qIndex) => {
+        const correctOpt = qObj.a;
+        const selectedOpt = userAnswers[qIndex];
+        
+        const correctLabel = document.getElementById(`label-${qIndex}-${correctOpt}`);
+        if (correctLabel) correctLabel.classList.add('correct-ans');
+        
+        if (selectedOpt !== null && selectedOpt !== correctOpt) {
+            const wrongLabel = document.getElementById(`label-${qIndex}-${selectedOpt}`);
+            if (wrongLabel) wrongLabel.classList.add('wrong-ans');
+        }
+        
+        if (selectedOpt === correctOpt) score++;
+        
+        const radios = document.getElementsByName(`q${qIndex}`);
+        radios.forEach(r => r.disabled = true);
+    });
+    
+    scoreDisplay.innerText = `Final Score: ${score} / 25 (${((score / 25) * 100).toFixed(0)}%)`;
+    scoreDisplay.style.display = 'block';
+    
+    submitBtn.style.display = 'none';
+    retryBtn.style.display = 'inline-block';
+    timerDisplay.style.display = 'none';
+    window.scrollTo(0, 0);
+}
+
+function retrySet() {
+    loadSet(currentSetIndex);
+}
+
+function goBack() {
+    clearInterval(timerInterval);
+    quizScreen.style.display = 'none';
+    selectionScreen.style.display = 'block';
+    timerDisplay.style.display = 'none';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMF & Global Financial Architecture - Comprehensive Revision Test</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            background-color: #f8fafc;
+        }
+
+        /* TCS iON / NTA Standard CBT Palette Button Shapes & Colors */
+        .status-not-visited {
+            background-color: #e2e8f0;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+        }
+        .status-not-answered {
+            background-color: #ef4444;
+            color: #ffffff;
+            border-radius: 12px 12px 2px 2px;
+        }
+        .status-answered {
+            background-color: #16a34a;
+            color: #ffffff;
+            border-radius: 2px 2px 12px 12px;
+        }
+        .status-marked {
+            background-color: #9333ea;
+            color: #ffffff;
+            border-radius: 50%;
+        }
+        .status-answered-marked {
+            background-color: #9333ea;
+            color: #ffffff;
+            border-radius: 50%;
+            position: relative;
+        }
+        .status-answered-marked::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1.5px solid white;
+        }
+
+        /* Interactive Option Hover and Selection Styles */
+        .option-card {
+            transition: all 0.15s ease-in-out;
+        }
+        .option-card:hover {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        .option-card.selected {
+            border-color: #1d4ed8;
+            background-color: #dbeafe;
+            box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.25);
+        }
+
+        /* Custom scrollbar for palette container */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Low timer warning alert effect */
+        @keyframes pulse-red {
+            0%, 100% { background-color: #fee2e2; color: #b91c1c; border-color: #f87171; }
+            50% { background-color: #dc2626; color: #ffffff; border-color: #991b1b; }
+        }
+        .timer-warning {
+            animation: pulse-red 1s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- TOP HEADER: EXAM BANNER & CANDIDATE TOOLBAR -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-3">
+            
+            <!-- Exam Title & Description -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white shadow">
+                    <i class="fa-solid fa-building-columns text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-bold leading-tight tracking-wide">
+                        IMF & GLOBAL FINANCIAL ARCHITECTURE
+                    </h1>
+                    <p class="text-xs text-slate-300 flex items-center gap-2">
+                        <span class="bg-blue-800 text-blue-100 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider">CBT Standard</span>
+                        <span>Full Revision Mock Test (20 MCQs)</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Timer, Controls & Candidate Info -->
+            <div id="examHeaderStats" class="flex items-center gap-3 ml-auto">
+                <!-- Countdown Timer Display -->
+                <div id="timerContainer" class="bg-slate-800 border border-slate-700 px-3.5 py-1.5 rounded-lg flex items-center space-x-2 text-slate-100 font-mono shadow-inner transition-colors">
+                    <i class="fa-solid fa-clock text-amber-400"></i>
+                    <span class="text-xs text-slate-400 uppercase font-sans font-medium hidden sm:inline">Time Left:</span>
+                    <span id="timerDisplay" class="text-base font-bold tracking-wider">15:00</span>
+                </div>
+
+                <!-- Font Size Adjustment Buttons -->
+                <div class="hidden md:flex items-center space-x-1 bg-slate-800 p-1 rounded-lg border border-slate-700 text-xs text-slate-300">
+                    <button onclick="adjustFontSize(-1)" class="px-2 py-1 hover:bg-slate-700 rounded" title="Decrease font size">A-</button>
+                    <button onclick="adjustFontSize(0)" class="px-2 py-1 hover:bg-slate-700 rounded font-semibold" title="Reset font size">A</button>
+                    <button onclick="adjustFontSize(1)" class="px-2 py-1 hover:bg-slate-700 rounded" title="Increase font size">A+</button>
+                </div>
+
+                <!-- Candidate Profile Tag -->
+                <div class="hidden lg:flex items-center space-x-2 border-l border-slate-700 pl-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xs shadow">
+                        CBT
+                    </div>
+                    <div class="text-left text-xs">
+                        <div class="font-semibold text-slate-200">Aspirant</div>
+                        <div class="text-slate-400 text-[10px]">ID: IMF-2026-EXAM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CBT INTERFACE VIEW -->
+    <main id="cbtView" class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- LEFT COLUMN: QUESTION PANEL & NAVIGATION CONTROLS (8 Cols) -->
+        <section class="lg:col-span-8 flex flex-col justify-between bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            
+            <!-- Question Top Status Header -->
+            <div class="bg-slate-100 px-4 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center space-x-2">
+                    <span id="questionNumBadge" class="bg-blue-900 text-white font-bold text-xs px-3 py-1 rounded-md shadow-sm">
+                        Question 1 of 20
+                    </span>
+                    <span class="text-xs text-slate-500 font-medium">Single Correct Choice</span>
+                </div>
+                <div class="text-xs font-medium flex items-center space-x-3">
+                    <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"><i class="fa-solid fa-circle-check"></i> Correct: +1.0</span>
+                    <span class="text-slate-500"><i class="fa-solid fa-circle-minus"></i> Negative: 0.0</span>
+                </div>
+            </div>
+
+            <!-- Question & Options Container -->
+            <div id="questionBody" class="p-4 sm:p-6 flex-1 overflow-y-auto text-slate-800 text-sm sm:text-base leading-relaxed">
+                <!-- Question content rendered dynamically -->
+            </div>
+
+            <!-- Action Navigation Controls -->
+            <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="markForReviewAndNext()" class="px-3 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 border border-purple-300 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                        <i class="fa-solid fa-bookmark"></i>
+                        <span>Mark for Review & Next</span>
+                    </button>
+                    <button onclick="clearResponse()" class="px-3 py-2 bg-slate-200 text-slate-700 hover:bg-slate-300 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Clear Response</span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2 ml-auto">
+                    <button id="prevBtn" onclick="navigateQuestion(-1)" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>Previous</span>
+                    </button>
+                    <button id="nextBtn" onclick="saveAndNext()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center space-x-1">
+                        <span>Save & Next</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button onclick="openSubmitModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow transition flex items-center space-x-1">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: QUESTION PALETTE & STATUS LEGEND (4 Cols) -->
+        <aside class="lg:col-span-4 flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Palette Header -->
+            <div class="bg-slate-800 text-white p-3 flex items-center space-x-3 border-b border-slate-700">
+                <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center font-bold text-sm shadow">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-xs text-slate-100">Exam Palette</div>
+                    <div class="text-[11px] text-slate-300">Click any number to jump</div>
+                </div>
+            </div>
+
+            <!-- Status Legend Grid -->
+            <div class="p-3 bg-slate-50 border-b border-slate-200 text-[11px] grid grid-cols-2 gap-2">
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded text-white font-bold bg-emerald-600 shadow-sm text-[10px]">0</span>
+                    <span class="text-slate-600">Answered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded text-white font-bold bg-rose-500 shadow-sm text-[10px]">0</span>
+                    <span class="text-slate-600">Not Answered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded text-slate-700 font-bold bg-slate-200 border border-slate-300 text-[10px]">0</span>
+                    <span class="text-slate-600">Not Visited</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded text-white font-bold bg-purple-600 shadow-sm text-[10px]">0</span>
+                    <span class="text-slate-600">Marked for Review</span>
+                </div>
+            </div>
+
+            <!-- Question Number Buttons Grid -->
+            <div class="p-3 flex-1 overflow-y-auto custom-scrollbar">
+                <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex justify-between items-center">
+                    <span>Questions (1-20)</span>
+                    <span id="visitedCounter" class="text-[11px] text-blue-600 font-medium">1 / 20 Visited</span>
+                </div>
+                <div id="paletteGrid" class="grid grid-cols-5 gap-2">
+                    <!-- Palette buttons inserted by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Bottom Submit Button -->
+            <div class="p-3 bg-slate-100 border-t border-slate-200">
+                <button onclick="openSubmitModal()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs uppercase tracking-wider shadow transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Submit Test Response</span>
+                </button>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- RESULTS & SOLUTIONS DASHBOARD VIEW (Hidden initially) -->
+    <section id="resultsView" class="hidden max-w-7xl w-full mx-auto p-4 flex-1">
+        
+        <!-- Scorecard Summary Card -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 mb-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-100 pb-6">
+                <div>
+                    <span class="bg-blue-100 text-blue-800 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Revision Performance Summary</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-2">IMF & Global Financial Architecture Scorecard</h2>
+                    <p class="text-xs text-slate-500 mt-1">Detailed evaluation based on official exam syllabus requirements</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="restartTest()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Re-attempt Test</span>
+                    </button>
+                    <button onclick="window.print()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-300 transition flex items-center space-x-1">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Print Report</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-center">
+                    <div class="text-slate-500 text-xs font-medium">Total Score</div>
+                    <div id="resScore" class="text-2xl font-extrabold text-blue-900 mt-1">0 / 20</div>
+                    <div id="resPercent" class="text-[11px] font-semibold text-blue-600">0% Accuracy</div>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+                    <div class="text-emerald-700 text-xs font-medium">Correct</div>
+                    <div id="resCorrect" class="text-2xl font-extrabold text-emerald-600 mt-1">0</div>
+                    <div class="text-[11px] text-emerald-600 font-semibold">+1.0 Marks Each</div>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl text-center">
+                    <div class="text-rose-700 text-xs font-medium">Incorrect</div>
+                    <div id="resIncorrect" class="text-2xl font-extrabold text-rose-600 mt-1">0</div>
+                    <div class="text-[11px] text-rose-600 font-semibold">0 Negative</div>
+                </div>
+                <div class="bg-slate-100 border border-slate-300 p-4 rounded-xl text-center">
+                    <div class="text-slate-600 text-xs font-medium">Unattempted</div>
+                    <div id="resUnattempted" class="text-2xl font-extrabold text-slate-700 mt-1">0</div>
+                    <div class="text-[11px] text-slate-500 font-semibold">Skipped</div>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-center">
+                    <div class="text-amber-800 text-xs font-medium">Time Taken</div>
+                    <div id="resTimeTaken" class="text-xl font-extrabold text-amber-700 mt-1.5">0m 0s</div>
+                    <div class="text-[11px] text-amber-600 font-semibold">Out of 15m</div>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 p-4 rounded-xl text-center">
+                    <div class="text-purple-800 text-xs font-medium">Preparedness</div>
+                    <div id="resGrade" class="text-lg font-bold text-purple-700 mt-2">Needs Practice</div>
+                    <div class="text-[11px] text-purple-600 font-semibold">Revision Metric</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Solutions & Memory Keys Section -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-200">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open-reader text-blue-600"></i>
+                    <span>Detailed Explanations & High-Yield Memory Keys</span>
+                </h3>
+
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+                    <button onclick="filterSolutions('all')" id="filterBtnAll" class="px-3 py-1.5 rounded-md bg-white text-blue-700 shadow-sm">All (20)</button>
+                    <button onclick="filterSolutions('correct')" id="filterBtnCorrect" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-emerald-700">Correct</button>
+                    <button onclick="filterSolutions('incorrect')" id="filterBtnIncorrect" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-rose-700">Incorrect</button>
+                    <button onclick="filterSolutions('unattempted')" id="filterBtnUnattempted" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-800">Unattempted</button>
+                </div>
+            </div>
+
+            <!-- Solutions List Container -->
+            <div id="solutionsList" class="space-y-6">
+                <!-- Solutions generated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div id="submitModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+            <div class="text-center">
+                <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl mb-3 shadow-inner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Submit Test Confirmation</h3>
+                <p class="text-xs text-slate-500 mt-1">Are you sure you want to finish and submit your exam?</p>
+            </div>
+
+            <!-- Current Breakdown Stats -->
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 my-4 text-xs space-y-2">
+                <div class="flex justify-between items-center text-slate-700">
+                    <span><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i> Answered:</span>
+                    <span id="modalAnswered" class="font-bold text-emerald-600">0</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-700">
+                    <span><i class="fa-solid fa-circle-xmark text-rose-500 mr-1.5"></i> Not Answered:</span>
+                    <span id="modalNotAnswered" class="font-bold text-rose-600">0</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-700">
+                    <span><i class="fa-solid fa-bookmark text-purple-500 mr-1.5"></i> Marked for Review:</span>
+                    <span id="modalMarked" class="font-bold text-purple-600">0</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-700">
+                    <span><i class="fa-solid fa-circle-minus text-slate-400 mr-1.5"></i> Not Visited:</span>
+                    <span id="modalNotVisited" class="font-bold text-slate-600">0</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="closeSubmitModal()" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition">
+                    Resume Test
+                </button>
+                <button onclick="submitExam()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition">
+                    Submit Final Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIME EXPIRED MODAL -->
+    <div id="timeModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
+            <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-2xl mb-3">
+                <i class="fa-solid fa-hourglass-end"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Time Expired!</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">Your 15-minute examination window has concluded. Your answers are being evaluated now.</p>
+            <button onclick="closeTimeModalAndSubmit()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow">
+                View Results & Analysis
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 20 High-yield exam MCQs derived directly from Organizations_4.pdf
+        const questionsData = [
+            {
+                id: 1,
+                question: "In which year was the International Monetary Fund (IMF) created at the Bretton Woods Conference, and in which year did it officially begin its financial operations?",
+                options: [
+                    "Created: 1944 | Operations Began: 1947",
+                    "Created: 1945 | Operations Began: 1950",
+                    "Created: 1947 | Operations Began: 1948",
+                    "Created: 1944 | Operations Began: 1945"
+                ],
+                correct: 0,
+                explanation: "The IMF was created at the historic Bretton Woods Conference in 1944, and it officially commenced its financial operations in 1947. Its headquarters are located in Washington, D.C., USA.",
+                memoryKey: "IMF → Created 1944 (Bretton Woods) → Financial Operations 1947 → HQ: Washington, D.C."
+            },
+            {
+                id: 2,
+                question: "Which country officially joined the International Monetary Fund (IMF) on 21 October 2024 as its 191st member?",
+                options: [
+                    "Andorra",
+                    "Liechtenstein",
+                    "Nauru",
+                    "South Sudan"
+                ],
+                correct: 1,
+                explanation: "Liechtenstein joined the IMF on 21 October 2024, becoming the 191st official member country of the International Monetary Fund.",
+                memoryKey: "191st IMF Member = Liechtenstein (21 October 2024)"
+            },
+            {
+                id: 3,
+                question: "Which of the following descriptions accurately defines the Special Drawing Right (SDR) of the IMF?",
+                options: [
+                    "It is a physical paper currency issued by the IMF for international retail trade.",
+                    "It is an international reserve asset created by the IMF to supplement member countries' official reserves.",
+                    "It is a cryptocurrency backed by physical gold reserves maintained in Washington, D.C.",
+                    "It is a fixed sovereign currency pegged exclusively to the US Dollar."
+                ],
+                correct: 1,
+                explanation: "SDRs are NOT a physical currency or a claim on the IMF. They represent an international reserve asset created by the IMF to supplement members' official reserves. Although sometimes informally referred to as 'paper gold', this is a misleading description for competitive exams.",
+                memoryKey: "SDR = Special Drawing Rights (International Reserve Asset, NOT a physical currency)"
+            },
+            {
+                id: 4,
+                question: "Which five currencies currently constitute the IMF's Special Drawing Rights (SDR) valuation basket?",
+                options: [
+                    "US Dollar, Euro, Japanese Yen, Pound Sterling, Indian Rupee",
+                    "US Dollar, Euro, Chinese Renminbi, Japanese Yen, Pound Sterling",
+                    "US Dollar, Euro, Swiss Franc, Japanese Yen, Canadian Dollar",
+                    "US Dollar, Euro, Chinese Renminbi, Russian Ruble, Pound Sterling"
+                ],
+                correct: 1,
+                explanation: "The SDR basket is based on 5 major international currencies: US Dollar, Euro, Chinese Renminbi (Yuan), Japanese Yen, and Pound Sterling.",
+                memoryKey: "SDR Basket (5 Currencies) = USD + EUR + RMB + JPY + GBP"
+            },
+            {
+                id: 5,
+                question: "According to the SDR currency basket weights effective 1 August 2022, which currency holds the LARGEST weight (43.38%)?",
+                options: [
+                    "Euro (EUR)",
+                    "Chinese Renminbi (RMB)",
+                    "US Dollar (USD)",
+                    "Japanese Yen (JPY)"
+                ],
+                correct: 2,
+                explanation: "The US Dollar holds the largest weight in the SDR basket at 43.38%, followed by Euro (29.31%), Chinese Renminbi (12.28%), Japanese Yen (7.59%), and Pound Sterling (7.44%).",
+                memoryKey: "Memory Trick: D-E-Y-Y-P → Dollar (43.38%) > Euro (29.31%) > Yuan (12.28%) > Yen (7.59%) > Pound (7.44%)"
+            },
+            {
+                id: 6,
+                question: "How frequently is the IMF's SDR currency valuation basket reviewed, and when is the next scheduled review?",
+                options: [
+                    "Reviewed every 3 years; Next review in 2025",
+                    "Reviewed every 5 years; Next review in 2027",
+                    "Reviewed every 10 years; Next review in 2030",
+                    "Reviewed annually; Next review in 2026"
+                ],
+                correct: 1,
+                explanation: "The SDR currency basket is reviewed every 5 years by the IMF Executive Board. Following the 2022 review, the next scheduled review is set for 2027.",
+                memoryKey: "SDR Basket Review Period = Every 5 Years (Next: 2027)"
+            },
+            {
+                id: 7,
+                question: "An IMF member country's quota is determined based on a formula involving which of the following macroeconomic factors?",
+                options: [
+                    "Economic size, External position, Economic openness, Variability, and International reserves",
+                    "Total population, Land area, Agricultural output, and Inflation rate",
+                    "Defense expenditure, Sovereign debt ratio, Gold reserves, and Literacy rate",
+                    "Carbon emissions, Foreign direct investment, Export tariffs, and Tax revenue"
+                ],
+                correct: 0,
+                explanation: "A country's quota broadly reflects its position in the world economy and is calculated using a formula based on: 1. Economic size, 2. External position, 3. Economic openness, 4. Variability, and 5. International reserves.",
+                memoryKey: "Quota Formula Factors = Economic Size + External Position + Openness + Variability + Reserves"
+            },
+            {
+                id: 8,
+                question: "An IMF member's quota directly influences four crucial aspects of its relationship with the IMF. Which of the following is NOT one of these four aspects?",
+                options: [
+                    "Financial contribution (capital subscription)",
+                    "Voting power in IMF decisions",
+                    "Access to IMF financing",
+                    "Appointment of the IMF Managing Director"
+                ],
+                correct: 3,
+                explanation: "A member's quota explicitly determines: 1. Financial contribution (capital subscription), 2. Voting power, 3. Access to IMF financing, and 4. SDR allocations. It does not directly determine the appointment of the Managing Director.",
+                memoryKey: "Quota influences = Contribution + Voting Power + Access to Financing + SDR Allocation"
+            },
+            {
+                id: 9,
+                question: "Why is an IMF member country's voting power NOT simply equal to its percentage share of the total quota?",
+                options: [
+                    "Because voting power is randomly assigned based on regional rotation.",
+                    "Because each member receives Basic Votes in addition to Quota-based votes.",
+                    "Because developing nations are given double voting weight.",
+                    "Because voting power is decided solely by the United Nations General Assembly."
+                ],
+                correct: 1,
+                explanation: "Voting power does not equal quota percentage because every IMF member receives a fixed number of Basic Votes PLUS Quota-based votes. This ensures smaller economies maintain a minimum baseline of representation.",
+                memoryKey: "Total Voting Power = Basic Votes + Quota-based Votes (Voting Power ≠ Quota %)"
+            },
+            {
+                id: 10,
+                question: "What are the approximate quota share and total voting power share of the United States in the IMF?",
+                options: [
+                    "Quota Share: 18.00% | Voting Power: 18.00%",
+                    "Quota Share: 17.42% | Voting Power: 16.49%",
+                    "Quota Share: 15.50% | Voting Power: 12.30%",
+                    "Quota Share: 20.00% | Voting Power: 25.00%"
+                ],
+                correct: 1,
+                explanation: "As of September 2026, the United States holds a Quota Share of 17.42% and a total Voting Power Share of 16.49% in the IMF.",
+                memoryKey: "USA IMF Shares = Quota Share: 17.42% | Voting Power: 16.49%"
+            },
+            {
+                id: 11,
+                question: "Major strategic decisions in the IMF require a special majority of 85% of total voting power. How does this give the United States a unique veto power?",
+                options: [
+                    "The IMF Charter explicitly grants the US President an unconditional veto.",
+                    "Since the US holds 16.49% voting power, any decision requiring an 85% majority cannot pass if the US votes against it.",
+                    "The US holds more than 51% of total basic votes.",
+                    "The US controls all 25 seats on the Executive Board."
+                ],
+                correct: 1,
+                explanation: "Because key IMF decisions require an 85% supermajority, any country or bloc with over 15% voting power holds a de facto veto. Since the US holds 16.49% voting power, no major decision can pass without US approval.",
+                memoryKey: "85% Special Majority Requirement + US 16.49% Voting Power = De Facto US Veto Power"
+            },
+            {
+                id: 12,
+                question: "Which of the following represents the CORRECT descending order of major individual countries by their IMF voting power share?",
+                options: [
+                    "USA > Japan > Germany > France > UK > Italy > China > India",
+                    "USA > Japan > China > Germany > France/UK > Italy > India > Russia",
+                    "USA > China > Germany > Japan > UK > France > Russia > India",
+                    "USA > Germany > Japan > China > France > UK > India > Italy"
+                ],
+                correct: 1,
+                explanation: "The correct voting share ranking is: USA (16.49%) > Japan (6.14%) > China (6.08%) > Germany (5.31%) > France (~4.03%) / UK (~4.03%) > Italy (~3.02%) > India (~2.63%) > Russia (~2.59%). Note that China is placed ABOVE Germany.",
+                memoryKey: "Voting Share Order = USA > Japan > China > Germany > France/UK > Italy > India > Russia"
+            },
+            {
+                id: 13,
+                question: "What is India's approximate individual voting power share in the IMF?",
+                options: [
+                    "~16.49%",
+                    "~6.08%",
+                    "~2.63%",
+                    "~5.31%"
+                ],
+                correct: 2,
+                explanation: "India holds an individual voting power share of approximately 2.63% in the IMF, placing it below the US, Japan, China, Germany, France, UK, and Italy.",
+                memoryKey: "India IMF Voting Share ≈ 2.63%"
+            },
+            {
+                id: 14,
+                question: "In the IMF governance structure, who represents a member country on the highest decision-making body, the Board of Governors?",
+                options: [
+                    "1 Governor and 1 Alternate Governor (typically the country's Finance Minister or Central Bank Governor)",
+                    "5 Executive Directors elected by Parliament",
+                    "The Head of State and Prime Minister directly",
+                    "The Ambassador to the United Nations"
+                ],
+                correct: 0,
+                explanation: "The Board of Governors is the highest decision-making body. Each member country appoints 1 Governor and 1 Alternate Governor, usually filled by the Finance Minister or Central Bank Governor.",
+                memoryKey: "Board of Governors = Highest Body → 1 Governor + 1 Alternate Governor per member"
+            },
+            {
+                id: 15,
+                question: "Which organ of the IMF is responsible for conducting day-to-day business, and how many Executive Directors comprise it?",
+                options: [
+                    "Board of Governors (191 Governors)",
+                    "Executive Board (25 Executive Directors)",
+                    "Secretariat (10 Directors)",
+                    "Monetary Committee (50 Members)"
+                ],
+                correct: 1,
+                explanation: "The Executive Board conducts the IMF's day-to-day operations and consists of 25 Executive Directors. The Managing Director serves as the Chair of the Executive Board.",
+                memoryKey: "Executive Board = Day-to-Day Business → 25 Executive Directors (Chaired by MD)"
+            },
+            {
+                id: 16,
+                question: "Who is the current Managing Director of the IMF, serving a second 5-year term that began on 1 October 2024?",
+                options: [
+                    "Gita Gopinath (India)",
+                    "Kristalina Georgieva (Bulgaria)",
+                    "Christine Lagarde (France)",
+                    "Ngozi Okonjo-Iweala (Nigeria)"
+                ],
+                correct: 1,
+                explanation: "Kristalina Georgieva (from Bulgaria) is the Managing Director of the IMF. Her first term started on 1 October 2019, and her second term began on 1 October 2024. (Note: World Bank has a 'President', whereas IMF has a 'Managing Director').",
+                memoryKey: "IMF Managing Director = Kristalina Georgieva (Bulgaria) [2nd Term: Oct 2024 - Oct 2029]"
+            },
+            {
+                id: 17,
+                question: "On which exact date did India join the International Monetary Fund (IMF) as one of its original founding members?",
+                options: [
+                    "15 August 1947",
+                    "27 December 1945",
+                    "26 January 1950",
+                    "21 October 1944"
+                ],
+                correct: 1,
+                explanation: "India is an original founding member of the IMF, having joined on 27 December 1945 prior to gaining independence in 1947.",
+                memoryKey: "India Joined IMF = 27 December 1945 (Original Founding Member)"
+            },
+            {
+                id: 18,
+                question: "In 1991, India sought major financial assistance from the IMF primarily to address which severe economic crisis?",
+                options: [
+                    "Hyperinflation in agricultural commodities",
+                    "Balance-of-Payments (BoP) crisis and critically low foreign exchange reserves",
+                    "Banking system collapse following a stock exchange crash",
+                    "Default on domestic government treasury bonds"
+                ],
+                correct: 1,
+                explanation: "In 1991, India suffered a severe Balance-of-Payments (BoP) crisis with forex reserves depleted to barely two weeks of imports. India secured IMF assistance, which catalyzed landmark LPG (Liberalization, Privatization, Globalization) economic reforms.",
+                memoryKey: "1991 Crisis = Severe Balance-of-Payments (BoP) Crisis → IMF Assistance → LPG Reforms"
+            },
+            {
+                id: 19,
+                question: "What is the key functional difference between the mandate of the IMF and that of the World Bank Group?",
+                options: [
+                    "IMF focuses on macroeconomic policy, financial stability, and BoP support; World Bank focuses on long-term development, poverty reduction, health, and infrastructure.",
+                    "IMF funds agricultural projects in poor nations; World Bank handles foreign currency exchanges.",
+                    "IMF only lends to private corporations; World Bank lends exclusively to municipal governments.",
+                    "IMF regulates international maritime trade; World Bank regulates air transport tariffs."
+                ],
+                correct: 0,
+                explanation: "The IMF primarily deals with monetary cooperation, international financial stability, macroeconomic policy, and balance-of-payments assistance. The World Bank focuses on long-term economic development, poverty reduction, education, health, and infrastructure.",
+                memoryKey: "IMF = Macroeconomics + Stability + BoP | World Bank = Development + Poverty Reduction + Infrastructure"
+            },
+            {
+                id: 20,
+                question: "Which concise summary formula encapsulates the relationships governing IMF Quotas, Voting Power, and SDR allocations?",
+                options: [
+                    "IMF → Quota → Capital Subscription + Voting Power + Access to Financing + SDR Allocation",
+                    "IMF → SDR → Fixed Gold Reserve Ratio → Unlimited Loans",
+                    "IMF → Voting Power → Determined strictly by Population Size",
+                    "IMF → Quota → Equal division among all 191 member states"
+                ],
+                correct: 0,
+                explanation: "As stated in official IMF literature and exam notes: 'IMF → Quota → Determines Capital Subscription + Voting Power + Access to Financing + Allocation of SDRs'.",
+                memoryKey: "High-Yield Summary: IMF Quota determines Capital + Voting Power + Financing Access + SDR Allocation"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questionsData.length).fill(null);
+        let questionStates = new Array(questionsData.length).fill('not_visited');
+        
+        let totalTimeSeconds = 15 * 60; // 15 Minutes
+        let timeRemaining = totalTimeSeconds;
+        let timerInterval = null;
+        let fontSizeLevel = 0; // -1: small, 0: normal, 1: large
+
+        window.onload = function() {
+            initExam();
+        };
+
+        function initExam() {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            questionStates.fill('not_visited');
+            questionStates[0] = 'not_answered';
+            timeRemaining = totalTimeSeconds;
+            
+            renderQuestion();
+            renderPalette();
+            startTimer();
+
+            document.getElementById('cbtView').classList.remove('hidden');
+            document.getElementById('resultsView').classList.add('hidden');
+            document.getElementById('examHeaderStats').classList.remove('hidden');
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitOnTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerContainer = document.getElementById('timerContainer');
+            
+            timerDisplay.textContent = formatted;
+
+            if (timeRemaining <= 120 && timeRemaining > 0) {
+                timerContainer.classList.add('timer-warning');
+            } else {
+                timerContainer.classList.remove('timer-warning');
+            }
+        }
+
+        function renderQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            
+            if (questionStates[currentQuestionIndex] === 'not_visited') {
+                questionStates[currentQuestionIndex] = 'not_answered';
+            }
+
+            document.getElementById('questionNumBadge').textContent = `Question ${currentQuestionIndex + 1} of ${questionsData.length}`;
+            
+            const textSizes = ['text-sm', 'text-base', 'text-lg'];
+            const optionTextSizes = ['text-xs sm:text-sm', 'text-sm sm:text-base', 'text-base sm:text-lg'];
+            const currSizeClass = textSizes[fontSizeLevel + 1];
+            const currOptSizeClass = optionTextSizes[fontSizeLevel + 1];
+
+            const currentSelected = userAnswers[currentQuestionIndex];
+
+            let html = `
+                <div class="mb-4 font-semibold text-slate-900 ${currSizeClass}">
+                    <span class="text-blue-900 font-bold mr-1">Q${currentQuestionIndex + 1}.</span> ${q.question}
+                </div>
+                <div class="space-y-3 mt-4">
+            `;
+
+            q.options.forEach((optText, optIdx) => {
+                const isSelected = currentSelected === optIdx;
+                const optionLetter = String.fromCharCode(65 + optIdx);
+
+                html += `
+                    <div onclick="selectOption(${optIdx})" class="option-card border rounded-xl p-3.5 flex items-start space-x-3 cursor-pointer ${isSelected ? 'selected' : 'border-slate-200 bg-white'}">
+                        <div class="mt-0.5">
+                            <input type="radio" name="questionOption" value="${optIdx}" ${isSelected ? 'checked' : ''} class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                        </div>
+                        <div class="flex-1 ${currOptSizeClass} text-slate-700">
+                            <span class="font-bold text-slate-900 mr-2">(${optionLetter})</span>
+                            <span>${optText}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('questionBody').innerHTML = html;
+
+            document.getElementById('prevBtn').disabled = (currentQuestionIndex === 0);
+            if (currentQuestionIndex === 0) {
+                document.getElementById('prevBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                document.getElementById('prevBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+
+            renderPalette();
+        }
+
+        function selectOption(optIdx) {
+            userAnswers[currentQuestionIndex] = optIdx;
+            renderQuestion();
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIndex] = null;
+            if (questionStates[currentQuestionIndex] === 'answered') {
+                questionStates[currentQuestionIndex] = 'not_answered';
+            } else if (questionStates[currentQuestionIndex] === 'answered_marked') {
+                questionStates[currentQuestionIndex] = 'marked';
+            }
+            renderQuestion();
+        }
+
+        function saveAndNext() {
+            const hasSelected = userAnswers[currentQuestionIndex] !== null;
+
+            if (hasSelected) {
+                questionStates[currentQuestionIndex] = 'answered';
+            } else {
+                if (questionStates[currentQuestionIndex] !== 'marked' && questionStates[currentQuestionIndex] !== 'answered_marked') {
+                    questionStates[currentQuestionIndex] = 'not_answered';
+                }
+            }
+
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                renderPalette();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasSelected = userAnswers[currentQuestionIndex] !== null;
+
+            if (hasSelected) {
+                questionStates[currentQuestionIndex] = 'answered_marked';
+            } else {
+                questionStates[currentQuestionIndex] = 'marked';
+            }
+
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                renderPalette();
+            }
+        }
+
+        function navigateQuestion(direction) {
+            if (userAnswers[currentQuestionIndex] !== null && questionStates[currentQuestionIndex] === 'not_answered') {
+                questionStates[currentQuestionIndex] = 'answered';
+            }
+
+            const newIdx = currentQuestionIndex + direction;
+            if (newIdx >= 0 && newIdx < questionsData.length) {
+                currentQuestionIndex = newIdx;
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(index) {
+            if (userAnswers[currentQuestionIndex] !== null && questionStates[currentQuestionIndex] === 'not_answered') {
+                questionStates[currentQuestionIndex] = 'answered';
+            }
+            currentQuestionIndex = index;
+            renderQuestion();
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('paletteGrid');
+            let html = '';
+            let visitedCount = 0;
+
+            questionsData.forEach((_, idx) => {
+                const state = questionStates[idx];
+                if (state !== 'not_visited') visitedCount++;
+
+                let stateClass = 'status-not-visited';
+                if (state === 'answered') stateClass = 'status-answered';
+                else if (state === 'not_answered') stateClass = 'status-not-answered';
+                else if (state === 'marked') stateClass = 'status-marked';
+                else if (state === 'answered_marked') stateClass = 'status-answered-marked';
+
+                const isCurrent = (idx === currentQuestionIndex);
+                const activeBorder = isCurrent ? 'ring-2 ring-blue-600 ring-offset-1 font-extrabold' : '';
+
+                html += `
+                    <button onclick="jumpToQuestion(${idx})" class="h-9 w-full flex items-center justify-center text-xs font-bold transition ${stateClass} ${activeBorder}">
+                        ${idx + 1}
+                    </button>
+                `;
+            });
+
+            grid.innerHTML = html;
+            document.getElementById('visitedCounter').textContent = `${visitedCount} / ${questionsData.length} Visited`;
+        }
+
+        function adjustFontSize(delta) {
+            if (delta === 0) fontSizeLevel = 0;
+            else {
+                fontSizeLevel = Math.max(-1, Math.min(1, fontSizeLevel + delta));
+            }
+            renderQuestion();
+        }
+
+        function openSubmitModal() {
+            let answered = 0;
+            let notAnswered = 0;
+            let marked = 0;
+            let notVisited = 0;
+
+            questionStates.forEach((st) => {
+                if (st === 'answered' || st === 'answered_marked') answered++;
+                else if (st === 'not_answered') notAnswered++;
+                else if (st === 'marked') marked++;
+                else if (st === 'not_visited') notVisited++;
+            });
+
+            document.getElementById('modalAnswered').textContent = answered;
+            document.getElementById('modalNotAnswered').textContent = notAnswered;
+            document.getElementById('modalMarked').textContent = marked;
+            document.getElementById('modalNotVisited').textContent = notVisited;
+
+            document.getElementById('submitModal').classList.remove('hidden');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').classList.add('hidden');
+        }
+
+        function autoSubmitOnTimeOut() {
+            document.getElementById('timeModal').classList.remove('hidden');
+        }
+
+        function closeTimeModalAndSubmit() {
+            document.getElementById('timeModal').classList.add('hidden');
+            submitExam();
+        }
+
+        function submitExam() {
+            if (timerInterval) clearInterval(timerInterval);
+
+            closeSubmitModal();
+
+            document.getElementById('cbtView').classList.add('hidden');
+            document.getElementById('examHeaderStats').classList.add('hidden');
+            document.getElementById('resultsView').classList.remove('hidden');
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            questionsData.forEach((q, idx) => {
+                const userChoice = userAnswers[idx];
+                if (userChoice === null) {
+                    unattemptedCount++;
+                } else if (userChoice === q.correct) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            });
+
+            const totalScore = correctCount;
+            const percentage = Math.round((correctCount / questionsData.length) * 100);
+            const timeSpentSeconds = totalTimeSeconds - timeRemaining;
+            const timeMinutes = Math.floor(timeSpentSeconds / 60);
+            const timeSecs = timeSpentSeconds % 60;
+
+            document.getElementById('resScore').textContent = `${totalScore} / ${questionsData.length}`;
+            document.getElementById('resPercent').textContent = `${percentage}% Accuracy`;
+            document.getElementById('resCorrect').textContent = correctCount;
+            document.getElementById('resIncorrect').textContent = incorrectCount;
+            document.getElementById('resUnattempted').textContent = unattemptedCount;
+            document.getElementById('resTimeTaken').textContent = `${timeMinutes}m ${timeSecs}s`;
+
+            let gradeText = "Needs Revision";
+            if (percentage >= 85) gradeText = "Outstanding!";
+            else if (percentage >= 70) gradeText = "Very Good!";
+            else if (percentage >= 50) gradeText = "Good Effort";
+
+            document.getElementById('resGrade').textContent = gradeText;
+
+            renderSolutions('all');
+        }
+
+        function renderSolutions(filter = 'all') {
+            const container = document.getElementById('solutionsList');
+            let html = '';
+
+            questionsData.forEach((q, idx) => {
+                const userChoice = userAnswers[idx];
+                const isCorrect = (userChoice === q.correct);
+                const isUnattempted = (userChoice === null);
+
+                if (filter === 'correct' && !isCorrect) return;
+                if (filter === 'incorrect' && (isCorrect || isUnattempted)) return;
+                if (filter === 'unattempted' && !isUnattempted) return;
+
+                let statusBadge = '';
+                if (isUnattempted) {
+                    statusBadge = `<span class="bg-slate-100 text-slate-700 font-bold text-xs px-2.5 py-1 rounded-md border border-slate-300"><i class="fa-solid fa-circle-minus"></i> Unattempted</span>`;
+                } else if (isCorrect) {
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 font-bold text-xs px-2.5 py-1 rounded-md border border-emerald-300"><i class="fa-solid fa-circle-check"></i> Correct (+1.0)</span>`;
+                } else {
+                    statusBadge = `<span class="bg-rose-100 text-rose-800 font-bold text-xs px-2.5 py-1 rounded-md border border-rose-300"><i class="fa-solid fa-circle-xmark"></i> Incorrect (0.0)</span>`;
+                }
+
+                html += `
+                    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm hover:shadow transition">
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+                            <span class="font-bold text-slate-900 text-sm">Question ${idx + 1}</span>
+                            <div>${statusBadge}</div>
+                        </div>
+
+                        <p class="font-semibold text-slate-800 text-sm mb-4 leading-relaxed">${q.question}</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 text-xs">
+                `;
+
+                q.options.forEach((opt, optIndex) => {
+                    const optionLetter = String.fromCharCode(65 + optIndex);
+                    let optStyle = "border-slate-200 bg-slate-50 text-slate-700";
+
+                    if (optIndex === q.correct) {
+                        optStyle = "border-emerald-500 bg-emerald-50 text-emerald-900 font-bold ring-1 ring-emerald-400";
+                    } else if (optIndex === userChoice && !isCorrect) {
+                        optStyle = "border-rose-500 bg-rose-50 text-rose-900 font-bold ring-1 ring-rose-400";
+                    }
+
+                    html += `
+                        <div class="p-3 rounded-lg border ${optStyle} flex items-center justify-between">
+                            <span><strong class="mr-1.5">(${optionLetter})</strong> ${opt}</span>
+                            ${optIndex === q.correct ? '<i class="fa-solid fa-check text-emerald-600 text-sm ml-2"></i>' : ''}
+                            ${(optIndex === userChoice && !isCorrect) ? '<i class="fa-solid fa-xmark text-rose-600 text-sm ml-2"></i>' : ''}
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+
+                        <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3.5 text-xs text-slate-800 leading-relaxed space-y-2">
+                            <div class="font-bold text-blue-900 flex items-center space-x-1">
+                                <i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>
+                                <span>Detailed Explanation:</span>
+                            </div>
+                            <p>${q.explanation}</p>
+                            
+                            <div class="bg-amber-100/60 border border-amber-300/80 rounded-lg p-2.5 text-amber-950 font-medium flex items-start space-x-2 mt-2">
+                                <i class="fa-solid fa-key text-amber-600 mt-0.5"></i>
+                                <div><strong class="font-bold">Memory Key:</strong> ${q.memoryKey}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (html === '') {
+                html = `<div class="text-center text-slate-500 text-xs py-8">No questions found matching this filter category.</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function filterSolutions(type) {
+            const btns = ['BtnAll', 'BtnCorrect', 'BtnIncorrect', 'BtnUnattempted'];
+            btns.forEach(b => {
+                const el = document.getElementById('filter' + b);
+                if (el) {
+                    el.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 font-semibold";
+                }
+            });
+
+            const activeBtn = document.getElementById('filterBtn' + type.charAt(0).toUpperCase() + type.slice(1));
+            if (activeBtn) {
+                activeBtn.className = "px-3 py-1.5 rounded-md bg-white text-blue-700 font-bold shadow-sm";
+            }
+
+            renderSolutions(type);
+        }
+
+        function restartTest() {
+            initExam();
+        }
+    </script>
+</body>
+</html>

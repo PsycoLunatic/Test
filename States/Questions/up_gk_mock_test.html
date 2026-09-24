@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP GK Mock Test - Government Exam Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Palette Button Styles */
+        .palette-btn { width: 42px; height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+        .status-not-visited { background-color: #e5e7eb; color: #4b5563; border-color: #d1d5db; }
+        .status-not-answered { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .status-answered { background-color: #22c55e; color: white; border-color: #16a34a; }
+        .active-question { border: 2px solid #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3); transform: scale(1.05); }
+        
+        /* Radio Button Styling */
+        .option-label { display: flex; align-items: flex-start; padding: 14px; border: 1px solid #d1d5db; border-radius: 8px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; background: white; }
+        .option-label:hover { background-color: #f8fafc; border-color: #94a3b8; }
+        .option-input { margin-top: 5px; margin-right: 14px; transform: scale(1.3); cursor: pointer; accent-color: #2563eb; }
+        .option-selected { background-color: #eff6ff; border-color: #3b82f6; box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1); }
+        
+        /* Layout structures */
+        #quiz-container { display: none; height: calc(100vh - 64px); }
+        #result-container { display: none; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white p-4 shadow-md flex justify-between items-center h-16 shrink-0 z-10">
+        <div class="text-xl font-bold flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            State Services Exam Portal
+        </div>
+        <div class="text-lg font-medium">Uttar Pradesh General Knowledge CBT</div>
+    </header>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="flex-1 flex items-center justify-center bg-gray-100 overflow-y-auto">
+        <div class="bg-white p-8 md:p-10 rounded-xl shadow-2xl max-w-2xl w-full mx-4 border-t-4 border-indigo-600">
+            <h1 class="text-3xl font-bold text-center text-indigo-900 mb-6">UP State GK Mock Test</h1>
+            <div class="space-y-5 text-gray-700 mb-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <p class="font-bold text-lg text-gray-900">Exam Instructions:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>This assessment contains <strong>15 multiple-choice questions</strong> based on UP State facts.</li>
+                    <li>The total time allotted is <strong>10 minutes</strong>.</li>
+                    <li>The test will automatically submit when the timer reaches zero.</li>
+                    <li>Use the <strong>"Next"</strong> and <strong>"Previous"</strong> buttons to navigate.</li>
+                    <li>Keep an eye on the <strong>Question Palette</strong> to track your progress (Green = Answered, Red = Not Answered).</li>
+                </ul>
+            </div>
+            <div class="flex justify-center">
+                <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-12 rounded-lg text-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    Start Examination
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-container" class="flex-1 bg-gray-200 flex flex-col md:flex-row overflow-hidden p-2 gap-2">
+        
+        <!-- Left Side: Question Area -->
+        <div class="flex-1 flex flex-col bg-white rounded-lg shadow-sm border border-gray-300 overflow-hidden relative">
+            
+            <!-- Top bar of question area -->
+            <div class="bg-gray-100 p-4 border-b border-gray-300 flex justify-between items-center shrink-0">
+                <div id="question-number-display" class="text-lg font-bold text-gray-800 bg-white px-4 py-1.5 rounded shadow-sm border border-gray-200">
+                    Question 1 of 15
+                </div>
+                <div class="flex items-center text-red-600 font-bold bg-red-50 px-4 py-1.5 rounded shadow-sm border border-red-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Time Left: <span id="timer" class="ml-1 tracking-wider text-lg">10:00</span>
+                </div>
+            </div>
+
+            <!-- Question Content -->
+            <div class="flex-1 p-6 md:p-8 overflow-y-auto bg-white" id="question-content">
+                <h2 id="question-text" class="text-xl md:text-2xl text-gray-900 font-semibold mb-8 leading-relaxed"></h2>
+                <div id="options-container" class="space-y-4 max-w-4xl">
+                    <!-- Options injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="bg-gray-100 p-4 border-t border-gray-300 flex justify-between items-center shrink-0 shadow-inner">
+                <button onclick="prevQuestion()" id="btn-prev" class="px-6 py-2.5 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    &laquo; Previous
+                </button>
+                <div class="space-x-3">
+                    <button onclick="nextQuestion()" class="px-8 py-2.5 bg-indigo-600 text-white font-semibold rounded hover:bg-indigo-700 shadow transition-colors">
+                        Next &raquo;
+                    </button>
+                    <button onclick="confirmSubmit()" class="px-8 py-2.5 bg-green-600 text-white font-semibold rounded hover:bg-green-700 shadow transition-colors">
+                        Submit Test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Navigation Palette -->
+        <div class="w-full md:w-80 bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col shrink-0">
+            <div class="p-4 bg-indigo-50 border-b border-gray-300 text-center font-bold text-indigo-900 text-lg">
+                Question Palette
+            </div>
+            
+            <!-- Status Legend -->
+            <div class="p-4 border-b border-gray-200 grid grid-cols-1 gap-3 text-sm font-semibold text-gray-700 bg-gray-50">
+                <div class="flex items-center"><div class="w-5 h-5 bg-green-500 rounded mr-3 shadow-sm border border-green-600"></div> Answered</div>
+                <div class="flex items-center"><div class="w-5 h-5 bg-red-500 rounded mr-3 shadow-sm border border-red-600"></div> Not Answered</div>
+                <div class="flex items-center"><div class="w-5 h-5 bg-gray-200 rounded mr-3 shadow-sm border border-gray-400"></div> Not Visited</div>
+            </div>
+
+            <!-- Number Grid -->
+            <div class="p-5 flex-1 overflow-y-auto">
+                <div id="palette-grid" class="flex flex-wrap gap-3 justify-center">
+                    <!-- Grid buttons injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-container" class="flex-1 bg-gray-100 overflow-y-auto p-4 md:p-8">
+        <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+            
+            <div class="bg-indigo-900 text-white p-8 text-center relative overflow-hidden">
+                <div class="relative z-10">
+                    <h1 class="text-4xl font-extrabold mb-2">Examination Results</h1>
+                    <p class="text-indigo-200 text-lg">Candidate Performance Report</p>
+                </div>
+            </div>
+            
+            <!-- Score Cards -->
+            <div class="p-8 border-b border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-6 text-center bg-gray-50">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500 uppercase tracking-wider font-bold mb-1">Total Score</p>
+                    <p class="text-4xl font-bold text-indigo-700" id="final-score">0/15</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 border-b-4 border-b-green-500">
+                    <p class="text-sm text-gray-500 uppercase tracking-wider font-bold mb-1">Correct</p>
+                    <p class="text-4xl font-bold text-green-600" id="correct-count">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 border-b-4 border-b-red-500">
+                    <p class="text-sm text-gray-500 uppercase tracking-wider font-bold mb-1">Incorrect</p>
+                    <p class="text-4xl font-bold text-red-600" id="incorrect-count">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 border-b-4 border-b-gray-400">
+                    <p class="text-sm text-gray-500 uppercase tracking-wider font-bold mb-1">Unattempted</p>
+                    <p class="text-4xl font-bold text-gray-600" id="unattempted-count">0</p>
+                </div>
+            </div>
+
+            <div class="p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    Question-wise Review
+                </h2>
+                <div id="review-container" class="space-y-6">
+                    <!-- Review items injected here -->
+                </div>
+                
+                <div class="mt-12 flex justify-center pb-4">
+                    <button onclick="restartTest()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-lg transition duration-200 shadow-lg text-lg flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Restart Mock Test
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Data - Exactly 15 questions from the prompt
+        const quizData = [
+            {
+                id: 1,
+                question: "When was the state formally renamed to Uttar Pradesh?",
+                options: ["26 January 1950", "24 January 1950", "15 August 1947", "1 November 1956"],
+                correctAnswer: 1,
+                explanation: "The United Provinces were formally renamed to Uttar Pradesh on 24 January 1950."
+            },
+            {
+                id: 2,
+                question: "Which of the following correctly matches the state symbols of UP?",
+                options: ["Bird - Peacock & Animal - Tiger", "Bird - Sarus Crane & Tree - Ashoka", "Flower - Lotus & Sport - Cricket", "Tree - Banyan & Animal - Swamp Deer"],
+                correctAnswer: 1,
+                explanation: "UP's state bird is the Sarus Crane and the state tree is the Ashoka tree. (State animal is Swamp Deer, State flower is Palash)."
+            },
+            {
+                id: 3,
+                question: "Which is the only district of UP that borders four states (Bihar, Jharkhand, Chhattisgarh, MP)?",
+                options: ["Lalitpur", "Ballia", "Sonbhadra", "Saharanpur"],
+                correctAnswer: 2,
+                explanation: "Sonbhadra is highly unique as it is the only district bordering four states: Bihar, Jharkhand, Chhattisgarh, and Madhya Pradesh."
+            },
+            {
+                id: 4,
+                question: "How many States and Union Territories share their boundary with Uttar Pradesh?",
+                options: ["7 States + 1 UT", "8 States + 1 UT", "9 States + 1 UT", "8 States + 2 UTs"],
+                correctAnswer: 1,
+                explanation: "Uttar Pradesh shares its boundary with 8 States (Uttarakhand, HP, Haryana, Rajasthan, MP, Chhattisgarh, Jharkhand, Bihar) and 1 UT (Delhi)."
+            },
+            {
+                id: 5,
+                question: "Govind Ballabh Pant Sagar is located in which district?",
+                options: ["Prayagraj", "Sonbhadra", "Mirzapur", "Kanpur"],
+                correctAnswer: 1,
+                explanation: "Govind Ballabh Pant Sagar (also known as Rihand Reservoir) is located in the Sonbhadra district."
+            },
+            {
+                id: 6,
+                question: "What is the correct number of Lok Sabha and Rajya Sabha seats in UP?",
+                options: ["LS: 80 RS: 31", "LS: 75 RS: 30", "LS: 80 RS: 35", "LS: 85 RS: 31"],
+                correctAnswer: 0,
+                explanation: "UP has the highest representation in Parliament with 80 Lok Sabha seats and 31 Rajya Sabha seats."
+            },
+            {
+                id: 7,
+                question: "Which city is famously known as the center for the lock industry?",
+                options: ["Firozabad", "Moradabad", "Aligarh", "Bhadohi"],
+                correctAnswer: 2,
+                explanation: "Aligarh is renowned for its locks and hardware industry."
+            },
+            {
+                id: 8,
+                question: "Which district of UP is surrounded by Madhya Pradesh on three sides?",
+                options: ["Jhansi", "Lalitpur", "Mahoba", "Chitrakoot"],
+                correctAnswer: 1,
+                explanation: "Lalitpur district has a distinctive geographical position as it is surrounded by Madhya Pradesh on three sides."
+            },
+            {
+                id: 9,
+                question: "'Charkula', 'Raslila', and 'Kajri' are traditional performing arts associated with which state?",
+                options: ["Madhya Pradesh", "Rajasthan", "Uttar Pradesh", "Bihar"],
+                correctAnswer: 2,
+                explanation: "These are famous folk dances and traditional performing arts of Uttar Pradesh."
+            },
+            {
+                id: 10,
+                question: "Dudhwa National Park is located in which district?",
+                options: ["Bahraich", "Pilibhit", "Lakhimpur Kheri", "Agra"],
+                correctAnswer: 2,
+                explanation: "Dudhwa National Park, famous for tigers, leopards, and swamp deer, is located in Lakhimpur Kheri."
+            },
+            {
+                id: 11,
+                question: "Which city is famous for 'Chikankari' traditional embroidery?",
+                options: ["Varanasi", "Lucknow", "Kanpur", "Agra"],
+                correctAnswer: 1,
+                explanation: "Lucknow, the capital of UP, is world-famous for Chikankari embroidery."
+            },
+            {
+                id: 12,
+                question: "Besides Hindi, which is the additional official language of UP?",
+                options: ["Bhojpuri", "Awadhi", "Urdu", "Sanskrit"],
+                correctAnswer: 2,
+                explanation: "Urdu serves as the additional official language of Uttar Pradesh alongside Hindi."
+            },
+            {
+                id: 13,
+                question: "Who was the first Chief Minister of Uttar Pradesh?",
+                options: ["Sucheta Kripalani", "Govind Ballabh Pant", "Sampurnanand", "Charan Singh"],
+                correctAnswer: 1,
+                explanation: "Govind Ballabh Pant was the first Chief Minister of Uttar Pradesh, taking office in 1950."
+            },
+            {
+                id: 14,
+                question: "How many seats are there in the UP Vidhan Sabha and Vidhan Parishad respectively?",
+                options: ["403 and 100", "400 and 100", "403 and 99", "405 and 105"],
+                correctAnswer: 0,
+                explanation: "The bicameral legislature of UP consists of the Vidhan Sabha (403 seats) and Vidhan Parishad (100 seats)."
+            },
+            {
+                id: 15,
+                question: "Which is the largest district of Uttar Pradesh by area?",
+                options: ["Sonbhadra", "Hardoi", "Sitapur", "Lakhimpur Kheri"],
+                correctAnswer: 3,
+                explanation: "Lakhimpur Kheri is geographically the largest district in Uttar Pradesh."
+            }
+        ];
+
+        // State Variables
+        let currentQuestionIndex = 0;
+        let userResponses = new Array(quizData.length).fill(null);
+        let questionStatus = new Array(quizData.length).fill('not-visited'); // 'not-visited', 'not-answered', 'answered'
+        let timerInterval;
+        const totalTimeSeconds = 10 * 60; // 10 minutes
+        let timeRemaining = totalTimeSeconds;
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionNumDisplay = document.getElementById('question-number-display');
+        const paletteGrid = document.getElementById('palette-grid');
+        const timerDisplay = document.getElementById('timer');
+        const btnPrev = document.getElementById('btn-prev');
+
+        function startQuiz() {
+            startScreen.style.display = 'none';
+            quizContainer.style.display = 'flex';
+            
+            // Reset states
+            userResponses = new Array(quizData.length).fill(null);
+            questionStatus = new Array(quizData.length).fill('not-visited');
+            currentQuestionIndex = 0;
+            timeRemaining = totalTimeSeconds;
+            
+            buildPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeRemaining <= 60) {
+                timerDisplay.parentElement.classList.remove('bg-red-50', 'text-red-600', 'border-red-200');
+                timerDisplay.parentElement.classList.add('bg-red-600', 'text-white', 'border-red-700', 'animate-pulse');
+            }
+        }
+
+        function buildPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('div');
+                btn.className = `palette-btn status-not-visited`;
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.onclick = () => jumpToQuestion(i);
+                paletteGrid.appendChild(btn);
+            }
+        }
+
+        function updatePaletteUI() {
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                
+                // Reset classes
+                btn.classList.remove('status-not-visited', 'status-not-answered', 'status-answered', 'active-question');
+                
+                // Add status class
+                btn.classList.add(`status-${questionStatus[i]}`);
+                
+                // Add active highlight
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('active-question');
+                }
+            }
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = quizData[index];
+            
+            // Mark as not-answered if it was completely untouched
+            if (questionStatus[index] === 'not-visited') {
+                questionStatus[index] = 'not-answered';
+            }
+            
+            questionNumDisplay.textContent = `Question ${index + 1} of ${quizData.length}`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+            
+            // Build Options dynamically
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const isSelected = userResponses[index] === i;
+                
+                const label = document.createElement('label');
+                label.className = `option-label ${isSelected ? 'option-selected' : ''}`;
+                label.onclick = () => selectOption(i);
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question-${index}`;
+                input.className = 'option-input';
+                input.checked = isSelected;
+                
+                const span = document.createElement('span');
+                span.className = 'text-gray-800 text-lg';
+                span.textContent = opt;
+                
+                label.appendChild(input);
+                label.appendChild(span);
+                optionsContainer.appendChild(label);
+            });
+            
+            // Update Prev button disabled state
+            btnPrev.disabled = index === 0;
+            
+            updatePaletteUI();
+            
+            // Auto-scroll to top of question on mobile
+            document.getElementById('question-content').scrollTop = 0;
+        }
+
+        function selectOption(optionIndex) {
+            userResponses[currentQuestionIndex] = optionIndex;
+            
+            // Update UI immediately for visual feedback
+            const labels = optionsContainer.querySelectorAll('.option-label');
+            labels.forEach((label, idx) => {
+                const radio = label.querySelector('input');
+                if (idx === optionIndex) {
+                    label.classList.add('option-selected');
+                    radio.checked = true;
+                } else {
+                    label.classList.remove('option-selected');
+                    radio.checked = false;
+                }
+            });
+            
+            // Update state silently so the palette updates
+            questionStatus[currentQuestionIndex] = 'answered';
+            updatePaletteUI();
+        }
+
+        function nextQuestion() {
+            // Re-evaluate status just in case
+            if (userResponses[currentQuestionIndex] !== null) {
+                questionStatus[currentQuestionIndex] = 'answered';
+            } else {
+                questionStatus[currentQuestionIndex] = 'not-answered';
+            }
+            
+            if (currentQuestionIndex < quizData.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                if (userResponses[currentQuestionIndex] !== null) {
+                    questionStatus[currentQuestionIndex] = 'answered';
+                } else {
+                    questionStatus[currentQuestionIndex] = 'not-answered';
+                }
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function jumpToQuestion(index) {
+            // Save state of current before jumping
+            if (userResponses[currentQuestionIndex] !== null) {
+                questionStatus[currentQuestionIndex] = 'answered';
+            } else {
+                 // only if it was already marked as not-answered
+                 if(questionStatus[currentQuestionIndex] !== 'not-visited'){
+                    questionStatus[currentQuestionIndex] = 'not-answered';
+                 }
+            }
+            loadQuestion(index);
+        }
+
+        function confirmSubmit() {
+            const answeredCount = userResponses.filter(r => r !== null).length;
+            const unattempted = quizData.length - answeredCount;
+            
+            const msg = unattempted > 0 
+                ? `You have ${unattempted} unattempted questions. Are you sure you want to submit the exam?`
+                : `Are you sure you want to submit the exam?`;
+                
+            if (confirm(msg)) {
+                calculateResults();
+            }
+        }
+
+        function autoSubmit() {
+            alert("Time is up! Your exam is being submitted automatically.");
+            calculateResults();
+        }
+
+        function calculateResults() {
+            clearInterval(timerInterval);
+            quizContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+            document.body.classList.remove('overflow-hidden'); // Allow full scrolling for results
+            
+            let score = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const userAns = userResponses[index];
+                const isCorrect = userAns === q.correctAnswer;
+                
+                if (isCorrect) {
+                    score++;
+                } else if (userAns === null) {
+                    unattempted++;
+                } else {
+                    incorrect++;
+                }
+                
+                // Build Detailed Review Block
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `p-5 md:p-6 rounded-xl border-l-8 shadow-sm bg-white ${isCorrect ? 'border-l-green-500' : (userAns === null ? 'border-l-gray-400' : 'border-l-red-500')}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    let optClass = 'text-gray-700';
+                    let iconHtml = '';
+                    let wrapperClass = 'p-3 rounded mb-2 border border-transparent';
+                    
+                    if (optIdx === q.correctAnswer) {
+                        optClass = 'text-green-800 font-bold';
+                        wrapperClass = 'bg-green-50 border-green-200 p-3 rounded mb-2';
+                        iconHtml = '<span class="text-green-600 text-sm ml-2 flex items-center"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Correct Answer</span>';
+                    } else if (optIdx === userAns && !isCorrect) {
+                        optClass = 'text-red-800 font-medium line-through';
+                        wrapperClass = 'bg-red-50 border-red-200 p-3 rounded mb-2';
+                        iconHtml = '<span class="text-red-600 text-sm ml-2 flex items-center"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg> Your Answer</span>';
+                    } else if (optIdx === userAns && isCorrect) {
+                        // User got it right, badge is already shown by correct logic, just append (Your Answer) indicator visually
+                        iconHtml = '<span class="text-green-700 text-sm ml-2 font-semibold bg-green-200 px-2 py-0.5 rounded">(Your Answer)</span>';
+                    }
+                    
+                    optionsHtml += `
+                    <div class="flex justify-between items-center ${wrapperClass}">
+                        <span class="${optClass}">${String.fromCharCode(65 + optIdx)}. ${opt}</span>
+                        ${iconHtml}
+                    </div>`;
+                });
+                
+                const statusBadge = isCorrect 
+                    ? `<span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full border border-green-300 font-bold tracking-wider">CORRECT</span>`
+                    : userAns === null 
+                        ? `<span class="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full border border-gray-300 font-bold tracking-wider">UNATTEMPTED</span>`
+                        : `<span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full border border-red-300 font-bold tracking-wider">INCORRECT</span>`;
+
+                itemDiv.innerHTML = `
+                    <div class="flex justify-between items-start mb-4 gap-4">
+                        <h3 class="text-lg font-bold text-gray-900 leading-tight">Q${index + 1}. ${q.question}</h3>
+                        <div class="shrink-0 mt-1">${statusBadge}</div>
+                    </div>
+                    <div class="mb-4">
+                        ${optionsHtml}
+                    </div>
+                    <div class="mt-4 bg-indigo-50 p-4 rounded border border-indigo-100">
+                        <p class="text-sm text-indigo-900"><strong class="font-bold uppercase tracking-wider text-xs block mb-1">Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+                
+                reviewContainer.appendChild(itemDiv);
+            });
+            
+            // Update Score Dashboard
+            document.getElementById('final-score').textContent = `${score}/15`;
+            document.getElementById('correct-count').textContent = score;
+            document.getElementById('incorrect-count').textContent = incorrect;
+            document.getElementById('unattempted-count').textContent = unattempted;
+        }
+
+        function restartTest() {
+            document.body.classList.add('overflow-hidden');
+            resultContainer.style.display = 'none';
+            
+            // Reset timer visuals in case they were left in pulsing state
+            timerDisplay.parentElement.classList.remove('bg-red-600', 'text-white', 'border-red-700', 'animate-pulse');
+            timerDisplay.parentElement.classList.add('bg-red-50', 'text-red-600', 'border-red-200');
+            
+            startScreen.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
