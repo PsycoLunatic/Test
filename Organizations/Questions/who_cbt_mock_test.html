@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHO CBT Mock Test - Government Exam Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* Light slate background */
+            user-select: none; /* Prevent text selection to simulate real exam */
+        }
+
+        /* NTA / TCS iON standard palette shapes and colors */
+        .status-not-visited {
+            background-color: #e2e8f0; /* Gray */
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+        }
+        .status-not-answered {
+            background-color: #ef4444; /* Red */
+            color: #ffffff;
+            border-radius: 12px 12px 2px 2px;
+        }
+        .status-answered {
+            background-color: #22c55e; /* Green */
+            color: #ffffff;
+            border-radius: 2px 2px 12px 12px;
+        }
+        .status-marked {
+            background-color: #a855f7; /* Purple */
+            color: #ffffff;
+            border-radius: 50%;
+        }
+        .status-answered-marked {
+            background-color: #a855f7; /* Purple */
+            color: #ffffff;
+            border-radius: 50%;
+            position: relative;
+        }
+        .status-answered-marked::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e; /* Small green dot */
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Option selection styling */
+        .option-row {
+            transition: all 0.2s;
+        }
+        .option-row:hover {
+            background-color: #e0f2fe;
+        }
+        .option-row.selected {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        /* Timer pulse effect */
+        @keyframes pulse-danger {
+            0%, 100% { background-color: #fee2e2; color: #dc2626; border-color: #ef4444; }
+            50% { background-color: #ef4444; color: #ffffff; border-color: #b91c1c; }
+        }
+        .timer-danger {
+            animation: pulse-danger 1s infinite;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-blue-900 text-white shadow-md z-10 shrink-0">
+        <div class="px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-notes-medical text-2xl text-blue-300"></i>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">World Health Organization (WHO) Assessment</h1>
+                    <div class="text-xs text-blue-200">Strict CBT Revision Mock Test</div>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <!-- Timer -->
+                <div id="timerBox" class="bg-blue-950 border border-blue-800 px-4 py-2 rounded-lg flex items-center space-x-2 shadow-inner transition-colors">
+                    <i class="fa-solid fa-stopwatch text-amber-400 text-lg"></i>
+                    <span class="text-xs uppercase tracking-wider text-blue-200 font-semibold hidden sm:inline">Time Left:</span>
+                    <span id="timerDisplay" class="text-xl font-mono font-bold tracking-widest text-white">10:00</span>
+                </div>
+                <!-- Candidate Info -->
+                <div class="hidden md:flex items-center space-x-3 border-l border-blue-800 pl-6">
+                    <img src="https://placehold.co/40x40/0284c7/ffffff?text=C" alt="Candidate" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    <div class="text-sm">
+                        <div class="font-bold">Candidate</div>
+                        <div class="text-xs text-blue-300">ID: WHO-2026-X</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="testContainer" class="flex-1 flex overflow-hidden bg-slate-200 p-2 gap-2">
+        
+        <!-- Left Panel: Question Area -->
+        <section class="flex-1 flex flex-col bg-white rounded-lg shadow-sm overflow-hidden border border-slate-300">
+            <!-- Question Header -->
+            <div class="bg-slate-100 border-b border-slate-300 px-6 py-3 flex justify-between items-center shrink-0">
+                <div class="font-bold text-slate-800 text-lg" id="questionNumberDisplay">Question 1</div>
+                <div class="flex space-x-4 text-sm font-semibold">
+                    <span class="text-green-700"><i class="fa-solid fa-plus-circle"></i> Marks: +1.0</span>
+                    <span class="text-red-700"><i class="fa-solid fa-minus-circle"></i> Negative: 0.0</span>
+                </div>
+            </div>
+
+            <!-- Question Content -->
+            <div class="flex-1 overflow-y-auto p-6 sm:p-8">
+                <div id="questionText" class="text-lg font-medium text-slate-900 mb-6 leading-relaxed">
+                    <!-- Question injected here -->
+                </div>
+                <div id="optionsContainer" class="space-y-3">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+
+            <!-- Action Buttons (Bottom Left) -->
+            <div class="bg-slate-50 border-t border-slate-300 px-6 py-4 flex flex-wrap justify-between items-center gap-3 shrink-0">
+                <div class="flex space-x-3">
+                    <button onclick="markForReviewAndNext()" class="bg-purple-100 hover:bg-purple-200 text-purple-700 border border-purple-300 px-4 py-2.5 rounded shadow-sm font-semibold text-sm transition">
+                        Mark for Review & Next
+                    </button>
+                    <button onclick="clearResponse()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 px-4 py-2.5 rounded shadow-sm font-semibold text-sm transition">
+                        Clear Response
+                    </button>
+                </div>
+                <button onclick="saveAndNext()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded shadow uppercase font-bold text-sm tracking-wide transition">
+                    Save & Next <i class="fa-solid fa-angle-right ml-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Panel: Question Palette -->
+        <aside class="w-80 flex flex-col bg-white rounded-lg shadow-sm border border-slate-300 overflow-hidden shrink-0 hidden lg:flex">
+            
+            <!-- Palette Candidate Details -->
+            <div class="bg-slate-100 p-4 border-b border-slate-300 flex items-center space-x-3">
+                <div class="bg-blue-600 text-white w-10 h-10 rounded shadow flex items-center justify-center font-bold text-xl">
+                    <i class="fa-solid fa-table-cells"></i>
+                </div>
+                <div class="font-bold text-slate-800 text-sm">Question Palette</div>
+            </div>
+
+            <!-- Status Legend -->
+            <div class="p-3 bg-white border-b border-slate-200 grid grid-cols-2 gap-y-2 gap-x-1 text-xs">
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 status-answered flex items-center justify-center font-bold text-[10px]" id="countAnswered">0</div>
+                    <span class="text-slate-600">Answered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 status-not-answered flex items-center justify-center font-bold text-[10px]" id="countNotAnswered">0</div>
+                    <span class="text-slate-600 leading-tight">Not Answered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 status-not-visited flex items-center justify-center font-bold text-[10px]" id="countNotVisited">15</div>
+                    <span class="text-slate-600">Not Visited</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 status-marked flex items-center justify-center font-bold text-[10px]" id="countMarked">0</div>
+                    <span class="text-slate-600 leading-tight">Marked for Review</span>
+                </div>
+                <div class="flex items-center space-x-2 col-span-2 mt-1">
+                    <div class="w-6 h-6 status-answered-marked flex items-center justify-center font-bold text-[10px]" id="countAnsMarked">0</div>
+                    <span class="text-slate-600 leading-tight">Answered & Marked for Review (Will be considered for evaluation)</span>
+                </div>
+            </div>
+
+            <!-- Number Grid -->
+            <div class="flex-1 overflow-y-auto p-4 bg-slate-50">
+                <div class="text-xs font-bold text-blue-900 uppercase mb-3">WHO Section</div>
+                <div id="paletteGrid" class="grid grid-cols-4 gap-2.5">
+                    <!-- Buttons injected via JS -->
+                </div>
+            </div>
+
+            <!-- Submit Button (Bottom Right) -->
+            <div class="p-3 border-t border-slate-300 bg-slate-100">
+                <button onclick="showSubmitConfirm()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded shadow uppercase tracking-wide text-sm transition">
+                    Submit Test
+                </button>
+            </div>
+        </aside>
+
+    </main>
+
+    <section id="resultsContainer" class="hidden h-screen bg-slate-100 flex flex-col overflow-hidden">
+        
+        <!-- Results Header -->
+        <div class="bg-blue-900 text-white py-6 px-4 md:px-8 shadow-md shrink-0">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold">WHO Mock Test - Final Report</h2>
+                    <p class="text-blue-200 text-sm mt-1">Based on Organization_5.pdf facts</p>
+                </div>
+                <button onclick="restartTest()" class="bg-white text-blue-900 hover:bg-blue-50 px-6 py-2.5 rounded-lg shadow font-bold flex items-center transition">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Attempt Test Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Scrollable Results Body -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8">
+            <div class="max-w-6xl mx-auto space-y-6">
+                
+                <!-- Score Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
+                        <div class="text-slate-500 font-semibold text-sm">Total Score</div>
+                        <div class="text-3xl font-extrabold text-blue-700 mt-2" id="resScore">0 / 15</div>
+                        <div class="text-xs text-slate-400 mt-1">Total Marks</div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
+                        <div class="text-slate-500 font-semibold text-sm">Accuracy</div>
+                        <div class="text-3xl font-extrabold text-purple-600 mt-2" id="resAccuracy">0%</div>
+                        <div class="text-xs text-slate-400 mt-1">Percentage</div>
+                    </div>
+                    <div class="bg-emerald-50 rounded-xl shadow-sm border border-emerald-200 p-5 text-center">
+                        <div class="text-emerald-700 font-semibold text-sm">Correct Answers</div>
+                        <div class="text-3xl font-extrabold text-emerald-600 mt-2" id="resCorrect">0</div>
+                    </div>
+                    <div class="bg-rose-50 rounded-xl shadow-sm border border-rose-200 p-5 text-center">
+                        <div class="text-rose-700 font-semibold text-sm">Incorrect Answers</div>
+                        <div class="text-3xl font-extrabold text-rose-600 mt-2" id="resIncorrect">0</div>
+                    </div>
+                </div>
+
+                <!-- Detailed Solutions List -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-800 text-white px-6 py-4 font-bold text-lg flex items-center">
+                        <i class="fa-solid fa-list-check mr-3"></i> Detailed Solutions & Explanations
+                    </div>
+                    <div id="solutionsList" class="divide-y divide-slate-200">
+                        <!-- Solutions injected via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Confirmation Modal -->
+    <div id="submitModal" class="fixed inset-0 bg-slate-900/60 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white w-full max-w-sm rounded-xl shadow-2xl p-6 text-center">
+            <div class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-paper-plane"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Submit Exam?</h3>
+            <p class="text-sm text-slate-500 mb-6">Are you sure you want to submit? You cannot change your answers after submission.</p>
+            <div class="flex space-x-3">
+                <button onclick="closeSubmitConfirm()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-2.5 rounded font-bold transition">Review</button>
+                <button onclick="finishTest()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded font-bold shadow transition">Submit Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal (replaces window.alert) -->
+    <div id="alertModal" class="fixed inset-0 bg-slate-900/60 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white w-full max-w-sm rounded-xl shadow-2xl p-6 text-center">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2" id="alertTitle">Notice</h3>
+            <p class="text-sm text-slate-600 mb-6" id="alertMessage">Message</p>
+            <button onclick="closeAlert()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded font-bold shadow transition">OK</button>
+        </div>
+    </div>
+
+
+    <script>
+        // Exactly 15 MCQs strictly based on Organizations_5.pdf
+        const questionsData = [
+            {
+                id: 1,
+                text: "When was the World Health Organization (WHO) established?",
+                options: [
+                    "7 April 1946",
+                    "7 April 1948",
+                    "1 July 2017",
+                    "15 August 2022"
+                ],
+                correctIndex: 1,
+                explanation: "According to the basic facts, WHO was established on 7 April 1948, which is when its Constitution came into force."
+            },
+            {
+                id: 2,
+                text: "Where are the headquarters of the World Health Organization (WHO) located?",
+                options: [
+                    "New York, USA",
+                    "Paris, France",
+                    "Geneva, Switzerland",
+                    "London, UK"
+                ],
+                correctIndex: 2,
+                explanation: "The headquarters of the WHO are located in Geneva, Switzerland."
+            },
+            {
+                id: 3,
+                text: "Why is World Health Day observed on 7 April every year?",
+                options: [
+                    "Because it is the birth anniversary of Dr Tedros Adhanom Ghebreyesus.",
+                    "Because the WHO succeeded the League of Nations' Health Organization on this day.",
+                    "Because the WHO Constitution came into force on 7 April 1948.",
+                    "Because the International Health Conference was held in New York on this date."
+                ],
+                correctIndex: 2,
+                explanation: "World Health Day is observed on 7 April every year because the WHO Constitution came into force on 7 April 1948."
+            },
+            {
+                id: 4,
+                text: "How many Member States does the World Health Organization currently have?",
+                options: [
+                    "190",
+                    "193",
+                    "194",
+                    "196"
+                ],
+                correctIndex: 2,
+                explanation: "According to the document, WHO currently has exactly 194 Member States."
+            },
+            {
+                id: 5,
+                text: "Who is the current head of the World Health Organization, and what is his correct designation?",
+                options: [
+                    "Dr Tedros Adhanom Ghebreyesus; President",
+                    "Dr George Brock Chisholm; Director-General",
+                    "Dr Tedros Adhanom Ghebreyesus; Director-General",
+                    "Dr George Brock Chisholm; President"
+                ],
+                correctIndex: 2,
+                explanation: "The current head is Dr Tedros Adhanom Ghebreyesus, and his correct designation is Director-General. The WHO does not have a 'President'."
+            },
+            {
+                id: 6,
+                text: "Dr Tedros Adhanom Ghebreyesus is noted for being the first person to head the WHO from which specific WHO region?",
+                options: [
+                    "Region of the Americas",
+                    "Eastern Mediterranean Region",
+                    "South-East Asia Region",
+                    "African Region"
+                ],
+                correctIndex: 3,
+                explanation: "Dr Tedros Adhanom Ghebreyesus is the first person from the WHO African Region to head the organization."
+            },
+            {
+                id: 7,
+                text: "Who served as the first Director-General of the WHO, and from which country did he hail?",
+                options: [
+                    "George Brock Chisholm; USA",
+                    "George Brock Chisholm; Canada",
+                    "Tedros Adhanom Ghebreyesus; Ethiopia",
+                    "Tedros Adhanom Ghebreyesus; Canada"
+                ],
+                correctIndex: 1,
+                explanation: "The first Director-General of WHO was Dr George Brock Chisholm, who was from Canada. He served from 1948 to 1953."
+            },
+            {
+                id: 8,
+                text: "What is the official status of the World Health Organization within the international system?",
+                options: [
+                    "Independent Non-Governmental Organization (NGO)",
+                    "Specialized Agency of the United Nations",
+                    "Principal Organ of the United Nations",
+                    "Subsidiary Body of the World Bank"
+                ],
+                correctIndex: 1,
+                explanation: "The official status of the WHO is a Specialized Agency of the United Nations."
+            },
+            {
+                id: 9,
+                text: "Where and in which year was the WHO Constitution formally adopted (prior to coming into force)?",
+                options: [
+                    "Geneva in 1948",
+                    "Paris in 1947",
+                    "New York in 1946",
+                    "Washington D.C. in 1945"
+                ],
+                correctIndex: 2,
+                explanation: "The WHO Constitution was adopted at the International Health Conference in New York in 1946 (it later came into force in 1948)."
+            },
+            {
+                id: 10,
+                text: "The WHO's Member States are grouped into how many geographical regions?",
+                options: [
+                    "4",
+                    "5",
+                    "6",
+                    "7"
+                ],
+                correctIndex: 2,
+                explanation: "WHO Member States are grouped into 6 WHO regions: African, Americas, South-East Asia, European, Eastern Mediterranean, and Western Pacific."
+            },
+            {
+                id: 11,
+                text: "Which of the following bodies serves as the 'Supreme decision-making body' of the WHO?",
+                options: [
+                    "The Executive Board",
+                    "The World Health Assembly (WHA)",
+                    "The Office of the Director-General",
+                    "The League of Nations' Health Organization"
+                ],
+                correctIndex: 1,
+                explanation: "The World Health Assembly (WHA) is explicitly listed as the Supreme decision-making body of WHO."
+            },
+            {
+                id: 12,
+                text: "What is the primary role of the WHO Executive Board?",
+                options: [
+                    "To act as the supreme decision-making body.",
+                    "To elect the President of the WHO.",
+                    "To implement the decisions and policies of the World Health Assembly.",
+                    "To draft the WHO Constitution in New York."
+                ],
+                correctIndex: 2,
+                explanation: "The Executive Board implements the decisions and policies made by the World Health Assembly."
+            },
+            {
+                id: 13,
+                text: "Which organization’s health-related work did the WHO succeed?",
+                options: [
+                    "United Nations Children's Fund (UNICEF)",
+                    "Red Cross International",
+                    "League of Nations' Health Organization",
+                    "World Medical Association"
+                ],
+                correctIndex: 2,
+                explanation: "WHO succeeded the health-related work of the League of Nations' Health Organization and other earlier international health institutions."
+            },
+            {
+                id: 14,
+                text: "When did the current Director-General's second term begin, and when is it scheduled to end?",
+                options: [
+                    "Began 1 July 2017; Ends 1 July 2022",
+                    "Began 16 August 2022; Ends 15 August 2027",
+                    "Began 7 April 2022; Ends 7 April 2027",
+                    "Began 16 August 2017; Ends 15 August 2022"
+                ],
+                correctIndex: 1,
+                explanation: "Dr Tedros's second term began on 16 August 2022 and his current term ends on 15 August 2027."
+            },
+            {
+                id: 15,
+                text: "Which of the following is NOT listed as one of the 6 WHO regions in the provided text?",
+                options: [
+                    "African Region",
+                    "Region of the Americas",
+                    "South-East Asia Region",
+                    "Australian and Oceania Region"
+                ],
+                correctIndex: 3,
+                explanation: "The 6 regions are African, Americas, South-East Asia, European, Eastern Mediterranean, and Western Pacific. 'Australian and Oceania Region' is not one of them."
+            }
+        ];
+
+        const TOTAL_QUESTIONS = questionsData.length;
+        const TEST_TIME_SECONDS = 10 * 60; // 10 minutes
+
+        let currentQuestionIndex = 0;
+        let timeRemaining = TEST_TIME_SECONDS;
+        let timerInterval = null;
+
+        // Arrays to hold state. Statuses: 'not_visited', 'not_answered', 'answered', 'marked', 'answered_marked'
+        let userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+        let questionStatuses = new Array(TOTAL_QUESTIONS).fill('not_visited');
+
+        window.onload = function() {
+            startExam();
+        };
+
+        function startExam() {
+            currentQuestionIndex = 0;
+            timeRemaining = TEST_TIME_SECONDS;
+            userAnswers.fill(null);
+            questionStatuses.fill('not_visited');
+            
+            // First question is immediately visited
+            questionStatuses[0] = 'not_answered';
+
+            document.getElementById('testContainer').classList.remove('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            
+            renderQuestion();
+            renderPalette();
+            startTimer();
+        }
+
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            
+            updateTimerUI();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const timerBox = document.getElementById('timerBox');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            // Pulse effect if under 2 minutes
+            if (timeRemaining > 0 && timeRemaining <= 120) {
+                timerBox.classList.add('timer-danger');
+                timerBox.classList.remove('bg-blue-950', 'border-blue-800');
+            } else {
+                timerBox.classList.remove('timer-danger');
+                timerBox.classList.add('bg-blue-950', 'border-blue-800');
+            }
+        }
+
+        function renderQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            
+            // Update Question Number
+            document.getElementById('questionNumberDisplay').textContent = `Question ${currentQuestionIndex + 1}`;
+            
+            // Update Text
+            document.getElementById('questionText').textContent = q.text;
+
+            // Render Options
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            const currentAns = userAnswers[currentQuestionIndex];
+
+            q.options.forEach((optText, idx) => {
+                const isSelected = currentAns === idx;
+                const optLetter = String.fromCharCode(65 + idx); // A, B, C, D
+                
+                const div = document.createElement('div');
+                div.className = `option-row border rounded-lg p-4 cursor-pointer flex items-center space-x-4 ${isSelected ? 'selected' : 'border-slate-300 bg-white'}`;
+                div.onclick = () => selectOption(idx);
+                
+                div.innerHTML = `
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-blue-600' : 'border-slate-400'}">
+                        ${isSelected ? '<div class="w-3 h-3 bg-blue-600 rounded-full"></div>' : ''}
+                    </div>
+                    <div class="font-bold text-slate-800">${optLetter}.</div>
+                    <div class="text-slate-700 font-medium">${optText}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            // Update Palette state if previously not visited
+            if (questionStatuses[currentQuestionIndex] === 'not_visited') {
+                questionStatuses[currentQuestionIndex] = (currentAns !== null) ? 'answered' : 'not_answered';
+                updatePaletteCounts();
+            }
+        }
+
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            renderQuestion(); // Re-render to show selection
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIndex] = null;
+            // Update status appropriately
+            if (questionStatuses[currentQuestionIndex] === 'answered' || questionStatuses[currentQuestionIndex] === 'answered_marked') {
+                questionStatuses[currentQuestionIndex] = 'not_answered';
+            }
+            renderQuestion();
+            renderPalette();
+        }
+
+        function saveAndNext() {
+            const ans = userAnswers[currentQuestionIndex];
+            
+            if (ans !== null) {
+                questionStatuses[currentQuestionIndex] = 'answered';
+            } else {
+                // If it was marked without answer, it stays marked. Otherwise not answered.
+                if (questionStatuses[currentQuestionIndex] !== 'marked') {
+                    questionStatuses[currentQuestionIndex] = 'not_answered';
+                }
+            }
+
+            goToNextQuestion();
+        }
+
+        function markForReviewAndNext() {
+            const ans = userAnswers[currentQuestionIndex];
+            
+            if (ans !== null) {
+                questionStatuses[currentQuestionIndex] = 'answered_marked';
+            } else {
+                questionStatuses[currentQuestionIndex] = 'marked';
+            }
+
+            goToNextQuestion();
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                currentQuestionIndex++;
+                if (questionStatuses[currentQuestionIndex] === 'not_visited') {
+                    questionStatuses[currentQuestionIndex] = 'not_answered';
+                }
+                renderQuestion();
+                renderPalette();
+            } else {
+                renderPalette();
+                showCustomAlert("End of Test", "You have reached the last question. Please review the palette and submit your test when ready.");
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            // Save state of current question before jumping if it was just visited but untouched
+            const currentAns = userAnswers[currentQuestionIndex];
+            if (questionStatuses[currentQuestionIndex] === 'not_answered' && currentAns !== null) {
+                questionStatuses[currentQuestionIndex] = 'answered'; 
+            }
+
+            currentQuestionIndex = idx;
+            
+            if (questionStatuses[currentQuestionIndex] === 'not_visited') {
+                questionStatuses[currentQuestionIndex] = 'not_answered';
+            }
+            
+            renderQuestion();
+            renderPalette();
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                const status = questionStatuses[i];
+                let cssClass = 'status-not-visited';
+                
+                if (status === 'answered') cssClass = 'status-answered';
+                else if (status === 'not_answered') cssClass = 'status-not-answered';
+                else if (status === 'marked') cssClass = 'status-marked';
+                else if (status === 'answered_marked') cssClass = 'status-answered-marked';
+
+                // Highlight active question
+                const activeRing = (i === currentQuestionIndex) ? 'ring-2 ring-blue-500 ring-offset-2 scale-105' : '';
+
+                const btn = document.createElement('button');
+                btn.className = `w-full aspect-square flex items-center justify-center font-bold text-sm shadow-sm transition ${cssClass} ${activeRing}`;
+                btn.textContent = i + 1;
+                btn.onclick = () => jumpToQuestion(i);
+                
+                grid.appendChild(btn);
+            }
+
+            updatePaletteCounts();
+        }
+
+        function updatePaletteCounts() {
+            let counts = {
+                not_visited: 0,
+                not_answered: 0,
+                answered: 0,
+                marked: 0,
+                answered_marked: 0
+            };
+
+            questionStatuses.forEach(s => counts[s]++);
+
+            document.getElementById('countNotVisited').textContent = counts.not_visited;
+            document.getElementById('countNotAnswered').textContent = counts.not_answered;
+            document.getElementById('countAnswered').textContent = counts.answered;
+            document.getElementById('countMarked').textContent = counts.marked;
+            document.getElementById('countAnsMarked').textContent = counts.answered_marked;
+        }
+
+        function showSubmitConfirm() {
+            document.getElementById('submitModal').classList.remove('hidden');
+        }
+
+        function closeSubmitConfirm() {
+            document.getElementById('submitModal').classList.add('hidden');
+        }
+
+        function autoSubmit() {
+            closeSubmitConfirm();
+            showCustomAlert("Time Expired", "Your time is up! The test has been automatically submitted.");
+            finishTest(true); // true means skip the alert since we show time expired
+        }
+
+        function finishTest(isAuto = false) {
+            clearInterval(timerInterval);
+            closeSubmitConfirm();
+            
+            document.getElementById('testContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+
+            calculateAndRenderResults();
+        }
+
+        function calculateAndRenderResults() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+
+            const listContainer = document.getElementById('solutionsList');
+            listContainer.innerHTML = '';
+
+            questionsData.forEach((q, i) => {
+                const userAns = userAnswers[i];
+                const isCorrect = userAns === q.correctIndex;
+                
+                if (userAns === null) {
+                    unattempted++;
+                } else if (isCorrect) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+
+                // Render solution block
+                const block = document.createElement('div');
+                block.className = "p-6 flex flex-col md:flex-row gap-6 hover:bg-slate-50 transition";
+                
+                // Status Badge
+                let badgeHTML = '';
+                if (userAns === null) {
+                    badgeHTML = `<span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-minus mr-1"></i> Unattempted</span>`;
+                } else if (isCorrect) {
+                    badgeHTML = `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-check mr-1"></i> Correct</span>`;
+                } else {
+                    badgeHTML = `<span class="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-xmark mr-1"></i> Incorrect</span>`;
+                }
+
+                // Options list generation for solution
+                let optionsHTML = '<div class="space-y-2 mt-4">';
+                q.options.forEach((optText, optIdx) => {
+                    const optLetter = String.fromCharCode(65 + optIdx);
+                    let optClass = "border-slate-200 text-slate-600 bg-white";
+                    let icon = "";
+                    
+                    if (optIdx === q.correctIndex) {
+                        optClass = "border-emerald-500 bg-emerald-50 text-emerald-900 font-bold";
+                        icon = `<i class="fa-solid fa-check text-emerald-600 ml-auto"></i>`;
+                    } else if (optIdx === userAns && !isCorrect) {
+                        optClass = "border-rose-500 bg-rose-50 text-rose-900 font-medium";
+                        icon = `<i class="fa-solid fa-xmark text-rose-600 ml-auto"></i>`;
+                    }
+
+                    optionsHTML += `
+                        <div class="border rounded px-4 py-2 text-sm flex items-center ${optClass}">
+                            <span class="mr-2 font-bold w-5">${optLetter}.</span> 
+                            <span>${optText}</span>
+                            ${icon}
+                        </div>
+                    `;
+                });
+                optionsHTML += '</div>';
+
+                block.innerHTML = `
+                    <div class="shrink-0 w-12 h-12 bg-slate-100 text-slate-500 rounded-lg flex items-center justify-center font-bold text-xl border border-slate-300">
+                        ${i + 1}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-lg font-bold text-slate-900 pr-4 leading-tight">${q.text}</h4>
+                            <div class="shrink-0 mt-1">${badgeHTML}</div>
+                        </div>
+                        ${optionsHTML}
+                        <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-900">
+                            <strong class="font-bold flex items-center mb-1"><i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> Explanation:</strong>
+                            <span class="leading-relaxed">${q.explanation}</span>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(block);
+            });
+
+            // Update Top Score Cards
+            document.getElementById('resScore').textContent = `${correct} / ${TOTAL_QUESTIONS}`;
+            document.getElementById('resCorrect').textContent = correct;
+            document.getElementById('resIncorrect').textContent = incorrect;
+            
+            const accuracy = correct + incorrect === 0 ? 0 : Math.round((correct / (correct + incorrect)) * 100);
+            document.getElementById('resAccuracy').textContent = `${accuracy}%`;
+        }
+
+        function restartTest() {
+            // Scroll to top
+            window.scrollTo(0,0);
+            startExam();
+        }
+
+        // Custom alert logic to avoid window.alert()
+        function showCustomAlert(title, message) {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').classList.remove('hidden');
+        }
+
+        function closeAlert() {
+            document.getElementById('alertModal').classList.add('hidden');
+        }
+
+    </script>
+</body>
+</html>
