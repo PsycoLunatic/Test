@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WTO Mock Test - Government Exam Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .palette-btn { width: 40px; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; border: 1px solid #d1d5db; }
+        .status-not-visited { background-color: #f3f4f6; color: #374151; }
+        .status-not-answered { background-color: #ef4444; color: white; border-color: #ef4444; }
+        .status-answered { background-color: #22c55e; color: white; border-color: #22c55e; }
+        .active-question { border: 2px solid #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+        
+        /* Custom Radio Button Styling */
+        .option-label { display: flex; align-items: flex-start; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+        .option-label:hover { background-color: #f9fafb; border-color: #9ca3af; }
+        .option-input { margin-top: 4px; margin-right: 12px; transform: scale(1.2); cursor: pointer; }
+        .option-selected { background-color: #eff6ff; border-color: #3b82f6; }
+        
+        /* Layout structures */
+        #quiz-container { display: none; height: calc(100vh - 64px); }
+        #result-container { display: none; }
+        
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-blue-800 text-white p-4 shadow-md flex justify-between items-center h-16 shrink-0">
+        <div class="text-xl font-bold">Government Exam Portal</div>
+        <div class="text-lg">World Trade Organization (WTO) Revision Test</div>
+    </header>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="flex-1 flex items-center justify-center bg-gray-100 overflow-y-auto">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full mx-4">
+            <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">WTO Comprehensive Mock Test</h1>
+            <div class="space-y-4 text-gray-700 mb-8">
+                <p><strong>Instructions:</strong></p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>This test contains <strong>15 multiple-choice questions</strong> based on the provided WTO document.</li>
+                    <li>You have <strong>10 minutes</strong> to complete the test.</li>
+                    <li>For every correct answer, you will be awarded 1 mark. There is no negative marking.</li>
+                    <li>Use the <strong>"Save & Next"</strong> button to submit your answer and move forward.</li>
+                    <li>You can navigate between questions using the Question Palette on the right.</li>
+                    <li>The test will auto-submit when the timer reaches zero.</li>
+                </ul>
+            </div>
+            <div class="flex justify-center">
+                <button onclick="startQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-lg text-lg transition duration-200 shadow-md">
+                    I am ready to begin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-container" class="flex-1 bg-gray-100 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Left Side: Question Area -->
+        <div class="flex-1 flex flex-col bg-white m-2 rounded-lg shadow border border-gray-200 overflow-hidden relative">
+            <!-- Top bar of question area -->
+            <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center text-sm font-semibold text-gray-700">
+                <div id="question-number-display">Question 1</div>
+                <div class="flex items-center text-red-600 font-bold bg-red-50 px-3 py-1 rounded border border-red-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Time Left: <span id="timer" class="ml-1 tracking-wider">10:00</span>
+                </div>
+            </div>
+
+            <!-- Question Content -->
+            <div class="flex-1 p-6 overflow-y-auto" id="question-content">
+                <h2 id="question-text" class="text-xl text-gray-800 font-medium mb-6 leading-relaxed"></h2>
+                <div id="options-container" class="space-y-3">
+                    <!-- Options will be injected here -->
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="bg-gray-50 p-4 border-t border-gray-200 flex justify-between items-center shrink-0">
+                <button onclick="prevQuestion()" id="btn-prev" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-100 disabled:opacity-50">
+                    &laquo; Previous
+                </button>
+                <div class="space-x-2">
+                    <button onclick="clearResponse()" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-100">
+                        Clear Response
+                    </button>
+                    <button onclick="saveAndNext()" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 shadow">
+                        Save & Next &raquo;
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Navigation Palette -->
+        <div class="w-full md:w-80 bg-white m-2 md:ml-0 rounded-lg shadow border border-gray-200 flex flex-col shrink-0">
+            <div class="p-3 bg-blue-50 border-b border-gray-200 text-center font-bold text-blue-800">
+                Question Palette
+            </div>
+            
+            <!-- Status Legend -->
+            <div class="p-4 border-b border-gray-200 grid grid-cols-2 gap-2 text-xs font-semibold text-gray-600">
+                <div class="flex items-center"><div class="w-4 h-4 bg-green-500 rounded-sm mr-2"></div> Answered</div>
+                <div class="flex items-center"><div class="w-4 h-4 bg-red-500 rounded-sm mr-2"></div> Not Answered</div>
+                <div class="flex items-center"><div class="w-4 h-4 bg-gray-100 border border-gray-300 rounded-sm mr-2"></div> Not Visited</div>
+            </div>
+
+            <!-- Number Grid -->
+            <div class="p-4 flex-1 overflow-y-auto">
+                <div id="palette-grid" class="flex flex-wrap gap-2 justify-center">
+                    <!-- Grid buttons injected here -->
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="p-4 border-t border-gray-200 bg-gray-50">
+                <button onclick="confirmSubmit()" class="w-full py-3 bg-green-600 text-white font-bold rounded hover:bg-green-700 shadow transition-colors">
+                    Submit Final Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-container" class="flex-1 bg-gray-100 overflow-y-auto p-4 md:p-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-blue-800 text-white p-6 text-center">
+                <h1 class="text-3xl font-bold mb-2">Test Score Report</h1>
+                <p class="text-blue-200">Detailed performance analysis</p>
+            </div>
+            
+            <div class="p-8 border-b border-gray-200 flex justify-around text-center bg-gray-50">
+                <div>
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-bold">Total Score</p>
+                    <p class="text-4xl font-bold text-blue-700" id="final-score">0/15</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-bold">Accuracy</p>
+                    <p class="text-4xl font-bold text-green-600" id="accuracy">0%</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-bold">Time Taken</p>
+                    <p class="text-4xl font-bold text-gray-700" id="time-taken">00:00</p>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Detailed Question Review</h2>
+                <div id="review-container" class="space-y-8">
+                    <!-- Review items injected here -->
+                </div>
+                
+                <div class="mt-10 flex justify-center border-t pt-6">
+                    <button onclick="restartTest()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 shadow-md">
+                        Attempt Test Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                id: 1,
+                question: "When was the World Trade Organization (WTO) officially established?",
+                options: ["30 October 1947", "1 January 1948", "15 April 1994", "1 January 1995"],
+                correctAnswer: 3,
+                explanation: "The WTO was officially established on 1 January 1995. The Marrakesh Agreement establishing the WTO was signed in 1994 and entered into force in 1995."
+            },
+            {
+                id: 2,
+                question: "Which of the following bodies is the highest decision-making authority of the WTO?",
+                options: ["General Council", "Dispute Settlement Body", "Ministerial Conference", "Trade Policy Review Body"],
+                correctAnswer: 2,
+                explanation: "The Ministerial Conference is the highest decision-making body of the WTO, consisting of representatives of all WTO members, and usually meets every two years."
+            },
+            {
+                id: 3,
+                question: "Who among the following was the FIRST Director-General of the WTO?",
+                options: ["Renato Ruggiero", "Peter Sutherland", "Arthur Dunkel", "Ngozi Okonjo-Iweala"],
+                correctAnswer: 1,
+                explanation: "Peter Sutherland (Ireland) was the first Director-General of the WTO, serving briefly from January to April 1995 during the transition period."
+            },
+            {
+                id: 4,
+                question: "What does the 'TRIPS' agreement under the WTO framework cover?",
+                options: ["Trade in Services", "Trade-Related Aspects of Intellectual Property Rights", "Trade-Related Investment Measures", "Tariffs and Trade Policies"],
+                correctAnswer: 1,
+                explanation: "TRIPS stands for Trade-Related Aspects of Intellectual Property Rights. It is one of the three major pillars of the WTO, alongside GATT (goods) and GATS (services)."
+            },
+            {
+                id: 5,
+                question: "As of August 2024, which country became the 166th and latest member to join the WTO?",
+                options: ["Comoros", "Liberia", "Afghanistan", "Timor-Leste"],
+                correctAnswer: 3,
+                explanation: "Timor-Leste joined the WTO on 30 August 2024, becoming its 166th and latest member. Comoros joined shortly before as the 165th member."
+            },
+            {
+                id: 6,
+                question: "Where are the headquarters of the World Trade Organization located?",
+                options: ["Washington D.C., USA", "Paris, France", "Geneva, Switzerland", "Vienna, Austria"],
+                correctAnswer: 2,
+                explanation: "The headquarters of the WTO are located in Geneva, Switzerland."
+            },
+            {
+                id: 7,
+                question: "The creation of the WTO was the direct result of which major round of GATT trade negotiations?",
+                options: ["Tokyo Round", "Doha Round", "Geneva Round", "Uruguay Round"],
+                correctAnswer: 3,
+                explanation: "The Uruguay Round (1986–1994) was the eighth and final major round of GATT trade negotiations, which resulted in the creation of the WTO."
+            },
+            {
+                id: 8,
+                question: "Dr. Ngozi Okonjo-Iweala is the first woman and first African to serve as the WTO Director-General. She belongs to which country?",
+                options: ["Kenya", "South Africa", "Nigeria", "Ghana"],
+                correctAnswer: 2,
+                explanation: "Dr. Ngozi Okonjo-Iweala is from Nigeria. She became the 7th Director-General of the WTO in March 2021."
+            },
+            {
+                id: 9,
+                question: "Which agreement legally established the World Trade Organization?",
+                options: ["Geneva Convention", "Uruguay Accord", "Marrakesh Agreement", "GATT 1994"],
+                correctAnswer: 2,
+                explanation: "The Marrakesh Agreement, signed in Marrakesh, Morocco on 15 April 1994, is the official agreement that legally established the World Trade Organization."
+            },
+            {
+                id: 10,
+                question: "Which of the following is NOT an official working language of the WTO?",
+                options: ["English", "French", "German", "Spanish"],
+                correctAnswer: 2,
+                explanation: "The three official working languages of the WTO are English, French, and Spanish."
+            },
+            {
+                id: 11,
+                question: "What was the main focus of the GATT framework that preceded the WTO?",
+                options: ["Intellectual Property", "Trade in Goods", "Trade in Services", "Foreign Direct Investment"],
+                correctAnswer: 1,
+                explanation: "GATT (General Agreement on Tariffs and Trade) primarily focused on establishing rules for international Trade in Goods. The WTO later incorporated GATS (Services) and TRIPS (Intellectual Property)."
+            },
+            {
+                id: 12,
+                question: "Between Ministerial Conferences, which body handles the day-to-day work of the WTO?",
+                options: ["General Council", "Trade Policy Review Body", "Director-General's Cabinet", "Dispute Settlement Body"],
+                correctAnswer: 0,
+                explanation: "The General Council handles the WTO's work between Ministerial Conferences. It also meets in different capacities as the Dispute Settlement Body (DSB) and Trade Policy Review Body (TPRB)."
+            },
+            {
+                id: 13,
+                question: "Which country joined the WTO as its 165th member on 21 August 2024?",
+                options: ["Afghanistan", "Comoros", "Timor-Leste", "Liberia"],
+                correctAnswer: 1,
+                explanation: "Comoros became the 165th member of the WTO on 21 August 2024, followed by Timor-Leste a few days later."
+            },
+            {
+                id: 14,
+                question: "Approximately what percentage of world trade is currently represented by WTO members?",
+                options: ["75%", "85%", "90%", "98%"],
+                correctAnswer: 3,
+                explanation: "The WTO currently represents approximately 98% of world trade through its 166 member nations."
+            },
+            {
+                id: 15,
+                question: "How often does the WTO Ministerial Conference usually meet?",
+                options: ["Every year", "Every two years", "Every three years", "Every five years"],
+                correctAnswer: 1,
+                explanation: "The Ministerial Conference, which is the highest decision-making body of the WTO, usually meets every two years."
+            }
+        ];
+
+        // State Variables
+        let currentQuestionIndex = 0;
+        let userResponses = new Array(quizData.length).fill(null);
+        let questionStatus = new Array(quizData.length).fill('not-visited'); // 'not-visited', 'not-answered', 'answered'
+        let timerInterval;
+        const totalTimeSeconds = 10 * 60; // 10 minutes
+        let timeRemaining = totalTimeSeconds;
+
+        // Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionNumDisplay = document.getElementById('question-number-display');
+        const paletteGrid = document.getElementById('palette-grid');
+        const timerDisplay = document.getElementById('timer');
+        const btnPrev = document.getElementById('btn-prev');
+
+        function startQuiz() {
+            startScreen.style.display = 'none';
+            quizContainer.style.display = 'flex';
+            
+            // Initialize states
+            userResponses = new Array(quizData.length).fill(null);
+            questionStatus = new Array(quizData.length).fill('not-visited');
+            currentQuestionIndex = 0;
+            timeRemaining = totalTimeSeconds;
+            
+            buildPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeRemaining < 60) {
+                timerDisplay.classList.add('animate-pulse');
+            }
+        }
+
+        function buildPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('div');
+                btn.className = `palette-btn status-not-visited`;
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.onclick = () => jumpToQuestion(i);
+                paletteGrid.appendChild(btn);
+            }
+        }
+
+        function updatePaletteUI() {
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                
+                // Reset classes
+                btn.classList.remove('status-not-visited', 'status-not-answered', 'status-answered', 'active-question');
+                
+                // Add status class
+                btn.classList.add(`status-${questionStatus[i]}`);
+                
+                // Add active highlight
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('active-question');
+                }
+            }
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = quizData[index];
+            
+            // Mark as not-answered if it was not-visited
+            if (questionStatus[index] === 'not-visited') {
+                questionStatus[index] = 'not-answered';
+            }
+            
+            questionNumDisplay.textContent = `Question ${index + 1} of ${quizData.length}`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+            
+            // Build Options
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const isSelected = userResponses[index] === i;
+                
+                const label = document.createElement('label');
+                label.className = `option-label ${isSelected ? 'option-selected' : ''}`;
+                label.onclick = () => selectOption(i);
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question-${index}`;
+                input.className = 'option-input';
+                input.checked = isSelected;
+                
+                const span = document.createElement('span');
+                span.className = 'text-gray-700 text-lg';
+                span.textContent = opt;
+                
+                label.appendChild(input);
+                label.appendChild(span);
+                optionsContainer.appendChild(label);
+            });
+            
+            // Update button states
+            btnPrev.disabled = index === 0;
+            
+            updatePaletteUI();
+            
+            // Scroll to top of question content
+            document.getElementById('question-content').scrollTop = 0;
+        }
+
+        function selectOption(optionIndex) {
+            userResponses[currentQuestionIndex] = optionIndex;
+            // Update UI immediately for selection
+            const labels = optionsContainer.querySelectorAll('.option-label');
+            labels.forEach((label, idx) => {
+                const radio = label.querySelector('input');
+                if (idx === optionIndex) {
+                    label.classList.add('option-selected');
+                    radio.checked = true;
+                } else {
+                    label.classList.remove('option-selected');
+                    radio.checked = false;
+                }
+            });
+        }
+
+        function clearResponse() {
+            userResponses[currentQuestionIndex] = null;
+            questionStatus[currentQuestionIndex] = 'not-answered';
+            loadQuestion(currentQuestionIndex); // Reload to clear radio buttons
+        }
+
+        function saveAndNext() {
+            // Update status based on response
+            if (userResponses[currentQuestionIndex] !== null) {
+                questionStatus[currentQuestionIndex] = 'answered';
+            } else {
+                questionStatus[currentQuestionIndex] = 'not-answered';
+            }
+            
+            if (currentQuestionIndex < quizData.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                updatePaletteUI();
+                alert("You have reached the end of the test. Please review your answers or submit.");
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                // Save status of current before moving
+                if (userResponses[currentQuestionIndex] !== null) {
+                    questionStatus[currentQuestionIndex] = 'answered';
+                }
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function jumpToQuestion(index) {
+            // Save status of current before moving
+            if (userResponses[currentQuestionIndex] !== null) {
+                questionStatus[currentQuestionIndex] = 'answered';
+            }
+            loadQuestion(index);
+        }
+
+        function confirmSubmit() {
+            const answeredCount = userResponses.filter(r => r !== null).length;
+            const unans = quizData.length - answeredCount;
+            
+            const msg = unans > 0 
+                ? `You have ${unans} unanswered questions. Are you sure you want to submit?`
+                : `Are you sure you want to submit the test?`;
+                
+            if (confirm(msg)) {
+                calculateResults();
+            }
+        }
+
+        function autoSubmit() {
+            alert("Time is up! Your test is being automatically submitted.");
+            calculateResults();
+        }
+
+        function calculateResults() {
+            clearInterval(timerInterval);
+            quizContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+            document.body.classList.remove('overflow-hidden'); // Allow body scroll for results
+            
+            let score = 0;
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const userAns = userResponses[index];
+                const isCorrect = userAns === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                // Build Review Item
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `p-6 rounded-lg border-2 ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    let optClass = 'text-gray-600';
+                    let icon = '';
+                    let weight = 'font-normal';
+                    
+                    if (optIdx === q.correctAnswer) {
+                        optClass = 'text-green-700 bg-green-100 p-2 rounded';
+                        weight = 'font-bold';
+                        icon = '✓ Correct Answer';
+                    } else if (optIdx === userAns && !isCorrect) {
+                        optClass = 'text-red-700 bg-red-100 p-2 rounded line-through';
+                        icon = '✗ Your Answer';
+                    } else if (optIdx === userAns && isCorrect) {
+                        icon = '(Your Answer)';
+                    }
+                    
+                    optionsHtml += `<div class="mb-2 ${optClass} ${weight} flex justify-between">
+                        <span>${String.fromCharCode(65 + optIdx)}. ${opt}</span>
+                        <span class="text-sm font-bold opacity-75">${icon}</span>
+                    </div>`;
+                });
+                
+                const statusBadge = isCorrect 
+                    ? `<span class="bg-green-500 text-white text-xs px-2 py-1 rounded uppercase font-bold tracking-wider">Correct (+1)</span>`
+                    : userAns === null 
+                        ? `<span class="bg-gray-500 text-white text-xs px-2 py-1 rounded uppercase font-bold tracking-wider">Unattempted (0)</span>`
+                        : `<span class="bg-red-500 text-white text-xs px-2 py-1 rounded uppercase font-bold tracking-wider">Incorrect (0)</span>`;
+
+                itemDiv.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">Q${index + 1}. ${q.question}</h3>
+                        ${statusBadge}
+                    </div>
+                    <div class="ml-4 mb-4 space-y-1">
+                        ${optionsHtml}
+                    </div>
+                    <div class="mt-4 bg-white p-4 rounded border border-gray-200">
+                        <p class="text-sm text-gray-800"><strong class="text-blue-800">Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+                
+                reviewContainer.appendChild(itemDiv);
+            });
+            
+            // Update Score Header
+            const timeTakenSec = totalTimeSeconds - timeRemaining;
+            const minTaken = Math.floor(timeTakenSec / 60);
+            const secTaken = timeTakenSec % 60;
+            
+            document.getElementById('final-score').textContent = `${score}/${quizData.length}`;
+            document.getElementById('accuracy').textContent = `${Math.round((score / quizData.length) * 100)}%`;
+            document.getElementById('time-taken').textContent = `${minTaken}m ${secTaken}s`;
+        }
+
+        function restartTest() {
+            document.body.classList.add('overflow-hidden');
+            resultContainer.style.display = 'none';
+            startScreen.style.display = 'flex';
+        }
+
+    </script>
+</body>
+</html>
