@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated CBT - World Economic Forum (WEF)</title>
+    <style>
+        :root {
+            --gray: #e0e0e0;
+            --red: #dc3545;
+            --green: #28a745;
+            --purple: #6f42c1;
+            --blue: #007bff;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+        body, html {
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%; background-color: var(--light); color: var(--dark);
+        }
+        /* Header */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: var(--dark); color: white; padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-title { font-size: 1.2rem; font-weight: bold; }
+        .timer-container { font-size: 1.3rem; font-weight: bold; padding: 5px 15px; border-radius: 5px; background: #222; }
+        .timer-container.pulse { animation: pulseRed 1s infinite; color: var(--red); }
+        @keyframes pulseRed { 0% { transform: scale(1); } 50% { transform: scale(1.05); text-shadow: 0 0 10px red; } 100% { transform: scale(1); } }
+
+        /* Layout */
+        #main-wrapper { display: flex; height: calc(100vh - 130px); }
+        #left-panel { flex: 3; padding: 20px; overflow-y: auto; background: white; border-right: 2px solid var(--gray); }
+        #right-panel { flex: 1; padding: 20px; overflow-y: auto; background: var(--light); display: flex; flex-direction: column; }
+
+        /* Question Area */
+        .question-number { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: var(--blue); }
+        .question-text { font-size: 1.15rem; margin-bottom: 20px; line-height: 1.5; }
+        .option-label {
+            display: block; padding: 12px; margin-bottom: 10px; border: 1px solid var(--gray);
+            border-radius: 5px; cursor: pointer; transition: 0.2s; background: white;
+        }
+        .option-label:hover { background: #f1f8ff; }
+        .option-label input { margin-right: 10px; }
+
+        /* Palette Area */
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .palette-btn {
+            width: 45px; height: 45px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;
+            color: #333; background: var(--gray); transition: 0.2s; font-size: 1rem;
+        }
+        .palette-btn.active-q { border: 2px solid #000; transform: scale(1.1); box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+
+        .status-not-visited { background: var(--gray); color: #333; }
+        .status-visited { background: var(--red); color: white; }
+        .status-answered { background: var(--green); color: white; }
+        .status-marked { background: var(--purple); color: white; }
+
+        /* Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--gray); }
+        .legend-item { display: flex; align-items: center; width: 45%; }
+        .legend-box { width: 20px; height: 20px; margin-right: 8px; border-radius: 3px; }
+
+        /* Footer / Action Bar */
+        footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: white; border-top: 2px solid var(--gray);
+            height: 60px; box-sizing: border-box;
+        }
+        .btn-group { display: flex; gap: 10px; }
+        button.action-btn {
+            padding: 10px 20px; font-size: 1rem; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s;
+        }
+        .btn-prev, .btn-next { background: var(--blue); color: white; }
+        .btn-prev:hover, .btn-next:hover { background: #0056b3; }
+        .btn-clear { background: white; border: 1px solid var(--dark); color: var(--dark); }
+        .btn-clear:hover { background: var(--gray); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-mark:hover { background: #5a32a3; }
+        .btn-submit { background: var(--green); color: white; font-size: 1.1rem; }
+        .btn-submit:hover { background: #218838; }
+
+        /* Results Screen */
+        #result-screen { display: none; padding: 30px; max-width: 900px; margin: 0 auto; background: white; min-height: 100vh; }
+        .summary-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0 30px 0; text-align: center;
+        }
+        .summary-card { padding: 20px; border-radius: 8px; font-weight: bold; color: white; }
+        .sc-total { background: var(--blue); } .sc-correct { background: var(--green); }
+        .sc-incorrect { background: var(--red); } .sc-unattempted { background: var(--gray); color: #333; }
+        .summary-card span { display: block; font-size: 2rem; margin-top: 10px; }
+
+        .review-card { border: 1px solid var(--gray); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: var(--light); }
+        .review-q { font-weight: bold; margin-bottom: 10px; }
+        .review-status { font-weight: bold; margin-bottom: 10px; padding: 5px 10px; display: inline-block; border-radius: 3px; color: white;}
+        .status-corr { background: var(--green); } .status-incorr { background: var(--red); } .status-unatt { background: var(--gray); color: #333; }
+        .review-explanation { margin-top: 15px; padding: 10px; background: #e9ecef; border-left: 4px solid var(--blue); }
+        .btn-retake { background: var(--blue); color: white; padding: 12px 25px; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer; display: block; margin: 30px auto; }
+    </style>
+</head>
+<body>
+
+    <!-- QUIZ INTERFACE -->
+    <div id="quiz-screen">
+        <header>
+            <div class="header-title">Automated CBT: Based on "New Text Document_2.txt"</div>
+            <div id="timer" class="timer-container">10:00</div>
+        </header>
+
+        <div id="main-wrapper">
+            <div id="left-panel">
+                <div class="question-number" id="q-number">Question 1</div>
+                <div class="question-text" id="q-text"></div>
+                <div id="options-container"></div>
+            </div>
+
+            <div id="right-panel">
+                <h3 style="margin-top: 0;">Navigation Palette</h3>
+                <div class="palette-grid" id="palette"></div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-box status-not-visited"></div> Not Visited</div>
+                    <div class="legend-item"><div class="legend-box status-visited"></div> Not Answered</div>
+                    <div class="legend-item"><div class="legend-box status-answered"></div> Answered</div>
+                    <div class="legend-item"><div class="legend-box status-marked"></div> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="btn-group">
+                <button class="action-btn btn-prev" onclick="nav(-1)">Previous</button>
+                <button class="action-btn btn-next" onclick="nav(1)">Next</button>
+            </div>
+            <div class="btn-group">
+                <button class="action-btn btn-clear" onclick="clearResponse()">Clear Response</button>
+                <button class="action-btn btn-mark" onclick="toggleMark()">Mark for Review</button>
+                <button class="action-btn btn-submit" onclick="submitTest()">Submit Test</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- RESULT INTERFACE -->
+    <div id="result-screen">
+        <h1 style="text-align: center;">Scorecard & Performance Review</h1>
+        <div class="summary-grid">
+            <div class="summary-card sc-total">Total Questions<span id="res-total">15</span></div>
+            <div class="summary-card sc-correct">Correct<span id="res-correct">0</span></div>
+            <div class="summary-card sc-incorrect">Incorrect<span id="res-incorrect">0</span></div>
+            <div class="summary-card sc-unattempted">Unattempted<span id="res-unattempted">0</span></div>
+        </div>
+
+        <h2>Detailed Review</h2>
+        <div id="review-container"></div>
+        <button class="btn-retake" onclick="initTest()">Retake Test</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "In which year was the organization behind the World Economic Forum originally established?[cite: 2]",
+                options: ["1969", "1971", "1987", "2006"],
+                correct: 1,
+                exp: "The organization was founded on 24 January 1971 by Klaus Schwab when the first European Management Symposium was held in Davos, Switzerland[cite: 2]. Remember: 24 January 1971 → Klaus Schwab → Davos → European Management[cite: 2]."
+            },
+            {
+                q: "Who is the founder of the World Economic Forum?[cite: 2]",
+                options: ["Joseph Stiglitz", "Amartya Sen", "Klaus Schwab", "Michael Porter"],
+                correct: 2,
+                exp: "Klaus Schwab, a German engineer and economist, founded the organization in 1971[cite: 2]. He introduced the central idea of stakeholder capitalism[cite: 2]."
+            },
+            {
+                q: "What was the original name of the organization established in 1971 before it became the World Economic Forum?[cite: 2]",
+                options: ["European Economic Forum", "European Business Forum", "European Management Forum", "Global Management Forum"],
+                correct: 2,
+                exp: "The original name was European Management Forum (EMF)[cite: 2]. It was renamed the World Economic Forum in 1987 as its focus expanded globally[cite: 2]. Memory Trick: Management → World (1971 → European Management Forum, 1987 → World Economic Forum)[cite: 2]."
+            },
+            {
+                q: "In which year was the European Management Forum renamed the World Economic Forum?[cite: 2]",
+                options: ["1974", "1987", "1998", "2006"],
+                correct: 1,
+                exp: "The name was officially changed to the World Economic Forum in 1987[cite: 2] as the organization expanded beyond its original European management focus[cite: 2]."
+            },
+            {
+                q: "Where are the official headquarters of the World Economic Forum located?[cite: 2]",
+                options: ["Davos, Switzerland", "Cologny, Geneva, Switzerland", "Zurich, Switzerland", "Vienna, Austria"],
+                correct: 1,
+                exp: "The WEF's headquarters are located in Cologny, a municipality in the canton of Geneva, Switzerland[cite: 2]. Do not confuse WEF Headquarters (Cologny/Geneva) with the Davos Annual Meeting location (Davos-Klosters)[cite: 2]."
+            },
+            {
+                q: "How frequently is the World Economic Forum Annual Meeting in Davos held?[cite: 2]",
+                options: ["Every 2 years", "Every year", "Every 3 years", "Every 5 years"],
+                correct: 1,
+                exp: "The World Economic Forum Annual Meeting is held EVERY YEAR, generally in January, in Davos-Klosters, Switzerland[cite: 2]."
+            },
+            {
+                q: "Which core philosophy championed by founder Klaus Schwab posits that businesses should consider the interests of shareholders, employees, customers, suppliers, and wider society?[cite: 2]",
+                options: ["Shareholder Primacy", "Stakeholder Capitalism", "Laissez-Faire Capitalism", "State Corporatism"],
+                correct: 1,
+                exp: "Klaus Schwab's central idea was stakeholder capitalism — the concept that businesses should serve all stakeholders (employees, customers, suppliers, and society), not just shareholders[cite: 2]."
+            },
+            {
+                q: "In which year did the World Economic Forum introduce the Global Gender Gap Index (GGGI)?[cite: 2]",
+                options: ["1987", "1998", "2006", "2018"],
+                correct: 2,
+                exp: "The WEF introduced the Global Gender Gap Index in 2006 to measure gender disparities across key dimensions[cite: 2]."
+            },
+            {
+                q: "Which of the following is NOT one of the four major dimensions measured by the Global Gender Gap Index?[cite: 2]",
+                options: ["Economic Participation & Opportunity", "Educational Attainment", "Health & Survival", "Military & Defense Engagement"],
+                correct: 3,
+                exp: "The 4 dimensions of the Global Gender Gap Index are: 1) Economic Participation & Opportunity, 2) Educational Attainment, 3) Health & Survival, and 4) Political Empowerment[cite: 2]. Memory Trick: E-E-H-P[cite: 2]."
+            },
+            {
+                q: "Which edition represents the last regular ranking of the Global Competitiveness Index (GCI) produced by the WEF before being paused due to COVID-19?[cite: 2]",
+                options: ["2017", "2018", "2019", "2020"],
+                correct: 2,
+                exp: "The 2019 edition was the last regular Global Competitiveness Index ranking[cite: 2]. WEF did not produce a normal GCI ranking in 2020 due to the COVID-19 pandemic[cite: 2]."
+            },
+            {
+                q: "How many pillars are used in the framework of the Global Competitiveness Index (GCI 4.0)?[cite: 2]",
+                options: ["8 pillars", "10 pillars", "12 pillars", "15 pillars"],
+                correct: 2,
+                exp: "The Global Competitiveness Index 4.0 uses 12 pillars (Institutions, Infrastructure, ICT adoption, Macroeconomic stability, Health, Skills, Product market, Labour market, Financial system, Market size, Business dynamism, Innovation capability)[cite: 2]."
+            },
+            {
+                q: "In which year were politicians first invited to participate in the Davos annual meeting?[cite: 2]",
+                options: ["1971", "1973", "1974", "1987"],
+                correct: 2,
+                exp: "Politicians were first invited to participate in Davos in 1974[cite: 2]. (In 1973 the Davos Manifesto was published, and in 1987 the name was changed to WEF)[cite: 2]."
+            },
+            {
+                q: "Which WEF report specifically examines changing jobs, skills, and labour-market trends?[cite: 2]",
+                options: ["Global Risks Report", "Future of Jobs Report", "Travel & Tourism Development Index", "Global Gender Gap Report"],
+                correct: 1,
+                exp: "The Future of Jobs Report examines changing jobs, skills, and labour-market trends[cite: 2]. The Global Risks Report covers environmental/geopolitical risks, and Travel & Tourism measures factors affecting tourism[cite: 2]."
+            },
+            {
+                q: "In what year did Klaus Schwab retire from his roles at the World Economic Forum while remaining its founder?[cite: 2]",
+                options: ["2019", "2021", "2023", "2025"],
+                correct: 3,
+                exp: "Klaus Schwab retired from his roles at the World Economic Forum in 2025, while remaining its founder[cite: 2]."
+            },
+            {
+                q: "The World Economic Forum describes itself primarily as an organization for:[cite: 2]",
+                options: ["Military & Defense Cooperation", "Public-Private Cooperation", "Monetary Reserve Management", "Intergovernmental Military Alliances"],
+                correct: 1,
+                exp: "The WEF promotes Public-Private Cooperation involving government, business, civil society, academia, and international organizations[cite: 2]."
+            }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let qStatus = new Array(quizData.length).fill('not-visited');
+        let timerSeconds = 600;
+        let timerInterval;
+
+        function initTest() {
+            document.getElementById('quiz-screen').style.display = 'block';
+            document.getElementById('result-screen').style.display = 'none';
+            currentIndex = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            qStatus = new Array(quizData.length).fill('not-visited');
+            timerSeconds = 600;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimerDisplay();
+
+            buildPalette();
+            renderQuestion(0);
+        }
+
+        function updateTimer() {
+            if (timerSeconds <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+                return;
+            }
+            timerSeconds--;
+            updateTimerDisplay();
+
+            const timerEl = document.getElementById('timer');
+            if (timerSeconds <= 120) {
+                timerEl.classList.add('pulse');
+            } else {
+                timerEl.classList.remove('pulse');
+            }
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timerSeconds / 60);
+            let s = timerSeconds % 60;
+            document.getElementById('timer').innerText =
+                (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function buildPalette() {
+            const pal = document.getElementById('palette');
+            pal.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = `palette-btn status-${qStatus[i]}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => renderQuestion(i);
+                btn.id = `pal-btn-${i}`;
+                pal.appendChild(btn);
+            }
+        }
+
+        function updatePaletteStyles() {
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.getElementById(`pal-btn-${i}`);
+                btn.className = `palette-btn status-${qStatus[i]}`;
+                if (i === currentIndex) btn.classList.add('active-q');
+            }
+        }
+
+        function renderQuestion(index) {
+            currentIndex = index;
+            if (qStatus[currentIndex] === 'not-visited') {
+                qStatus[currentIndex] = 'visited';
+            }
+
+            document.getElementById('q-number').innerText = `Question ${currentIndex + 1} of ${quizData.length}`;
+            document.getElementById('q-text').innerHTML = quizData[currentIndex].q;
+
+            const optCont = document.getElementById('options-container');
+            optCont.innerHTML = '';
+
+            quizData[currentIndex].options.forEach((opt, idx) => {
+                const lbl = document.createElement('label');
+                lbl.className = 'option-label';
+
+                const inp = document.createElement('input');
+                inp.type = 'radio';
+                inp.name = 'q-option';
+                inp.value = idx;
+                if (userAnswers[currentIndex] === idx) inp.checked = true;
+
+                inp.onchange = () => {
+                    userAnswers[currentIndex] = idx;
+                    if (qStatus[currentIndex] !== 'marked') {
+                        qStatus[currentIndex] = 'answered';
+                    }
+                    updatePaletteStyles();
+                };
+
+                lbl.appendChild(inp);
+                lbl.appendChild(document.createTextNode(opt));
+                optCont.appendChild(lbl);
+            });
+
+            updatePaletteStyles();
+        }
+
+        function nav(step) {
+            let next = currentIndex + step;
+            if (next >= 0 && next < quizData.length) {
+                renderQuestion(next);
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentIndex] = null;
+            const inps = document.getElementsByName('q-option');
+            inps.forEach(i => i.checked = false);
+            if (qStatus[currentIndex] !== 'marked') {
+                qStatus[currentIndex] = 'visited';
+            }
+            updatePaletteStyles();
+        }
+
+        function toggleMark() {
+            if (qStatus[currentIndex] === 'marked') {
+                qStatus[currentIndex] = userAnswers[currentIndex] !== null ? 'answered' : 'visited';
+            } else {
+                qStatus[currentIndex] = 'marked';
+            }
+            updatePaletteStyles();
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            let correct = 0, incorrect = 0, unattempted = 0;
+            const reviewCont = document.getElementById('review-container');
+            reviewCont.innerHTML = '';
+
+            quizData.forEach((qObj, i) => {
+                const uAns = userAnswers[i];
+                let isCorr = false;
+
+                if (uAns === null) {
+                    unattempted++;
+                } else if (uAns === qObj.correct) {
+                    correct++;
+                    isCorr = true;
+                } else {
+                    incorrect++;
+                }
+
+                let statusHtml = uAns === null ? '<span class="review-status status-unatt">Unattempted</span>' :
+                                 isCorr ? '<span class="review-status status-corr">Correct</span>' :
+                                          '<span class="review-status status-incorr">Incorrect</span>';
+
+                let uAnsText = uAns === null ? 'None' : qObj.options[uAns];
+                let cAnsText = qObj.options[qObj.correct];
+
+                reviewCont.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-q">Q${i+1}. ${qObj.q}</div>
+                        ${statusHtml}
+                        <div style="margin-bottom: 5px;"><strong>Your Answer:</strong> ${uAnsText}</div>
+                        <div><strong>Correct Answer:</strong> ${cAnsText}</div>
+                        <div class="review-explanation"><strong>Explanation:</strong> ${qObj.exp}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-incorrect').innerText = incorrect;
+            document.getElementById('res-unattempted').innerText = unattempted;
+        }
+
+        // Start App
+        window.onload = initTest;
+    </script>
+</body>
+</html>

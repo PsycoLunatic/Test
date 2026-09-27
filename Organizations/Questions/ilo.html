@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated CBT - International Labour Organization</title>
+    <style>
+        :root {
+            --gray: #e0e0e0;
+            --red: #dc3545;
+            --green: #28a745;
+            --purple: #6f42c1;
+            --blue: #007bff;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+        body, html {
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%; background-color: var(--light); color: var(--dark);
+        }
+        /* Header */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: var(--dark); color: white; padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-title { font-size: 1.2rem; font-weight: bold; }
+        .timer-container { font-size: 1.3rem; font-weight: bold; padding: 5px 15px; border-radius: 5px; background: #222; }
+        .timer-container.pulse { animation: pulseRed 1s infinite; color: var(--red); }
+        @keyframes pulseRed { 0% { transform: scale(1); } 50% { transform: scale(1.05); text-shadow: 0 0 10px red; } 100% { transform: scale(1); } }
+
+        /* Layout */
+        #main-wrapper { display: flex; height: calc(100vh - 130px); }
+        #left-panel { flex: 3; padding: 20px; overflow-y: auto; background: white; border-right: 2px solid var(--gray); }
+        #right-panel { flex: 1; padding: 20px; overflow-y: auto; background: var(--light); display: flex; flex-direction: column; }
+
+        /* Question Area */
+        .question-number { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: var(--blue); }
+        .question-text { font-size: 1.15rem; margin-bottom: 20px; line-height: 1.5; }
+        .option-label {
+            display: block; padding: 12px; margin-bottom: 10px; border: 1px solid var(--gray);
+            border-radius: 5px; cursor: pointer; transition: 0.2s; background: white;
+        }
+        .option-label:hover { background: #f1f8ff; }
+        .option-label input { margin-right: 10px; }
+
+        /* Palette Area */
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .palette-btn {
+            width: 45px; height: 45px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;
+            color: #333; background: var(--gray); transition: 0.2s; font-size: 1rem;
+        }
+        .palette-btn.active-q { border: 2px solid #000; transform: scale(1.1); box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+
+        .status-not-visited { background: var(--gray); color: #333; }
+        .status-visited { background: var(--red); color: white; }
+        .status-answered { background: var(--green); color: white; }
+        .status-marked { background: var(--purple); color: white; }
+
+        /* Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--gray); }
+        .legend-item { display: flex; align-items: center; width: 45%; }
+        .legend-box { width: 20px; height: 20px; margin-right: 8px; border-radius: 3px; }
+
+        /* Footer / Action Bar */
+        footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: white; border-top: 2px solid var(--gray);
+            height: 60px; box-sizing: border-box;
+        }
+        .btn-group { display: flex; gap: 10px; }
+        button.action-btn {
+            padding: 10px 20px; font-size: 1rem; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s;
+        }
+        .btn-prev, .btn-next { background: var(--blue); color: white; }
+        .btn-prev:hover, .btn-next:hover { background: #0056b3; }
+        .btn-clear { background: white; border: 1px solid var(--dark); color: var(--dark); }
+        .btn-clear:hover { background: var(--gray); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-mark:hover { background: #5a32a3; }
+        .btn-submit { background: var(--green); color: white; font-size: 1.1rem; }
+        .btn-submit:hover { background: #218838; }
+
+        /* Results Screen */
+        #result-screen { display: none; padding: 30px; max-width: 900px; margin: 0 auto; background: white; min-height: 100vh; }
+        .summary-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0 30px 0; text-align: center;
+        }
+        .summary-card { padding: 20px; border-radius: 8px; font-weight: bold; color: white; }
+        .sc-total { background: var(--blue); } .sc-correct { background: var(--green); }
+        .sc-incorrect { background: var(--red); } .sc-unattempted { background: var(--gray); color: #333; }
+        .summary-card span { display: block; font-size: 2rem; margin-top: 10px; }
+
+        .review-card { border: 1px solid var(--gray); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: var(--light); }
+        .review-q { font-weight: bold; margin-bottom: 10px; }
+        .review-status { font-weight: bold; margin-bottom: 10px; padding: 5px 10px; display: inline-block; border-radius: 3px; color: white;}
+        .status-corr { background: var(--green); } .status-incorr { background: var(--red); } .status-unatt { background: var(--gray); color: #333; }
+        .review-explanation { margin-top: 15px; padding: 10px; background: #e9ecef; border-left: 4px solid var(--blue); }
+        .btn-retake { background: var(--blue); color: white; padding: 12px 25px; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer; display: block; margin: 30px auto; }
+    </style>
+</head>
+<body>
+
+    <!-- QUIZ INTERFACE -->
+    <div id="quiz-screen">
+        <header>
+            <div class="header-title">Automated CBT: Based on "New Text Document.txt"</div>
+            <div id="timer" class="timer-container">10:00</div>
+        </header>
+
+        <div id="main-wrapper">
+            <div id="left-panel">
+                <div class="question-number" id="q-number">Question 1</div>
+                <div class="question-text" id="q-text"></div>
+                <div id="options-container"></div>
+            </div>
+
+            <div id="right-panel">
+                <h3 style="margin-top: 0;">Navigation Palette</h3>
+                <div class="palette-grid" id="palette"></div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-box status-not-visited"></div> Not Visited</div>
+                    <div class="legend-item"><div class="legend-box status-visited"></div> Not Answered</div>
+                    <div class="legend-item"><div class="legend-box status-answered"></div> Answered</div>
+                    <div class="legend-item"><div class="legend-box status-marked"></div> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="btn-group">
+                <button class="action-btn btn-prev" onclick="nav(-1)">Previous</button>
+                <button class="action-btn btn-next" onclick="nav(1)">Next</button>
+            </div>
+            <div class="btn-group">
+                <button class="action-btn btn-clear" onclick="clearResponse()">Clear Response</button>
+                <button class="action-btn btn-mark" onclick="toggleMark()">Mark for Review</button>
+                <button class="action-btn btn-submit" onclick="submitTest()">Submit Test</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- RESULT INTERFACE -->
+    <div id="result-screen">
+        <h1 style="text-align: center;">Scorecard & Performance Review</h1>
+        <div class="summary-grid">
+            <div class="summary-card sc-total">Total Questions<span id="res-total">15</span></div>
+            <div class="summary-card sc-correct">Correct<span id="res-correct">0</span></div>
+            <div class="summary-card sc-incorrect">Incorrect<span id="res-incorrect">0</span></div>
+            <div class="summary-card sc-unattempted">Unattempted<span id="res-unattempted">0</span></div>
+        </div>
+
+        <h2>Detailed Review</h2>
+        <div id="review-container"></div>
+        <button class="btn-retake" onclick="initTest()">Retake Test</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "In what year was the International Labour Organization (ILO) established, and through which treaty?[cite: 1]",
+                options: ["1914, Paris Peace Conference", "1919, Treaty of Versailles", "1945, UN Charter", "1946, Declaration of Philadelphia"],
+                correct: 1,
+                exp: "The ILO was established in 1919, following the Paris Peace Conference after World War I, and its Constitution was incorporated into Part XIII of the Treaty of Versailles[cite: 1]. Remember: 1919 → Treaty of Versailles → ILO[cite: 1]."
+            },
+            {
+                q: "What is the unique structural feature of the ILO among UN agencies?[cite: 1]",
+                options: ["It has a strictly bipartite structure.", "It features a unique judicial structure.", "It possesses a tripartite structure bringing together governments, workers, and employers.", "It relies solely on employer-led financial structures."],
+                correct: 2,
+                exp: "One of the most important features of the ILO is its tripartite structure[cite: 1]. Unlike most international organizations, the ILO brings together Governments, Workers, and Employers[cite: 1]. Easy Memory Trick: G + W + E = ILO[cite: 1]."
+            },
+            {
+                q: "Where is the headquarters of the ILO currently located?[cite: 1]",
+                options: ["Montreal, Canada", "New York, USA", "Paris, France", "Geneva, Switzerland"],
+                correct: 3,
+                exp: "The ILO headquarters is located in Geneva, Switzerland[cite: 1]. The ILO moved to Geneva in 1920[cite: 1]."
+            },
+            {
+                q: "How many Member States does the ILO currently comprise?[cite: 1]",
+                options: ["180", "187", "193", "195"],
+                correct: 1,
+                exp: "Currently, the ILO has 187 Member States[cite: 1]. This is the current official ILO figure[cite: 1]."
+            },
+            {
+                q: "Who is the 11th and current Director-General of the ILO as of September 2026?[cite: 1]",
+                options: ["Juan Somavia", "David Morse", "Gilbert F. Houngbo", "Guy Ryder"],
+                correct: 2,
+                exp: "Gilbert F. Houngbo from Togo is the 11th Director-General of the ILO[cite: 1]. He took office on 1 October 2022 and his term runs until the next scheduled election in November 2026, making him the current Director-General as of September 2026[cite: 1]."
+            },
+            {
+                q: "Which of the following statements regarding India's membership in the ILO is true?[cite: 1]",
+                options: ["India joined the ILO as a founding member in 1919.", "India became a founding member in 1922.", "India joined the ILO in 1946 after it became a UN agency.", "India is an observer state, not a member."],
+                correct: 0,
+                exp: "India is a founding member of the ILO and joined at its creation on 28 June 1919[cite: 1]. Memory Trick: 19 → Member[cite: 1]."
+            },
+            {
+                q: "In what year did India become a permanent member of the ILO Governing Body?[cite: 1]",
+                options: ["1919", "1920", "1922", "1928"],
+                correct: 2,
+                exp: "India became a permanent member of the ILO Governing Body in 1922[cite: 1]. Memory Trick: 22 → Governing Body[cite: 1]."
+            },
+            {
+                q: "Which main organ of the ILO is frequently referred to as the 'Parliament of Labour'?[cite: 1]",
+                options: ["The Governing Body", "The International Labour Office", "The Secretariat", "The International Labour Conference"],
+                correct: 3,
+                exp: "The International Labour Conference (ILC) is often called the 'Parliament of Labour'[cite: 1]. It meets annually and establishes international labour standards[cite: 1]."
+            },
+            {
+                q: "What is the primary function of the ILO's Governing Body?[cite: 1]",
+                options: ["It acts as the permanent secretariat carrying out day-to-day work.", "It is the executive body that determines ILO policy and decides the Conference agenda.", "It only conducts research and provides technical assistance.", "It exclusively represents the workers' rights movement."],
+                correct: 1,
+                exp: "The Governing Body is the executive body of the ILO[cite: 1]. It determines ILO policy, decides the agenda of the International Labour Conference, and adopts the proposed programme and budget[cite: 1]. Formula: Governing Body → Executive decisions[cite: 1]."
+            },
+            {
+                q: "In what year did the ILO officially become a specialized agency of the United Nations?[cite: 1]",
+                options: ["1919", "1945", "1946", "1969"],
+                correct: 2,
+                exp: "The ILO became a specialized agency of the United Nations in 1946[cite: 1]. This is an important distinction, as the ILO was established in 1919, before the UN was established in 1945[cite: 1]."
+            },
+            {
+                q: "The ILO was awarded the Nobel Peace Prize on its 50th anniversary in which year?[cite: 1]",
+                options: ["1944", "1946", "1969", "1998"],
+                correct: 2,
+                exp: "The ILO was awarded the Nobel Peace Prize in 1969, on its 50th anniversary[cite: 1]. This was for its contribution to international cooperation, social justice and improving conditions for working people[cite: 1]."
+            },
+            {
+                q: "Which important 1944 ILO document states the famous principle that 'Labour is not a commodity'?[cite: 1]",
+                options: ["The Declaration of Philadelphia", "The Treaty of Versailles", "The ILO Constitution", "Declaration on Fundamental Principles and Rights at Work"],
+                correct: 0,
+                exp: "The Declaration of Philadelphia, adopted during World War II in 1944, includes the famous principle: 'Labour is not a commodity'[cite: 1]."
+            },
+            {
+                q: "What was the founding principle of the ILO as stated in its Constitution?[cite: 1]",
+                options: ["Economic prosperity ensures social equality.", "Lasting peace requires social justice.", "Global trade relies on standardizing working hours.", "Governments must dictate employer policies."],
+                correct: 1,
+                exp: "The ILO's founding principle was that lasting peace requires social justice[cite: 1]."
+            },
+            {
+                q: "For security reasons during World War II in 1940, the ILO headquarters were temporarily moved to which city?[cite: 1]",
+                options: ["London, UK", "New York, USA", "Montreal, Canada", "Washington D.C., USA"],
+                correct: 2,
+                exp: "During World War II, its headquarters were temporarily moved to Montreal, Canada, in 1940 for security reasons, before returning to Geneva after the war[cite: 1]."
+            },
+            {
+                q: "According to the provided text, which of the following is an accurate statement regarding International Labour Day (May Day)?[cite: 1]",
+                options: ["It is observed on 1 May because that is the anniversary of the founding of the ILO.", "It is observed on 1 May, which is NOT the anniversary of the ILO.", "It is observed on 28 June in alignment with the Treaty of Versailles.", "It was officially created by the ILO in 1886."],
+                correct: 1,
+                exp: "1 May is widely observed as International Workers' Day, but it is an important distinction that 1 May is NOT the anniversary of the ILO[cite: 1]. The ILO was established in 1919, while the roots of May Day stem from the 1886 events in Chicago[cite: 1]."
+            }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let qStatus = new Array(quizData.length).fill('not-visited'); // 'not-visited', 'visited', 'answered', 'marked'
+        let timerSeconds = 600; // 10 minutes
+        let timerInterval;
+
+        function initTest() {
+            document.getElementById('quiz-screen').style.display = 'block';
+            document.getElementById('result-screen').style.display = 'none';
+            currentIndex = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            qStatus = new Array(quizData.length).fill('not-visited');
+            timerSeconds = 600;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimerDisplay();
+
+            buildPalette();
+            renderQuestion(0);
+        }
+
+        function updateTimer() {
+            if (timerSeconds <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+                return;
+            }
+            timerSeconds--;
+            updateTimerDisplay();
+
+            const timerEl = document.getElementById('timer');
+            if (timerSeconds <= 120) {
+                timerEl.classList.add('pulse');
+            } else {
+                timerEl.classList.remove('pulse');
+            }
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timerSeconds / 60);
+            let s = timerSeconds % 60;
+            document.getElementById('timer').innerText =
+                (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function buildPalette() {
+            const pal = document.getElementById('palette');
+            pal.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = `palette-btn status-${qStatus[i]}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => renderQuestion(i);
+                btn.id = `pal-btn-${i}`;
+                pal.appendChild(btn);
+            }
+        }
+
+        function updatePaletteStyles() {
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.getElementById(`pal-btn-${i}`);
+                btn.className = `palette-btn status-${qStatus[i]}`;
+                if (i === currentIndex) btn.classList.add('active-q');
+            }
+        }
+
+        function renderQuestion(index) {
+            currentIndex = index;
+            if (qStatus[currentIndex] === 'not-visited') {
+                qStatus[currentIndex] = 'visited';
+            }
+
+            document.getElementById('q-number').innerText = `Question ${currentIndex + 1} of ${quizData.length}`;
+            document.getElementById('q-text').innerHTML = quizData[currentIndex].q;
+
+            const optCont = document.getElementById('options-container');
+            optCont.innerHTML = '';
+
+            quizData[currentIndex].options.forEach((opt, idx) => {
+                const lbl = document.createElement('label');
+                lbl.className = 'option-label';
+
+                const inp = document.createElement('input');
+                inp.type = 'radio';
+                inp.name = 'q-option';
+                inp.value = idx;
+                if (userAnswers[currentIndex] === idx) inp.checked = true;
+
+                inp.onchange = () => {
+                    userAnswers[currentIndex] = idx;
+                    if (qStatus[currentIndex] !== 'marked') {
+                        qStatus[currentIndex] = 'answered';
+                    }
+                    updatePaletteStyles();
+                };
+
+                lbl.appendChild(inp);
+                lbl.appendChild(document.createTextNode(opt));
+                optCont.appendChild(lbl);
+            });
+
+            updatePaletteStyles();
+        }
+
+        function nav(step) {
+            let next = currentIndex + step;
+            if (next >= 0 && next < quizData.length) {
+                renderQuestion(next);
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentIndex] = null;
+            const inps = document.getElementsByName('q-option');
+            inps.forEach(i => i.checked = false);
+            if (qStatus[currentIndex] !== 'marked') {
+                qStatus[currentIndex] = 'visited';
+            }
+            updatePaletteStyles();
+        }
+
+        function toggleMark() {
+            if (qStatus[currentIndex] === 'marked') {
+                qStatus[currentIndex] = userAnswers[currentIndex] !== null ? 'answered' : 'visited';
+            } else {
+                qStatus[currentIndex] = 'marked';
+            }
+            updatePaletteStyles();
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            let correct = 0, incorrect = 0, unattempted = 0;
+            const reviewCont = document.getElementById('review-container');
+            reviewCont.innerHTML = '';
+
+            quizData.forEach((qObj, i) => {
+                const uAns = userAnswers[i];
+                let isCorr = false;
+
+                if (uAns === null) {
+                    unattempted++;
+                } else if (uAns === qObj.correct) {
+                    correct++;
+                    isCorr = true;
+                } else {
+                    incorrect++;
+                }
+
+                let statusHtml = uAns === null ? '<span class="review-status status-unatt">Unattempted</span>' :
+                                 isCorr ? '<span class="review-status status-corr">Correct</span>' :
+                                          '<span class="review-status status-incorr">Incorrect</span>';
+
+                let uAnsText = uAns === null ? 'None' : qObj.options[uAns];
+                let cAnsText = qObj.options[qObj.correct];
+
+                reviewCont.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-q">Q${i+1}. ${qObj.q}</div>
+                        ${statusHtml}
+                        <div style="margin-bottom: 5px;"><strong>Your Answer:</strong> ${uAnsText}</div>
+                        <div><strong>Correct Answer:</strong> ${cAnsText}</div>
+                        <div class="review-explanation"><strong>Explanation:</strong> ${qObj.exp}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-incorrect').innerText = incorrect;
+            document.getElementById('res-unattempted').innerText = unattempted;
+        }
+
+        // Start App
+        window.onload = initTest;
+    </script>
+</body>
+</html>

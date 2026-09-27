@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Exam: ILO Comprehensive Revision Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .exam-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-top: 5px solid #0056b3;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #0056b3;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 0;
+            color: #666;
+        }
+        .timer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e9ecef;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .timer {
+            color: #d9534f;
+        }
+        .question-box {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .options-list li {
+            margin-bottom: 8px;
+        }
+        .options-list label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .options-list input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e2e3e5;
+            border-left: 4px solid #6c757d;
+            font-size: 0.95em;
+        }
+        .btn-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+            margin: 0 10px;
+        }
+        .btn-submit { background-color: #28a745; }
+        .btn-submit:hover { background-color: #218838; }
+        .btn-reset { background-color: #007bff; }
+        .btn-reset:hover { background-color: #0069d9; }
+
+        #result-screen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            color: #155724;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="exam-container">
+    <div class="header">
+        <h1>Department of Labour Revision Assessment</h1>
+        <p>Subject: International Labour Organization (ILO) Framework & History</p>
+    </div>
+
+    <div class="timer-bar">
+        <span>Total Questions: 10</span>
+        <span>Time Left: <span id="time" class="timer">10:00</span></span>
+    </div>
+
+    <form id="quiz-form">
+        <!-- Question 1 -->
+        <div class="question-box" id="q1-box">
+            <div class="question-title">1. The Constitution of the International Labour Organization (ILO) was originally incorporated into which historic document?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q1" value="A"> A) The Geneva Convention</label></li>
+                <li><label><input type="radio" name="q1" value="B"> B) Part XIII of the Treaty of Versailles</label></li>
+                <li><label><input type="radio" name="q1" value="C"> C) The Charter of the United Nations</label></li>
+                <li><label><input type="radio" name="q1" value="D"> D) The Declaration of Philadelphia</label></li>
+            </ul>
+            <div class="explanation" id="exp-q1"><strong>Explanation:</strong> The ILO was established in 1919 and its Constitution formed Part XIII of the Treaty of Versailles.</div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-box" id="q2-box">
+            <div class="question-title">2. What constitutes the unique "tripartite structure" of the ILO?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q2" value="A"> A) Governments, NGOs, and the Judiciary</label></li>
+                <li><label><input type="radio" name="q2" value="B"> B) Governments, Workers, and Employers</label></li>
+                <li><label><input type="radio" name="q2" value="C"> C) The UN Security Council, General Assembly, and Secretariat</label></li>
+                <li><label><input type="radio" name="q2" value="D"> D) Legislators, Executives, and Trade Unions</label></li>
+            </ul>
+            <div class="explanation" id="exp-q2"><strong>Explanation:</strong> The ILO is the only tripartite UN agency, bringing together Governments, Workers, and Employers (G + W + E).</div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-box" id="q3-box">
+            <div class="question-title">3. Which of the following statements regarding India's relationship with the ILO is absolutely correct?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q3" value="A"> A) India joined the ILO in 1922 and became a Governing Body member in 1946.</label></li>
+                <li><label><input type="radio" name="q3" value="B"> B) India was a founding member in 1919 and became a permanent member of the Governing Body in 1922.</label></li>
+                <li><label><input type="radio" name="q3" value="C"> C) India joined the ILO only after gaining independence in 1947.</label></li>
+                <li><label><input type="radio" name="q3" value="D"> D) India is a member state but has never been part of the Governing Body.</label></li>
+            </ul>
+            <div class="explanation" id="exp-q3"><strong>Explanation:</strong> India is a founding member (1919) and became a permanent member of the ILO Governing Body in 1922. The first ILO office in India opened in 1928.</div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-box" id="q4-box">
+            <div class="question-title">4. Identify the current Director-General of the ILO (as of September 2026), who is also the first African to hold this position.</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q4" value="A"> A) Guy Ryder</label></li>
+                <li><label><input type="radio" name="q4" value="B"> B) Tedros Adhanom Ghebreyesus</label></li>
+                <li><label><input type="radio" name="q4" value="C"> C) Gilbert F. Houngbo</label></li>
+                <li><label><input type="radio" name="q4" value="D"> D) Juan Somavia</label></li>
+            </ul>
+            <div class="explanation" id="exp-q4"><strong>Explanation:</strong> Gilbert F. Houngbo from Togo is the 11th Director-General. He took office in October 2022.</div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-box" id="q5-box">
+            <div class="question-title">5. Which major organ of the ILO is commonly referred to as the "Parliament of Labour"?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q5" value="A"> A) The International Labour Office</label></li>
+                <li><label><input type="radio" name="q5" value="B"> B) The Governing Body</label></li>
+                <li><label><input type="radio" name="q5" value="C"> C) The International Labour Conference (ILC)</label></li>
+                <li><label><input type="radio" name="q5" value="D"> D) The Geneva Secretariat</label></li>
+            </ul>
+            <div class="explanation" id="exp-q5"><strong>Explanation:</strong> The International Labour Conference (ILC) establishes international labour standards, meets annually, and is known as the "Parliament of Labour".</div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-box" id="q6-box">
+            <div class="question-title">6. In which year did the ILO officially become a specialized agency of the United Nations?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q6" value="A"> A) 1919</label></li>
+                <li><label><input type="radio" name="q6" value="B"> B) 1945</label></li>
+                <li><label><input type="radio" name="q6" value="C"> C) 1946</label></li>
+                <li><label><input type="radio" name="q6" value="D"> D) 1969</label></li>
+            </ul>
+            <div class="explanation" id="exp-q6"><strong>Explanation:</strong> Although established in 1919 (before the UN), the ILO became the first specialized agency of the UN in 1946.</div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-box" id="q7-box">
+            <div class="question-title">7. For what reason and in which year was the ILO awarded the Nobel Peace Prize?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q7" value="A"> A) In 1946, for integrating with the United Nations.</label></li>
+                <li><label><input type="radio" name="q7" value="B"> B) In 1969, on its 50th anniversary, for promoting social justice and improving working conditions.</label></li>
+                <li><label><input type="radio" name="q7" value="C"> C) In 1998, for the Declaration on Fundamental Principles.</label></li>
+                <li><label><input type="radio" name="q7" value="D"> D) In 1919, for ending World War I.</label></li>
+            </ul>
+            <div class="explanation" id="exp-q7"><strong>Explanation:</strong> The ILO received the Nobel Peace Prize in 1969 on its 50th anniversary.</div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-box" id="q8-box">
+            <div class="question-title">8. The famous principle "Labour is not a commodity" is a key feature of which important document?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q8" value="A"> A) Declaration on Fundamental Principles and Rights at Work (1998)</label></li>
+                <li><label><input type="radio" name="q8" value="B"> B) The Treaty of Versailles (1919)</label></li>
+                <li><label><input type="radio" name="q8" value="C"> C) Declaration of Philadelphia (1944)</label></li>
+                <li><label><input type="radio" name="q8" value="D"> D) UN Charter on Human Rights</label></li>
+            </ul>
+            <div class="explanation" id="exp-q8"><strong>Explanation:</strong> The Declaration of Philadelphia, adopted during WWII in 1944, established the principle that "Labour is not a commodity."</div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-box" id="q9-box">
+            <div class="question-title">9. How many Member States does the ILO currently have?</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q9" value="A"> A) 187</label></li>
+                <li><label><input type="radio" name="q9" value="B"> B) 193</label></li>
+                <li><label><input type="radio" name="q9" value="C"> C) 195</label></li>
+                <li><label><input type="radio" name="q9" value="D"> D) 150</label></li>
+            </ul>
+            <div class="explanation" id="exp-q9"><strong>Explanation:</strong> Currently, the ILO has an official figure of 187 Member States.</div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-box" id="q10-box">
+            <div class="question-title">10. True or False context: International Workers' Day (May Day) on 1 May is celebrated worldwide to mark the founding anniversary of the ILO.</div>
+            <ul class="options-list">
+                <li><label><input type="radio" name="q10" value="A"> A) True, May 1st 1919 was the exact day ILO was established.</label></li>
+                <li><label><input type="radio" name="q10" value="B"> B) False, 1 May is rooted in the 1886 Chicago labour movement, not the ILO's establishment.</label></li>
+            </ul>
+            <div class="explanation" id="exp-q10"><strong>Explanation:</strong> 1 May is NOT the anniversary of the ILO. It is strongly connected to the 1886 struggle for an eight-hour working day in Chicago.</div>
+        </div>
+
+        <div id="result-screen"></div>
+
+        <div class="btn-group">
+            <button type="button" class="btn-submit" id="submit-btn" onclick="submitExam()">Submit Exam</button>
+            <button type="button" class="btn-reset" onclick="resetExam()">Retake Exam</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Correct answers mapping
+    const correctAnswers = {
+        q1: 'B',
+        q2: 'B',
+        q3: 'B',
+        q4: 'C',
+        q5: 'C',
+        q6: 'C',
+        q7: 'B',
+        q8: 'C',
+        q9: 'A',
+        q10: 'B'
+    };
+
+    let timeInSeconds = 600; // 10 minutes timer
+    let timerInterval;
+    let isSubmitted = false;
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeInSeconds--;
+            document.getElementById('time').innerText = formatTime(timeInSeconds);
+
+            if (timeInSeconds <= 0) {
+                clearInterval(timerInterval);
+                if (!isSubmitted) {
+                    alert("Time is up! Auto-submitting your exam.");
+                    submitExam();
+                }
+            }
+        }, 1000);
+    }
+
+    function submitExam() {
+        if (isSubmitted) return;
+        isSubmitted = true;
+        clearInterval(timerInterval);
+
+        let score = 0;
+        let totalQuestions = Object.keys(correctAnswers).length;
+
+        // Grade the quiz
+        for (let q in correctAnswers) {
+            let selected = document.querySelector(`input[name="${q}"]:checked`);
+            let box = document.getElementById(`${q}-box`);
+            let exp = document.getElementById(`exp-${q}`);
+
+            // Show explanations
+            exp.style.display = "block";
+
+            // Disable all radio buttons
+            let radios = document.querySelectorAll(`input[name="${q}"]`);
+            radios.forEach(radio => radio.disabled = true);
+
+            if (selected) {
+                if (selected.value === correctAnswers[q]) {
+                    score++;
+                    selected.parentElement.classList.add('correct');
+                } else {
+                    selected.parentElement.classList.add('incorrect');
+                    // highlight correct answer as well
+                    document.querySelector(`input[name="${q}"][value="${correctAnswers[q]}"]`).parentElement.classList.add('correct');
+                }
+            } else {
+                // If nothing was selected, highlight the correct one
+                document.querySelector(`input[name="${q}"][value="${correctAnswers[q]}"]`).parentElement.classList.add('correct');
+            }
+        }
+
+        // Show Score
+        const resultScreen = document.getElementById('result-screen');
+        resultScreen.style.display = 'block';
+        resultScreen.innerHTML = `Exam Completed!<br>Your Score: ${score} / ${totalQuestions}`;
+
+        // Disable submit button
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('submit-btn').style.opacity = '0.5';
+        document.getElementById('submit-btn').style.cursor = 'not-allowed';
+    }
+
+    function resetExam() {
+        isSubmitted = false;
+        clearInterval(timerInterval);
+        timeInSeconds = 600;
+        document.getElementById('time').innerText = formatTime(timeInSeconds);
+
+        // Hide result screen
+        document.getElementById('result-screen').style.display = 'none';
+
+        // Reset styling and selections
+        for (let q in correctAnswers) {
+            let radios = document.querySelectorAll(`input[name="${q}"]`);
+            radios.forEach(radio => {
+                radio.disabled = false;
+                radio.checked = false;
+                radio.parentElement.classList.remove('correct', 'incorrect');
+            });
+            document.getElementById(`exp-${q}`).style.display = "none";
+        }
+
+        // Re-enable submit button
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('submit-btn').style.opacity = '1';
+        document.getElementById('submit-btn').style.cursor = 'pointer';
+
+        startTimer();
+    }
+
+    // Initialize on page load
+    window.onload = startTimer;
+</script>
+
+</body>
+</html>
