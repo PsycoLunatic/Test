@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated CBT - European Union Based on "New Text Document_9.txt"</title>
+    <style>
+        :root {
+            --gray: #e0e0e0;
+            --red: #dc3545;
+            --green: #28a745;
+            --purple: #6f42c1;
+            --blue: #007bff;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+        body, html {
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%; background-color: var(--light); color: var(--dark);
+        }
+        /* Header */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: var(--dark); color: white; padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-title { font-size: 1.2rem; font-weight: bold; }
+        .timer-container { font-size: 1.3rem; font-weight: bold; padding: 5px 15px; border-radius: 5px; background: #222; }
+        .timer-container.pulse { animation: pulseRed 1s infinite; color: var(--red); }
+        @keyframes pulseRed { 0% { transform: scale(1); } 50% { transform: scale(1.05); text-shadow: 0 0 10px red; } 100% { transform: scale(1); } }
+
+        /* Layout */
+        #main-wrapper { display: flex; height: calc(100vh - 130px); }
+        #left-panel { flex: 3; padding: 20px; overflow-y: auto; background: white; border-right: 2px solid var(--gray); }
+        #right-panel { flex: 1; padding: 20px; overflow-y: auto; background: var(--light); display: flex; flex-direction: column; }
+
+        /* Question Area */
+        .question-number { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: var(--blue); }
+        .question-text { font-size: 1.15rem; margin-bottom: 20px; line-height: 1.5; }
+        .option-label {
+            display: block; padding: 12px; margin-bottom: 10px; border: 1px solid var(--gray);
+            border-radius: 5px; cursor: pointer; transition: 0.2s; background: white;
+        }
+        .option-label:hover { background: #f1f8ff; }
+        .option-label input { margin-right: 10px; }
+
+        /* Palette Area */
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .palette-btn {
+            width: 45px; height: 45px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;
+            color: #333; background: var(--gray); transition: 0.2s; font-size: 1rem;
+        }
+        .palette-btn.active-q { border: 2px solid #000; transform: scale(1.1); box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+
+        .status-not-visited { background: var(--gray); color: #333; }
+        .status-visited { background: var(--red); color: white; }
+        .status-answered { background: var(--green); color: white; }
+        .status-marked { background: var(--purple); color: white; }
+
+        /* Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--gray); }
+        .legend-item { display: flex; align-items: center; width: 45%; }
+        .legend-box { width: 20px; height: 20px; margin-right: 8px; border-radius: 3px; }
+
+        /* Footer / Action Bar */
+        footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: white; border-top: 2px solid var(--gray);
+            height: 60px; box-sizing: border-box;
+        }
+        .btn-group { display: flex; gap: 10px; }
+        button.action-btn {
+            padding: 10px 20px; font-size: 1rem; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s;
+        }
+        .btn-prev, .btn-next { background: var(--blue); color: white; }
+        .btn-prev:hover, .btn-next:hover { background: #0056b3; }
+        .btn-clear { background: white; border: 1px solid var(--dark); color: var(--dark); }
+        .btn-clear:hover { background: var(--gray); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-mark:hover { background: #5a32a3; }
+        .btn-submit { background: var(--green); color: white; font-size: 1.1rem; }
+        .btn-submit:hover { background: #218838; }
+
+        /* Results Screen */
+        #result-screen { display: none; padding: 30px; max-width: 900px; margin: 0 auto; background: white; min-height: 100vh; }
+        .summary-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0 30px 0; text-align: center;
+        }
+        .summary-card { padding: 20px; border-radius: 8px; font-weight: bold; color: white; }
+        .sc-total { background: var(--blue); } .sc-correct { background: var(--green); }
+        .sc-incorrect { background: var(--red); } .sc-unattempted { background: var(--gray); color: #333; }
+        .summary-card span { display: block; font-size: 2rem; margin-top: 10px; }
+
+        .review-card { border: 1px solid var(--gray); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: var(--light); }
+        .review-q { font-weight: bold; margin-bottom: 10px; }
+        .review-status { font-weight: bold; margin-bottom: 10px; padding: 5px 10px; display: inline-block; border-radius: 3px; color: white;}
+        .status-corr { background: var(--green); } .status-incorr { background: var(--red); } .status-unatt { background: var(--gray); color: #333; }
+        .review-explanation { margin-top: 15px; padding: 10px; background: #e9ecef; border-left: 4px solid var(--blue); }
+        .btn-retake { background: var(--blue); color: white; padding: 12px 25px; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer; display: block; margin: 30px auto; }
+    </style>
+</head>
+<body>
+
+    <!-- QUIZ INTERFACE -->
+    <div id="quiz-screen">
+        <header>
+            <div class="header-title">Automated CBT: EU Based on "New Text Document_9.txt"</div>
+            <div id="timer" class="timer-container">10:00</div>
+        </header>
+
+        <div id="main-wrapper">
+            <div id="left-panel">
+                <div class="question-number" id="q-number">Question 1</div>
+                <div class="question-text" id="q-text"></div>
+                <div id="options-container"></div>
+            </div>
+
+            <div id="right-panel">
+                <h3 style="margin-top: 0;">Navigation Palette</h3>
+                <div class="palette-grid" id="palette"></div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-box status-not-visited"></div> Not Visited</div>
+                    <div class="legend-item"><div class="legend-box status-visited"></div> Not Answered</div>
+                    <div class="legend-item"><div class="legend-box status-answered"></div> Answered</div>
+                    <div class="legend-item"><div class="legend-box status-marked"></div> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="btn-group">
+                <button class="action-btn btn-prev" onclick="nav(-1)">Previous</button>
+                <button class="action-btn btn-next" onclick="nav(1)">Next</button>
+            </div>
+            <div class="btn-group">
+                <button class="action-btn btn-clear" onclick="clearResponse()">Clear Response</button>
+                <button class="action-btn btn-mark" onclick="toggleMark()">Mark for Review</button>
+                <button class="action-btn btn-submit" onclick="submitTest()">Submit Test</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- RESULT INTERFACE -->
+    <div id="result-screen">
+        <h1 style="text-align: center;">Scorecard & Performance Review</h1>
+        <div class="summary-grid">
+            <div class="summary-card sc-total">Total Questions<span id="res-total">10</span></div>
+            <div class="summary-card sc-correct">Correct<span id="res-correct">0</span></div>
+            <div class="summary-card sc-incorrect">Incorrect<span id="res-incorrect">0</span></div>
+            <div class="summary-card sc-unattempted">Unattempted<span id="res-unattempted">0</span></div>
+        </div>
+
+        <h2>Detailed Review</h2>
+        <div id="review-container"></div>
+        <button class="btn-retake" onclick="initTest()">Retake Test</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "The European Union was formally established by which treaty?[cite: 9]",
+                options: ["Treaty of Rome", "Treaty of Paris", "Maastricht Treaty", "Lisbon Treaty"],
+                correct: 2,
+                exp: "The European Union was formally established by the Maastricht Treaty, also called the Treaty on European Union[cite: 9]."
+            },
+            {
+                q: "The Maastricht Treaty entered into force in:[cite: 9]",
+                options: ["1991", "1992", "1993", "1995"],
+                correct: 2,
+                exp: "The Maastricht Treaty entered into force on 1 November 1993, formally establishing the European Union[cite: 9]."
+            },
+            {
+                q: "How many member states does the European Union currently have?[cite: 9]",
+                options: ["25", "27", "28", "30"],
+                correct: 1,
+                exp: "The European Union currently has 27 Member States[cite: 9]."
+            },
+            {
+                q: "Which country was the first to leave the European Union?[cite: 9]",
+                options: ["Greece", "Denmark", "United Kingdom", "Norway"],
+                correct: 2,
+                exp: "The UK was the first and, so far, only country to leave the European Union[cite: 9]."
+            },
+            {
+                q: "The UK formally left the EU on:[cite: 9]",
+                options: ["23 June 2016", "31 January 2019", "31 January 2020", "1 January 2021"],
+                correct: 2,
+                exp: "The UK formally left the European Union on 31 January 2020[cite: 9]."
+            },
+            {
+                q: "The Brexit referendum was held in:[cite: 9]",
+                options: ["2014", "2015", "2016", "2017"],
+                correct: 2,
+                exp: "The UK held a referendum on EU membership on 23 June 2016[cite: 9]."
+            },
+            {
+                q: "Which of the following is NOT synonymous with the European Union?[cite: 9]",
+                options: ["EU", "European Union", "Eurozone", "European integration framework"],
+                correct: 2,
+                exp: "The EU and the Eurozone are not synonymous; as of 2026, only 21 of the 27 EU members use the euro and constitute the Euro Area[cite: 9]."
+            },
+            {
+                q: "Which city is the principal institutional centre of the European Union?[cite: 9]",
+                options: ["London", "Paris", "Brussels", "Berlin"],
+                correct: 2,
+                exp: "Brussels, Belgium, is the main institutional centre of the EU, housing the European Commission and European Council[cite: 9]."
+            },
+            {
+                q: "Which predecessor to the EU was created in 1951 by six founding countries?[cite: 9]",
+                options: ["European Economic Community (EEC)", "European Atomic Energy Community (EURATOM)", "European Coal and Steel Community (ECSC)", "Schengen Area"],
+                correct: 2,
+                exp: "The European Coal and Steel Community (ECSC) was established in 1951 by six founding countries[cite: 9]."
+            },
+            {
+                q: "Which of the following is a non-EU country that participates in the Schengen Area?[cite: 9]",
+                options: ["Ireland", "Norway", "United Kingdom", "Romania"],
+                correct: 1,
+                exp: "Norway is an example of a non-EU country that participates in the Schengen Area[cite: 9]."
+            }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let qStatus = new Array(quizData.length).fill('not-visited');
+        let timerSeconds = 600;
+        let timerInterval;
+
+        function initTest() {
+            document.getElementById('quiz-screen').style.display = 'block';
+            document.getElementById('result-screen').style.display = 'none';
+            currentIndex = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            qStatus = new Array(quizData.length).fill('not-visited');
+            timerSeconds = 600;
+            document.getElementById('res-total').innerText = quizData.length;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimerDisplay();
+
+            buildPalette();
+            renderQuestion(0);
+        }
+
+        function updateTimer() {
+            if (timerSeconds <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+                return;
+            }
+            timerSeconds--;
+            updateTimerDisplay();
+
+            const timerEl = document.getElementById('timer');
+            if (timerSeconds <= 120) {
+                timerEl.classList.add('pulse');
+            } else {
+                timerEl.classList.remove('pulse');
+            }
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timerSeconds / 60);
+            let s = timerSeconds % 60;
+            document.getElementById('timer').innerText =
+                (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function buildPalette() {
+            const pal = document.getElementById('palette');
+            pal.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = `palette-btn status-${qStatus[i]}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => renderQuestion(i);
+                btn.id = `pal-btn-${i}`;
+                pal.appendChild(btn);
+            }
+        }
+
+        function updatePaletteStyles() {
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.getElementById(`pal-btn-${i}`);
+                btn.className = `palette-btn status-${qStatus[i]}`;
+                if (i === currentIndex) btn.classList.add('active-q');
+            }
+        }
+
+        function renderQuestion(index) {
+            currentIndex = index;
+            if (qStatus[currentIndex] === 'not-visited') {
+                qStatus[currentIndex] = 'visited';
+            }
+
+            document.getElementById('q-number').innerText = `Question ${currentIndex + 1} of ${quizData.length}`;
+            document.getElementById('q-text').innerHTML = quizData[currentIndex].q;
+
+            const optCont = document.getElementById('options-container');
+            optCont.innerHTML = '';
+
+            quizData[currentIndex].options.forEach((opt, idx) => {
+                const lbl = document.createElement('label');
+                lbl.className = 'option-label';
+
+                const inp = document.createElement('input');
+                inp.type = 'radio';
+                inp.name = 'q-option';
+                inp.value = idx;
+                if (userAnswers[currentIndex] === idx) inp.checked = true;
+
+                inp.onchange = () => {
+                    userAnswers[currentIndex] = idx;
+                    if (qStatus[currentIndex] !== 'marked') {
+                        qStatus[currentIndex] = 'answered';
+                    }
+                    updatePaletteStyles();
+                };
+
+                lbl.appendChild(inp);
+                lbl.appendChild(document.createTextNode(opt));
+                optCont.appendChild(lbl);
+            });
+
+            updatePaletteStyles();
+        }
+
+        function nav(step) {
+            let next = currentIndex + step;
+            if (next >= 0 && next < quizData.length) {
+                renderQuestion(next);
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentIndex] = null;
+            const inps = document.getElementsByName('q-option');
+            inps.forEach(i => i.checked = false);
+            if (qStatus[currentIndex] !== 'marked') {
+                qStatus[currentIndex] = 'visited';
+            }
+            updatePaletteStyles();
+        }
+
+        function toggleMark() {
+            if (qStatus[currentIndex] === 'marked') {
+                qStatus[currentIndex] = userAnswers[currentIndex] !== null ? 'answered' : 'visited';
+            } else {
+                qStatus[currentIndex] = 'marked';
+            }
+            updatePaletteStyles();
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            let correct = 0, incorrect = 0, unattempted = 0;
+            const reviewCont = document.getElementById('review-container');
+            reviewCont.innerHTML = '';
+
+            quizData.forEach((qObj, i) => {
+                const uAns = userAnswers[i];
+                let isCorr = false;
+
+                if (uAns === null) {
+                    unattempted++;
+                } else if (uAns === qObj.correct) {
+                    correct++;
+                    isCorr = true;
+                } else {
+                    incorrect++;
+                }
+
+                let statusHtml = uAns === null ? '<span class="review-status status-unatt">Unattempted</span>' :
+                                 isCorr ? '<span class="review-status status-corr">Correct</span>' :
+                                          '<span class="review-status status-incorr">Incorrect</span>';
+
+                let uAnsText = uAns === null ? 'None' : qObj.options[uAns];
+                let cAnsText = qObj.options[qObj.correct];
+
+                reviewCont.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-q">Q${i+1}. ${qObj.q}</div>
+                        ${statusHtml}
+                        <div style="margin-bottom: 5px;"><strong>Your Answer:</strong> ${uAnsText}</div>
+                        <div><strong>Correct Answer:</strong> ${cAnsText}</div>
+                        <div class="review-explanation"><strong>Explanation:</strong> ${qObj.exp}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-incorrect').innerText = incorrect;
+            document.getElementById('res-unattempted').innerText = unattempted;
+        }
+
+        // Start App
+        window.onload = initTest;
+    </script>
+</body>
+</html>
