@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Exam CBT - National Green Tribunal (NGT)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-emerald-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-700 p-2 rounded-lg text-emerald-200">
+                    <i class="fa-solid fa-seedling text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide">EXAMPORTAL <span class="text-emerald-400 text-xs uppercase px-2 py-0.5 bg-emerald-800 rounded">CBT Mode</span></h1>
+                    <p class="text-xs text-emerald-200">Subject: National Green Tribunal (NGT) & Environmental Law</p>
+                </div>
+            </div>
+            <div id="timer-container" class="hidden items-center space-x-2 bg-emerald-950 px-4 py-2 rounded-lg border border-emerald-700 mt-2 sm:mt-0">
+                <i class="fa-solid fa-clock text-emerald-400 animate-pulse"></i>
+                <span class="text-xs text-slate-300 font-medium">Time Left:</span>
+                <span id="time-display" class="font-mono font-bold text-emerald-400 text-base">15:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-2 sm:p-4 flex flex-col">
+
+        <!-- SCREEN 1: WELCOME & SETUP SCREEN -->
+        <div id="welcome-screen" class="bg-white rounded-2xl shadow-xl p-6 sm:p-10 max-w-3xl mx-auto my-auto w-full border border-slate-200">
+            <div class="text-center mb-6">
+                <div class="inline-block p-3 bg-emerald-50 text-emerald-600 rounded-full mb-3">
+                    <i class="fa-solid fa-graduation-cap text-3xl"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Online Computer Based Test (CBT)</h2>
+                <p class="text-slate-500 text-sm mt-1">High-Yield Government Competitive Exam Simulation</p>
+            </div>
+
+            <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-6">
+                <h3 class="font-semibold text-slate-800 mb-3 flex items-center text-sm uppercase tracking-wider">
+                    <i class="fa-solid fa-circle-info text-emerald-600 mr-2"></i> Exam Instructions & Guidelines
+                </h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-600 mt-1 mr-2 text-xs"></i>
+                        <span><strong>Total Questions:</strong> 10 Multiple Choice & Statement-based Questions.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-600 mt-1 mr-2 text-xs"></i>
+                        <span><strong>Marking Scheme:</strong> +1 mark for every correct answer, no negative marking.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-600 mt-1 mr-2 text-xs"></i>
+                        <span><strong>Duration:</strong> 15 Minutes. The timer will start immediately upon clicking "Start Test".</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-600 mt-1 mr-2 text-xs"></i>
+                        <span><strong>Color Palette Guidance:</strong> Gray (Not Visited), Red (Not Answered), Green (Answered), Purple (Marked for Review).</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="text-xs text-slate-500">
+                    <i class="fa-solid fa-lock text-emerald-600 mr-1"></i> Secure Environment Active
+                </div>
+                <button onclick="startTest()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition duration-200 flex items-center space-x-2">
+                    <span>Start Test Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: TEST INTERFACE (HIDDEN INITIALLY) -->
+        <div id="test-screen" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow">
+
+            <!-- LEFT WORKSPACE (Question Card) -->
+            <div class="lg:col-span-3 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col justify-between p-4 sm:p-6">
+                <div>
+                    <!-- Question Header Info -->
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+                        <span id="question-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Question 1 of 10
+                        </span>
+                        <span id="question-status-tag" class="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-600">
+                            Not Answered
+                        </span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <div id="question-text" class="text-base sm:text-lg font-medium text-slate-900 mb-6 leading-relaxed">
+                        <!-- Dynamic Question Text -->
+                    </div>
+
+                    <!-- Options Container -->
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Dynamic Options -->
+                    </div>
+                </div>
+
+                <!-- Action Footer Buttons -->
+                <div class="border-t border-slate-100 pt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex space-x-2">
+                        <button onclick="clearResponse()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition duration-150">
+                            <i class="fa-solid fa-eraser mr-1"></i> Clear Response
+                        </button>
+                        <button onclick="markForReviewAndNext()" class="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 text-sm font-medium rounded-lg border border-purple-200 transition duration-150">
+                            <i class="fa-solid fa-bookmark mr-1"></i> Mark for Review & Next
+                        </button>
+                    </div>
+                    <button onclick="saveAndNext()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow transition duration-150 flex items-center space-x-1">
+                        <span>Save & Next</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR (Palette & Navigation Grid) -->
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 p-4 flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm mb-3 border-b border-slate-100 pb-2">Question Palette</h3>
+
+                    <!-- Legend -->
+                    <div class="grid grid-cols-2 gap-2 text-xs mb-4 text-slate-600">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 rounded bg-emerald-500 text-white flex items-center justify-center font-bold text-[10px]" id="count-answered">0</div>
+                            <span>Answered</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 rounded bg-rose-500 text-white flex items-center justify-center font-bold text-[10px]" id="count-not-answered">0</div>
+                            <span>Not Answered</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 rounded bg-purple-600 text-white flex items-center justify-center font-bold text-[10px]" id="count-marked">0</div>
+                            <span>Marked Review</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 rounded bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]" id="count-not-visited">10</div>
+                            <span>Not Visited</span>
+                        </div>
+                    </div>
+
+                    <!-- Grid Numbers -->
+                    <div id="palette-grid" class="grid grid-cols-5 gap-2 max-h-56 overflow-y-auto custom-scrollbar p-1">
+                        <!-- Dynamic Palette Buttons -->
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    <button onclick="submitExam()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow transition duration-150 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Submit Exam</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SCREEN 3: RESULTS & ANALYTICS DASHBOARD (HIDDEN INITIALLY) -->
+        <div id="results-screen" class="hidden bg-white rounded-2xl shadow-xl p-6 sm:p-8 max-w-4xl mx-auto my-auto w-full border border-slate-200">
+            <div class="text-center border-b border-slate-200 pb-6 mb-6">
+                <div class="inline-block p-3 bg-emerald-50 text-emerald-600 rounded-full mb-2">
+                    <i class="fa-solid fa-award text-3xl"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Exam Performance Report</h2>
+                <p class="text-slate-500 text-sm mt-1">National Green Tribunal (NGT) Assessment</p>
+            </div>
+
+            <!-- Analytics Cards Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p class="text-xs text-slate-500 uppercase font-semibold">Final Score</p>
+                    <p id="res-score" class="text-2xl sm:text-3xl font-bold text-emerald-600 mt-1">0 / 10</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p class="text-xs text-slate-500 uppercase font-semibold">Accuracy</p>
+                    <p id="res-accuracy" class="text-2xl sm:text-3xl font-bold text-emerald-600 mt-1">0%</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p class="text-xs text-slate-500 uppercase font-semibold">Correct / Wrong</p>
+                    <p id="res-correct-wrong" class="text-xl sm:text-2xl font-bold text-slate-700 mt-1">0 / 0</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p class="text-xs text-slate-500 uppercase font-semibold">Time Taken</p>
+                    <p id="res-time" class="text-xl sm:text-2xl font-bold text-amber-600 mt-1">00:00</p>
+                </div>
+            </div>
+
+            <!-- Review Section Header -->
+            <div class="mb-4 flex items-center justify-between">
+                <h3 class="font-bold text-slate-800 text-lg">Detailed Question Review & Rationale</h3>
+                <span class="text-xs text-slate-500">Expand each question to inspect correct solutions</span>
+            </div>
+
+            <!-- Accordions Container -->
+            <div id="review-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2 mb-6">
+                <!-- Dynamic Accordion Items -->
+            </div>
+
+            <div class="text-center">
+                <button onclick="location.reload()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow transition duration-150">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Retake Test
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+        &copy; 2026 Government Exam CBT Engine &bull; Senior Frontend Developer Architecture &bull; Source: National Green Tribunal (NGT) Notes[cite: 6]
+    </footer>
+
+    <!-- CBT APPLICATION SCRIPT -->
+    <script>
+        // Question Bank derived strictly from source notes on NGT[cite: 6]
+        const questions = [
+            {
+                id: 1,
+                question: "On which exact date was the National Green Tribunal (NGT) established?",
+                options: [
+                    "15 August 2008",
+                    "18 October 2010",
+                    "28 November 1996",
+                    "05 June 2012"
+                ],
+                answer: 1, // 18 October 2010 (Index 1)
+                rationale: "The National Green Tribunal (NGT) was established on 18 October 2010 under the National Green Tribunal Act, 2010[cite: 6]."
+            },
+            {
+                id: 2,
+                question: "Who was appointed as the first Chairperson of the National Green Tribunal upon its establishment in 2010?",
+                options: [
+                    "Justice A.S. Naidu",
+                    "Justice Prakash Shrivastava",
+                    "Justice Lokeshwar Singh Panta (L.S. Panta)",
+                    "Justice Swatanter Kumar"
+                ],
+                answer: 2, // Justice Lokeshwar Singh Panta (L.S. Panta) (Index 2)
+                rationale: "Justice Lokeshwar Singh Panta (L.S. Panta), a former Judge of the Supreme Court of India, became the first Chairperson when NGT was established[cite: 6]."
+            },
+            {
+                id: 3,
+                question: "Where is the Principal Bench of the National Green Tribunal (NGT) located?",
+                options: [
+                    "Mumbai",
+                    "Bhopal",
+                    "New Delhi",
+                    "Chennai"
+                ],
+                answer: 2, // New Delhi (Index 2)
+                rationale: "The Principal Bench of the NGT is located in New Delhi[cite: 6]."
+            },
+            {
+                id: 4,
+                question: "Consider the following locations for Zonal Benches of the NGT:<br>1. Bhopal (Central Zone)<br>2. Pune (Western Zone)<br>3. Kolkata (Eastern Zone)<br>4. Chennai (Southern Zone)<br>Which of the above correctly match the four Zonal Benches of NGT?",
+                options: [
+                    "1 and 2 only",
+                    "3 and 4 only",
+                    "1, 2 and 3 only",
+                    "1, 2, 3 and 4"
+                ],
+                answer: 3, // 1, 2, 3 and 4 (Index 3)
+                rationale: "The NGT has four Zonal Benches: Central Zone (Bhopal), Western Zone (Pune), Eastern Zone (Kolkata), and Southern Zone (Chennai)[cite: 6]."
+            },
+            {
+                id: 5,
+                question: "What is a unique structural feature of NGT's composition compared to ordinary courts?",
+                options: [
+                    "It consists only of administrative bureaucrats.",
+                    "It comprises both Judicial Members and Expert Members.",
+                    "It consists exclusively of foreign environmental scientists.",
+                    "It functions solely without any judicial members."
+                ],
+                answer: 1, // It comprises both Judicial Members and Expert Members. (Index 1)
+                rationale: "NGT is different from an ordinary court because it includes both Judicial Members and Expert Members, allowing it to handle legal, technical, and scientific aspects[cite: 6]."
+            },
+            {
+                id: 6,
+                question: "Which of the following environmental principles is NGT empowered to apply during adjudication?",
+                options: [
+                    "Sustainable Development, Precautionary Principle, and Polluter Pays Principle",
+                    "Caveat Emptor and Laissez-Faire",
+                    "Doctrine of Lapse and Paramountcy",
+                    "Absolute Sovereign Immunity"
+                ],
+                answer: 0, // Sustainable Development, Precautionary Principle, and Polluter Pays Principle (Index 0)
+                rationale: "NGT is empowered to apply key environmental principles including Sustainable Development, the Precautionary Principle, and the Polluter Pays Principle[cite: 6]."
+            },
+            {
+                id: 7,
+                question: "What is the targeted statutory timeline under the NGT Act for the disposal of applications and appeals from the date of filing?",
+                options: [
+                    "Within 1 month",
+                    "Within 3 months",
+                    "Within 6 months",
+                    "Within 1 year"
+                ],
+                answer: 2, // Within 6 months (Index 2)
+                rationale: "The NGT Act aims to dispose of applications and appeals as expeditiously as possible, targeting a timeframe within six months from the date of filing[cite: 6]."
+            },
+            {
+                id: 8,
+                question: "Consider the following enactments:<br>1. Water (Prevention and Control of Pollution) Act, 1974<br>2. Forest (Conservation) Act, 1980<br>3. Biological Diversity Act, 2002<br>Which of these fall under the jurisdiction of the National Green Tribunal?",
+                options: [
+                    "1 and 2 only",
+                    "2 and 3 only",
+                    "1 and 3 only",
+                    "1, 2 and 3"
+                ],
+                answer: 3, // 1, 2 and 3 (Index 3)
+                rationale: "NGT has jurisdiction over civil cases under specified laws including the Water Act 1974, Forest (Conservation) Act 1980, and Biological Diversity Act 2002[cite: 6]."
+            },
+            {
+                id: 9,
+                question: "Who serves as the Chairperson of the NGT as of 2026 according to official records?",
+                options: [
+                    "Justice L.S. Panta",
+                    "Justice A.S. Naidu",
+                    "Justice Prakash Shrivastava",
+                    "Justice D.Y. Chandrachud"
+                ],
+                answer: 2, // Justice Prakash Shrivastava (Index 2)
+                rationale: "Justice Prakash Shrivastava became Chairperson in August 2023 and continues to serve as Chairperson as of 2026[cite: 6]."
+            },
+            {
+                id: 10,
+                question: "What is the primary purpose and nature of the National Green Tribunal?",
+                options: [
+                    "A statutory specialised environmental tribunal focused on effective, speedy adjudication and relief for environmental disputes[cite: 6].",
+                    "A commercial arbitration forum for corporate tax disputes.",
+                    "An appellate body for criminal offenses under the Indian Penal Code.",
+                    "A parliamentary standing committee on forest clearance."
+                ],
+                answer: 0, // A statutory specialised environmental tribunal focused on effective, speedy adjudication and relief for environmental disputes[cite: 6].
+                rationale: "The main purpose of NGT is the effective and expeditious disposal of cases relating to environmental protection, conservation of forests, and enforcement of environmental legal rights, including awarding relief and compensation[cite: 6]."
+            }
+        ];
+
+        // State variables
+        let currentQuestionIndex = 0;
+        let userResponses = new Array(questions.length).fill(null); // stores selected option index or null
+        let questionStates = new Array(questions.length).fill('not-visited'); // 'not-visited', 'not-answered', 'answered', 'marked'
+        let timerInterval = null;
+        let timeLeft = 900; // 15 minutes in seconds
+        let startTime = 900;
+
+        // Start Test Function
+        function startTest() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('test-screen').classList.remove('hidden');
+            document.getElementById('timer-container').classList.remove('hidden');
+            document.getElementById('timer-container').classList.add('flex');
+
+            // Mark first question as not-answered (visited)
+            questionStates[0] = 'not-answered';
+
+            renderPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+
+        // Timer Function
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById('time-display').textContent =
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // Load Question
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = questions[index];
+
+            // Update badge and status text
+            document.getElementById('question-badge').textContent = `Question ${index + 1} of ${questions.length}`;
+
+            const statusTag = document.getElementById('question-status-tag');
+            if (questionStates[index] === 'answered') {
+                statusTag.textContent = 'Answered';
+                statusTag.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700';
+            } else if (questionStates[index] === 'marked') {
+                statusTag.textContent = 'Marked for Review';
+                statusTag.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-100 text-purple-700';
+            } else {
+                statusTag.textContent = 'Not Answered';
+                statusTag.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-100 text-rose-700';
+            }
+
+            // Render question text
+            document.getElementById('question-text').innerHTML = q.question;
+
+            // Render options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, optIdx) => {
+                const isSelected = userResponses[index] === optIdx;
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `flex items-center p-3.5 rounded-xl border cursor-pointer transition duration-150 ${
+                    isSelected ? 'border-emerald-600 bg-emerald-50/50 shadow-sm' : 'border-slate-200 hover:bg-slate-50'
+                }`;
+                optionDiv.onclick = () => selectOption(optIdx);
+
+                optionDiv.innerHTML = `
+                    <div class="flex items-center justify-center w-6 h-6 rounded-full border ${
+                        isSelected ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300 text-slate-600'
+                    } text-xs font-bold mr-3">
+                        ${String.fromCharCode(65 + optIdx)}
+                    </div>
+                    <span class="text-sm sm:text-base text-slate-700 font-medium">${opt}</span>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            renderPalette();
+        }
+
+        // Select Option Handler
+        function selectOption(optIdx) {
+            userResponses[currentQuestionIndex] = optIdx;
+            if (questionStates[currentQuestionIndex] !== 'marked') {
+                questionStates[currentQuestionIndex] = 'answered';
+            }
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // Save & Next Action
+        function saveAndNext() {
+            if (questionStates[currentQuestionIndex] !== 'marked') {
+                if (userResponses[currentQuestionIndex] !== null) {
+                    questionStates[currentQuestionIndex] = 'answered';
+                } else {
+                    questionStates[currentQuestionIndex] = 'not-answered';
+                }
+            }
+            moveToNext();
+        }
+
+        // Clear Response Action
+        function clearResponse() {
+            userResponses[currentQuestionIndex] = null;
+            if (questionStates[currentQuestionIndex] !== 'marked') {
+                questionStates[currentQuestionIndex] = 'not-answered';
+            }
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // Mark for Review & Next Action
+        function markForReviewAndNext() {
+            questionStates[currentQuestionIndex] = 'marked';
+            moveToNext();
+        }
+
+        function moveToNext() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                if (questionStates[currentQuestionIndex] === 'not-visited') {
+                    questionStates[currentQuestionIndex] = userResponses[currentQuestionIndex] !== null ? 'answered' : 'not-answered';
+                }
+                loadQuestion(currentQuestionIndex);
+            } else {
+                renderPalette();
+            }
+        }
+
+        // Render Palette Grid & Counters
+        function renderPalette() {
+            const grid = document.getElementById('palette-grid');
+            grid.innerHTML = '';
+
+            let answeredCount = 0;
+            let notAnsweredCount = 0;
+            let markedCount = 0;
+            let notVisitedCount = 0;
+
+            questionStates.forEach((state, idx) => {
+                if (state === 'answered') answeredCount++;
+                else if (state === 'not-answered') notAnsweredCount++;
+                else if (state === 'marked') markedCount++;
+                else notVisitedCount++;
+
+                const btn = document.createElement('button');
+                btn.textContent = idx + 1;
+                btn.className = `h-9 rounded-lg font-bold text-xs flex items-center justify-center transition duration-150 ${
+                    idx === currentQuestionIndex ? 'ring-2 ring-offset-2 ring-emerald-600' : ''
+                } `;
+
+                if (state === 'answered') {
+                    btn.className += 'bg-emerald-500 text-white hover:bg-emerald-600';
+                } else if (state === 'not-answered') {
+                    btn.className += 'bg-rose-500 text-white hover:bg-rose-600';
+                } else if (state === 'marked') {
+                    btn.className += 'bg-purple-600 text-white hover:bg-purple-700';
+                } else {
+                    btn.className += 'bg-slate-200 text-slate-700 hover:bg-slate-300';
+                }
+
+                btn.onclick = () => {
+                    if (questionStates[idx] === 'not-visited') {
+                        questionStates[idx] = userResponses[idx] !== null ? 'answered' : 'not-answered';
+                    }
+                    loadQuestion(idx);
+                };
+                grid.appendChild(btn);
+            });
+
+            document.getElementById('count-answered').textContent = answeredCount;
+            document.getElementById('count-not-answered').textContent = notAnsweredCount;
+            document.getElementById('count-marked').textContent = markedCount;
+            document.getElementById('count-not-visited').textContent = notVisitedCount;
+        }
+
+        // Submit Exam
+        function submitExam() {
+            clearInterval(timerInterval);
+            document.getElementById('test-screen').classList.add('hidden');
+            document.getElementById('timer-container').classList.remove('flex');
+            document.getElementById('timer-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            // Calculate results
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+
+            questions.forEach((q, idx) => {
+                if (userResponses[idx] === q.answer) {
+                    score++;
+                    correctCount++;
+                } else if (userResponses[idx] !== null) {
+                    incorrectCount++;
+                }
+            });
+
+            const accuracy = Math.round((correctCount / questions.length) * 100);
+            const timeSpentSeconds = startTime - timeLeft;
+            const mins = Math.floor(timeSpentSeconds / 60);
+            const secs = timeSpentSeconds % 60;
+
+            document.getElementById('res-score').textContent = `${score} / ${questions.length}`;
+            document.getElementById('res-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('res-correct-wrong').textContent = `${correctCount} / ${incorrectCount}`;
+            document.getElementById('res-time').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            // Populate Review Accordions
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const userAns = userResponses[idx];
+                const isCorrect = userAns === q.answer;
+                const userAnsText = userAns !== null ? q.options[userAns] : 'Not Attempted';
+                const correctAnsText = q.options[q.answer];
+
+                const item = document.createElement('div');
+                item.className = `border rounded-xl p-4 bg-slate-50 transition duration-150 ${
+                    isCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex justify-between items-start cursor-pointer" onclick="toggleAccordion(${idx})">
+                        <div class="flex items-start space-x-3">
+                            <span class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
+                                isCorrect ? 'bg-emerald-600' : 'bg-rose-600'
+                            }">${idx + 1}</span>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-800">${q.question}</h4>
+                            </div>
+                        </div>
+                        <i id="acc-icon-${idx}" class="fa-solid fa-chevron-down text-slate-400 text-xs mt-1 transition-transform"></i>
+                    </div>
+                    <div id="acc-content-${idx}" class="hidden mt-3 pt-3 border-t border-slate-200 text-xs sm:text-sm space-y-2">
+                        <p><strong class="text-slate-700">Your Answer:</strong> <span class="${isCorrect ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold'}">${userAnsText}</span></p>
+                        <p><strong class="text-slate-700">Correct Answer:</strong> <span class="text-emerald-700 font-semibold">${correctAnsText}</span></p>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-slate-600 mt-2">
+                            <strong class="text-emerald-700 block mb-1"><i class="fa-solid fa-lightbulb mr-1"></i> Rationale:</strong>
+                            ${q.rationale}
+                        </div>
+                    </div>
+                `;
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        // Toggle Accordion
+        function toggleAccordion(idx) {
+            const content = document.getElementById(`acc-content-${idx}`);
+            const icon = document.getElementById(`acc-icon-${idx}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+    </script>
+</body>
+</html>

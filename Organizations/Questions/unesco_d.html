@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNESCO CBT Practice Portal (Moderate-to-Hard)</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex flex-wrap justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md">
+                <i class="fa-solid fa-landmark-dome text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-wide text-white">UNESCO Mastery CBT Portal</h1>
+                <p class="text-xs text-slate-400">Government Exam Preparation • Moderate-to-Hard Level</p>
+            </div>
+        </div>
+        <div id="timer-container" class="hidden items-center space-x-3 bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl shadow-inner">
+            <i class="fa-solid fa-clock text-amber-400 animate-pulse"></i>
+            <span class="text-xs uppercase tracking-wider text-slate-400 font-medium">Time Left:</span>
+            <span id="timer-display" class="font-mono font-bold text-lg text-amber-400">45:00</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+
+        <!-- VIEW 1: SET SELECTION -->
+        <div id="set-selection-view" class="space-y-6">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <h2 class="text-3xl font-extrabold tracking-tight text-white">Select Your Practice Set</h2>
+                <p class="text-slate-400 text-sm">Choose from 3 comprehensive sets of 25 questions each covering UNESCO history, education indices, World Heritage sites (up to 2026 Sarnath & Maratha landscapes), Intangible Heritage (Deepavali 2025), and Biosphere Reserves (Cold Desert 2025).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <!-- Set 1 Card -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-xl hover:border-blue-500 transition-all group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-blue-900/50 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full border border-blue-700/50">Set 1</span>
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i> 45 Mins</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Foundations & World Heritage</h3>
+                        <p class="text-slate-400 text-sm">Covers UNESCO origins, CAME, founding dates, Director-General Khaled El-Enany, and detailed Indian World Heritage sites up to Sarnath (2026).</p>
+                    </div>
+                    <button onclick="startTest(0)" class="mt-6 w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                        <span>Start Practice Set 1</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Set 2 Card -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-xl hover:border-indigo-500 transition-all group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-indigo-900/50 text-indigo-400 text-xs font-semibold px-3 py-1 rounded-full border border-indigo-700/50">Set 2</span>
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i> 45 Mins</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">Education, Reports & Natural Sites</h3>
+                        <p class="text-slate-400 text-sm">Focuses on GEM Report, SDG 4, Gender Parity Index, 7 Natural Heritage properties, Mixed sites, and Intangible cultural elements like Deepavali.</p>
+                    </div>
+                    <button onclick="startTest(1)" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                        <span>Start Practice Set 2</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Set 3 Card -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-xl hover:border-purple-500 transition-all group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-purple-900/50 text-purple-400 text-xs font-semibold px-3 py-1 rounded-full border border-purple-700/50">Set 3</span>
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i> 45 Mins</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition-colors">Biosphere Reserves & Advanced Traps</h3>
+                        <p class="text-slate-400 text-sm">Targeted at exam traps, 13 Biosphere Reserves including the 2025 Cold Desert reserve in Himachal Pradesh, MAB programme, and corrections.</p>
+                    </div>
+                    <button onclick="startTest(2)" class="mt-6 w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                        <span>Start Practice Set 3</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: QUIZ INTERFACE -->
+        <div id="quiz-view" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Left 3 Cols: Question Area -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- Question Header Bar -->
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex justify-between items-center shadow-md">
+                    <div class="flex items-center space-x-3">
+                        <span id="question-number-badge" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 font-bold text-sm px-3 py-1 rounded-lg">Q 1 of 25</span>
+                        <span id="set-title-badge" class="text-xs text-slate-400 font-medium">UNESCO Set 1</span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="toggleBookmark()" id="bookmark-btn" class="text-slate-400 hover:text-amber-400 bg-slate-900/60 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors">
+                            <i class="fa-regular fa-bookmark mr-1"></i> Bookmark
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Card -->
+                <div class="bg-slate-800 border border-slate-700 p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
+                    <h2 id="question-text" class="text-lg sm:text-xl font-semibold text-white leading-relaxed">
+                        Loading question text...
+                    </h2>
+
+                    <!-- Options List -->
+                    <div id="options-container" class="space-y-3">
+                        <!-- Dynamically populated options -->
+                    </div>
+
+                    <!-- Explanation Box (Initially Hidden) -->
+                    <div id="explanation-box" class="hidden bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-2 mt-4">
+                        <div class="flex items-center space-x-2 text-emerald-400 font-semibold text-sm">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Correct Answer & Explanation</span>
+                        </div>
+                        <p id="explanation-text" class="text-slate-300 text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="prevQuestion()" id="prev-btn" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-medium px-5 py-2.5 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-2">
+                        <i class="fa-solid fa-arrow-left text-xs"></i>
+                        <span>Previous</span>
+                    </button>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="clearResponse()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-medium px-4 py-2.5 rounded-xl text-sm transition-all">
+                            Clear Response
+                        </button>
+                        <button onclick="nextQuestion()" id="next-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all flex items-center space-x-2">
+                            <span>Save & Next</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right 1 Col: Question Palette & Navigation Panel -->
+            <div class="space-y-6">
+                <!-- Status Card -->
+                <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300">Question Palette</h3>
+                    
+                    <!-- Legend -->
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-400">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded bg-emerald-600"></div>
+                            <span>Answered</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded bg-amber-600"></div>
+                            <span>Marked</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
+                            <span>Not Visited</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded bg-rose-600/40 border border-rose-500"></div>
+                            <span>Not Answered</span>
+                        </div>
+                    </div>
+
+                    <!-- Palette Grid -->
+                    <div id="palette-grid" class="grid grid-cols-5 gap-2 pt-2 max-h-60 overflow-y-auto pr-1">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Submit Test Action -->
+                <button onclick="confirmSubmit()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Submit Test</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 3: RESULTS SUMMARY -->
+        <div id="results-view" class="hidden max-w-3xl mx-auto space-y-8 py-6">
+            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6">
+                <div class="inline-flex bg-blue-600/20 border border-blue-500/40 p-4 rounded-full text-blue-400 text-3xl shadow-inner">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-3xl font-extrabold text-white">Test Completed Successfully!</h2>
+                    <p class="text-slate-400 text-sm">Here is your detailed performance analysis for <span id="res-set-name" class="font-semibold text-slate-200">Set 1</span>.</p>
+                </div>
+
+                <!-- Score Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4">
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase tracking-wider">Total Score</span>
+                        <p id="res-score" class="text-2xl font-black text-blue-400 mt-1">0 / 25</p>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase tracking-wider">Accuracy</span>
+                        <p id="res-accuracy" class="text-2xl font-black text-emerald-400 mt-1">0%</p>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase tracking-wider">Correct</span>
+                        <p id="res-correct" class="text-2xl font-black text-emerald-400 mt-1">0</p>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl">
+                        <span class="text-xs text-slate-400 uppercase tracking-wider">Incorrect</span>
+                        <p id="res-incorrect" class="text-2xl font-black text-rose-400 mt-1">0</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
+                    <button onclick="reviewAnswers()" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Review Detailed Answers</span>
+                    </button>
+                    <button onclick="resetPortal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Back to Set Selection</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Review Accordion / List -->
+            <div id="review-container" class="space-y-4 hidden">
+                <h3 class="text-xl font-bold text-white px-2">Question-by-Question Review</h3>
+                <div id="review-list" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-4 text-center text-xs text-slate-500 mt-auto">
+        UNESCO Comprehensive CBT Portal • Built for Government Exam Aspirants
+    </footer>
+
+    <!-- JavaScript Data and Engine -->
+    <script>
+        // Question Bank (75 Questions total across 3 sets of 25)
+        const questionSets = [
+            // SET 1
+            [
+                {
+                    q: "Which specific conference, held in London between 1942 and 1945, served as the primary organizational precursor to the establishment of UNESCO?",
+                    options: [
+                        "Council of Allied Educational Reconstruction",
+                        "Conference of Allied Ministers of Education (CAME)",
+                        "London Peace and Cultural Summit",
+                        "United Nations Educational Preparatory Council"
+                    ],
+                    answer: 1,
+                    exp: "The Conference of Allied Ministers of Education (CAME), held in London from 1942–1945, was a series of meetings during WWII where Allied countries discussed rebuilding education and culture, leading directly to UNESCO's establishment."
+                },
+                {
+                    q: "The constitution of UNESCO formally entered into force, bringing the organization into official existence, in which year?",
+                    options: ["1942", "1945", "1946", "1948"],
+                    answer: 2,
+                    exp: "UNESCO's Constitution was adopted on 16 November 1945 by 44 Allied countries in London, but the organization officially came into existence after the Constitution entered into force in November 1946."
+                },
+                {
+                    q: "Who assumed office as the Director-General of UNESCO on November 15, 2025?",
+                    options: ["Audrey Azoulay", "Khaled El-Enany", "Irina Bokova", "Koïchiro Matsuura"],
+                    answer: 1,
+                    exp: "Khaled El-Enany from Egypt assumed office as the current Director-General of UNESCO on 15 November 2025."
+                },
+                {
+                    q: "What is the primary focus of the annual Global Education Monitoring (GEM) Report published under UNESCO?",
+                    options: [
+                        "Tracking international progress towards achieving SDG 4 on Quality Education",
+                        "Evaluating global university rankings and research funding allocations",
+                        "Regulating primary school tuition fees across developing nations",
+                        "Auditing vocational training programs in European member states"
+                    ],
+                    answer: 0,
+                    exp: "The Global Education Monitoring (GEM) Report monitors progress towards SDG 4 (Quality Education), examining access, quality, gender equality, financing, inclusion, and teachers."
+                },
+                {
+                    q: "In the context of UNESCO education analytics, what does the Gender Parity Index (GPI) measure?",
+                    options: [
+                        "The ratio of female literacy rates to total population counts",
+                        "The ratio of a particular education indicator value for females to that for males",
+                        "The percentage disparity in STEM enrollment across OECD nations",
+                        "The gender wage gap among secondary school educators"
+                    ],
+                    answer: 1,
+                    exp: "GPI is defined as the ratio of a particular education indicator for females to that for males. A value close to 1 indicates gender parity."
+                },
+                {
+                    q: "As of 2026, what is the exact breakdown of India's 45 UNESCO World Heritage properties?",
+                    options: [
+                        "40 Cultural, 4 Natural, 1 Mixed",
+                        "37 Cultural, 7 Natural, 1 Mixed",
+                        "35 Cultural, 9 Natural, 1 Mixed",
+                        "38 Cultural, 6 Natural, 1 Mixed"
+                    ],
+                    answer: 1,
+                    exp: "As of 2026, India has 45 World Heritage properties consisting of 37 Cultural, 7 Natural, and 1 Mixed site."
+                },
+                {
+                    q: "Which specific property became India's 45th UNESCO World Heritage site upon its inscription in 2026?",
+                    options: [
+                        "Maratha Military Landscapes of India",
+                        "Ancient Buddhist Site of Sarnath",
+                        "Santiniketan",
+                        "Sacred Ensembles of the Hoysalas"
+                    ],
+                    answer: 1,
+                    exp: "The Ancient Buddhist Site of Sarnath was inscribed in 2026, bringing India's total World Heritage count to 45 properties."
+                },
+                {
+                    q: "Which of the following sites represents India's ONLY Mixed World Heritage Site?",
+                    options: [
+                        "Western Ghats",
+                        "Khangchendzonga National Park",
+                        "Nanda Devi National Park",
+                        "Sundarbans National Park"
+                    ],
+                    answer: 1,
+                    exp: "Khangchendzonga National Park in Sikkim (inscribed in 2016) is India's only Mixed World Heritage Site, possessing both natural and cultural significance."
+                },
+                {
+                    q: "What official name replaced the older tentative designation 'Forts of Maharashtra' on UNESCO's World Heritage list in 2025?",
+                    options: [
+                        "Deccan Sultanate Fortresses",
+                        "Maratha Military Landscapes of India",
+                        "Western Ghat Hill Forts",
+                        "Shivaji Military Architecture Network"
+                    ],
+                    answer: 1,
+                    exp: "The notes explicitly correct that 'Forts of Maharashtra' is now officially represented by the Maratha Military Landscapes of India, inscribed in 2025."
+                },
+                {
+                    q: "Using the memory mnemonic 'K-M-K-S-N-G-W' for India's Natural World Heritage sites, what do the letters stand for?",
+                    options: [
+                        "Kaziranga, Manas, Keoladeo, Sundarbans, Nanda Devi, Great Himalayan, Western Ghats",
+                        "Kanchendzonga, Mudumalai, Kullu, Satpura, Nagarhole, Gir, Wayanad",
+                        "Keibul Lamjao, Manas, Kanha, Similipal, Namdapha, Garhwal, Western Ghats",
+                        "Kaziranga, Madhav, Khajuraho, Sunderban, Nilgiri, Gangotri, Western Ghats"
+                    ],
+                    answer: 0,
+                    exp: "The memory mnemonic K-M-K-S-N-G-W stands for Kaziranga, Manas, Keoladeo, Sundarbans, Nanda Devi, Great Himalayan, and Western Ghats."
+                },
+                {
+                    q: "Which of the following natural sites was inscribed into UNESCO's World Heritage list in the earliest year among the choices?",
+                    options: [
+                        "Sundarbans National Park (1987)",
+                        "Kaziranga National Park (1985)",
+                        "Great Himalayan National Park (2014)",
+                        "Western Ghats (2012)"
+                    ],
+                    answer: 1,
+                    exp: "Kaziranga National Park, Manas Wildlife Sanctuary, and Keoladeo National Park were all inscribed in 1985 (the earliest batch of natural sites for India)."
+                },
+                {
+                    q: "How many elements does India currently have inscribed on UNESCO's Representative List of the Intangible Cultural Heritage of Humanity following the addition in 2025?",
+                    options: ["14 elements", "15 elements", "16 elements", "17 elements"],
+                    answer: 2,
+                    exp: "India has 16 elements inscribed on the Intangible Cultural Heritage list after Deepavali was added in 2025."
+                },
+                {
+                    q: "Which traditional celebration was added to UNESCO's Intangible Cultural Heritage list in 2025?",
+                    options: ["Durga Puja", "Garba", "Deepavali", "Kumbh Mela"],
+                    answer: 2,
+                    exp: "Deepavali was inscribed onto UNESCO's Intangible Cultural Heritage list in 2025, bringing India's total to 16 elements."
+                },
+                {
+                    q: "What is the correct formal designation for the intangible heritage element from Ladakh inscribed on UNESCO's list in 2012?",
+                    options: [
+                        "Bodh mantra chanting",
+                        "Buddhist chanting of Ladakh",
+                        "Himalayan monastic chants",
+                        "Ladakhi spiritual hymns"
+                    ],
+                    answer: 1,
+                    exp: "The notes highlight a correction: the correct term is 'Buddhist chanting of Ladakh', not 'Bodh mantra'."
+                },
+                {
+                    q: "How many UNESCO Biosphere Reserves does India currently have under the Man and the Biosphere (MAB) Programme?",
+                    options: ["11", "12", "13", "18"],
+                    answer: 2,
+                    exp: "India currently has 13 UNESCO Biosphere Reserves, with the Cold Desert in Himachal Pradesh being the 13th added in 2025."
+                },
+                {
+                    q: "Which biosphere reserve holds the distinction of being India's first to be included in UNESCO's World Network of Biosphere Reserves?",
+                    options: ["Nanda Devi", "Nilgiri", "Sundarban", "Similipal"],
+                    answer: 1,
+                    exp: "Nilgiri Biosphere Reserve (spread across Tamil Nadu, Kerala, and Karnataka) was designated in 2000 as India's first UNESCO Biosphere Reserve."
+                },
+                {
+                    q: "The Cold Desert Biosphere Reserve, designated in 2025 as India's 13th UNESCO Biosphere Reserve, is located in which state/UT?",
+                    options: ["Ladakh", "Uttarakhand", "Himachal Pradesh", "Sikkim"],
+                    answer: 2,
+                    exp: "The Cold Desert Biosphere Reserve is located in Lahaul-Spiti, Himachal Pradesh, designated in 2025 as India's 13th Biosphere Reserve."
+                },
+                {
+                    q: "Which of the following locations is explicitly noted as NOT being a UNESCO Biosphere Reserve of India, despite common confusion?",
+                    options: ["Nokrek", "Pachmarhi", "Dibru-Saikhowa", "Panna"],
+                    answer: 2,
+                    exp: "The notes explicitly clarify that Dibru-Saikhowa is NOT one of India's UNESCO Biosphere Reserves."
+                },
+                {
+                    q: "In what year did India officially join UNESCO?",
+                    options: ["1945", "1946", "1947", "1950"],
+                    answer: 1,
+                    exp: "India joined UNESCO in 1946, shortly after the Constitution entered into force."
+                },
+                {
+                    q: "What is the primary international treaty framework established in 1972 that created the mechanism for identifying cultural and natural heritage of Outstanding Universal Value?",
+                    options: [
+                        "Paris Convention on Cultural Diversity",
+                        "World Heritage Convention",
+                        "Biosphere Protection Treaty",
+                        "London Allied Accord"
+                    ],
+                    answer: 1,
+                    exp: "The World Heritage Convention (1972) created the international framework for identifying and protecting cultural and natural heritage of Outstanding Universal Value."
+                },
+                {
+                    q: "Which of the following Indian monuments were among the very first batch inscribed on the UNESCO World Heritage list in 1983?",
+                    options: [
+                        "Taj Mahal, Agra Fort, Ajanta Caves, and Ellora Caves",
+                        "Qutub Minar, Red Fort, Humayun's Tomb, and Lotus Temple",
+                        "Khajuraho, Hampi, Sanchi, and Konark Sun Temple",
+                        "Fatehpur Sikri, Elephanta Caves, Ellora, and Jaipur City"
+                    ],
+                    answer: 0,
+                    exp: "In 1983, India received its first World Heritage inscriptions, including Agra Fort, Ajanta Caves, Ellora Caves, and Taj Mahal."
+                },
+                {
+                    q: "Which UN Sustainable Development Goal (SDG) is directly supported and monitored through UNESCO's educational initiatives and reports?",
+                    options: ["SDG 2", "SDG 4", "SDG 6", "SDG 13"],
+                    answer: 1,
+                    exp: "UNESCO supports SDG 4 — Quality Education and monitors progress via the GEM Report."
+                },
+                {
+                    q: "Which area of UNESCO's mandate specifically encompasses the protection of journalists, freedom of expression, and media literacy?",
+                    options: [
+                        "Culture sector",
+                        "Communication & Information sector",
+                        "Science sector",
+                        "Peace and Security division"
+                    ],
+                    answer: 1,
+                    exp: "Communication & Information is one of UNESCO's main areas, covering freedom of expression, media literacy, and protection of journalists."
+                },
+                {
+                    q: "What is the official headquarters location of UNESCO?",
+                    options: ["Geneva, Switzerland", "New York, USA", "Paris, France", "London, UK"],
+                    answer: 2,
+                    exp: "UNESCO's headquarters is located in Paris, France."
+                },
+                {
+                    q: "Which of the following pairs of UNESCO designations and administrative programs represents distinct, separate frameworks rather than overlapping entities?",
+                    options: [
+                        "World Heritage Sites and Biosphere Reserves",
+                        "Intangible Cultural Heritage and Living Human Treasures",
+                        "World Heritage Convention and Ramsar Wetlands",
+                        "Global Geoparks and Biosphere Reserves"
+                    ],
+                    answer: 0,
+                    exp: "As highlighted in high-value exam traps, World Heritage Sites and Biosphere Reserves are separate UNESCO programmes and designations."
+                }
+            ],
+            // SET 2
+            [
+                {
+                    q: "How many total member states and associate members constitute UNESCO according to current baseline data?",
+                    options: [
+                        "193 Member States + 10 Associate Members",
+                        "195 Member States + 14 Associate Members",
+                        "194 Member States + 12 Associate Members",
+                        "190 Member States + 15 Associate Members"
+                    ],
+                    answer: 2,
+                    exp: "UNESCO comprises 194 Member States and 12 Associate Members."
+                },
+                {
+                    q: "Which misconception about UNESCO's creation is explicitly refuted in the study materials?",
+                    options: [
+                        "That it was founded by the League of Nations in Geneva",
+                        "That it was created by a treaty called the CAME Summit",
+                        "That it was established directly by the Bretton Woods conference",
+                        "That it was originally headquartered in New York before Paris"
+                    ],
+                    answer: 1,
+                    exp: "The notes emphasize an important correction: UNESCO was not created by a 'treaty' called the CAME Summit; CAME was a series of preparatory meetings (1942-1945)."
+                },
+                {
+                    q: "What was the primary cooperative objective of the Allied countries meeting in London from 1942 to 1945 under CAME?",
+                    options: [
+                        "To establish a unified currency for war-torn European nations",
+                        "To discuss how education and culture could help rebuild peace after World War II",
+                        "To coordinate military intelligence and troop deployment",
+                        "To negotiate post-war colonial boundaries"
+                    ],
+                    answer: 1,
+                    exp: "During WWII, Allied countries discussed how education and culture could help rebuild peace after the war, leading to CAME."
+                },
+                {
+                    q: "Which of the following is NOT listed among UNESCO's core major functions?",
+                    options: [
+                        "Promoting quality education and SDG 4",
+                        "Regulating global commercial trade tariffs and maritime shipping routes",
+                        "Protecting cultural and natural heritage through international conventions",
+                        "Advancing international scientific cooperation in ocean sciences and biodiversity"
+                    ],
+                    answer: 1,
+                    exp: "UNESCO does not regulate commercial trade tariffs or maritime shipping; its pillars are Education, Science, Culture, Communication & Information, and Peace."
+                },
+                {
+                    q: "The 2026 Global Education Monitoring (GEM) Report places its primary analytical focus on which of纽 the following themes?",
+                    options: [
+                        "Access and Equity",
+                        "Artificial Intelligence in Higher Education",
+                        "Post-pandemic Vocational Reskilling",
+                        "Climate Education Curricula"
+                    ],
+                    answer: 0,
+                    exp: "The 2026 GEM Report focuses specifically on Access and Equity in global education."
+                },
+                {
+                    q: "Why must students avoid confusing UNESCO's Gender Parity Index (GPI) with the Global Gender Gap Index?",
+                    options: [
+                        "Because the Global Gender Gap Index is associated with the World Economic Forum (WEF)",
+                        "Because GPI only measures higher education enrollment ratios",
+                        "Because the Global Gender Gap Index is published annually by UNESCO itself",
+                        "Because GPI measures income disparity rather than education"
+                    ],
+                    answer: 0,
+                    exp: "The notes explicitly warn: do not confuse GPI with the Global Gender Gap Index, which is associated with the World Economic Forum (WEF)."
+                },
+                {
+                    q: "Out of India's 45 World Heritage properties, how many are categorized strictly as Cultural heritage sites?",
+                    options: ["35", "37", "40", "42"],
+                    answer: 1,
+                    exp: "India's 45 properties consist of 37 Cultural, 7 Natural, and 1 Mixed property."
+                },
+                {
+                    q: "Which of the following Indian cultural heritage monuments was inscribed on the World Heritage list in 1986?",
+                    options: [
+                        "Sun Temple, Konark (1984)",
+                        "Group of Monuments at Hampi (1986)",
+                        "Qutub Minar (1993)",
+                        "Red Fort Complex (2007)"
+                    ],
+                    answer: 1,
+                    exp: "The Group of Monuments at Hampi and the Khajuraho Group of Monuments were both inscribed in 1986."
+                },
+                {
+                    q: "The Red Fort Complex in Delhi was inscribed as a UNESCO World Heritage site in which year?",
+                    options: ["1993", "2007", "2014", "2016"],
+                    answer: 1,
+                    exp: "The Red Fort Complex was inscribed in 2007."
+                },
+                {
+                    q: "Which of the following natural heritage sites in India is shared across Uttarakhand as Nanda Devi and Valley of Flowers?",
+                    options: [
+                        "Great Himalayan National Park",
+                        "Nanda Devi & Valley of Flowers National Parks",
+                        "Kaziranga National Park",
+                        "Keoladeo National Park"
+                    ],
+                    answer: 1,
+                    exp: "Nanda Devi & Valley of Flowers National Parks in Uttarakhand were inscribed in 1988 and 2005 respectively."
+                },
+                {
+                    q: "What is the primary significance of Khangchendzonga National Park being designated as a Mixed World Heritage Site?",
+                    options: [
+                        "It is India's only site combining natural significance and sacred cultural traditions of Sikkim.",
+                        "It spans across international borders between India and Nepal.",
+                        "It is the largest biosphere reserve in the Himalayas.",
+                        "It represents the transition zone between tropical and alpine ecosystems."
+                    ],
+                    answer: 0,
+                    exp: "Khangchendzonga National Park is India's ONLY Mixed World Heritage Site, inscribed under both natural and cultural criteria due to Mount Khangchendzonga's sacred landscape."
+                },
+                {
+                    q: "Which of the following Intangible Cultural Heritage elements from India was inscribed in the year 2017?",
+                    options: ["Yoga (2016)", "Kumbh Mela (2017)", "Durga Puja (2021)", "Garba (2023)"],
+                    answer: 1,
+                    exp: "Kumbh Mela was inscribed on UNESCO's Intangible Cultural Heritage list in 2017."
+                },
+                {
+                    q: "What official correction is highlighted in the notes regarding the traditional brass and copper craft of Jandiala Guru?",
+                    options: [
+                        "It is officially titled 'Traditional brass and copper craft of the Thatheras of Jandiala Guru' rather than just 'Thatera'.",
+                        "It is classified as a Natural heritage site instead of Intangible.",
+                        "It was inscribed in 2025 instead of 2014.",
+                        "It originates from Ladakh rather than Punjab."
+                    ],
+                    answer: 0,
+                    exp: "The notes clarify the correction: avoid 'Thatera' and use 'Traditional brass and copper craft of the Thatheras of Jandiala Guru'."
+                },
+                {
+                    q: "Which performing art from Kerala is included in UNESCO's Intangible Cultural Heritage list?",
+                    options: ["Chhau Dance", "Mudiyettu", "Sankirtana", "Ramman"],
+                    answer: 1,
+                    exp: "Mudiyettu is a ritual theatre and dance drama from Kerala inscribed in 2010."
+                },
+                {
+                    q: "How many Biosphere Reserves in India are part of the UNESCO Man and the Biosphere (MAB) Programme network?",
+                    options: ["10", "12", "13", "18"],
+                    answer: 2,
+                    exp: "India currently has 13 UNESCO Biosphere Reserves, culminating with the Cold Desert in 2025."
+                },
+                {
+                    q: "Which of the following protected areas is a key component included within the newly designated Cold Desert Biosphere Reserve?",
+                    options: [
+                        "Pin Valley National Park",
+                        "Kaziranga National Park",
+                        "Silent Valley National Park",
+                        "Jim Corbett National Park"
+                    ],
+                    answer: 0,
+                    exp: "The Cold Desert Biosphere Reserve includes Pin Valley National Park, Kibber Wildlife Sanctuary, and Chandratal Wildlife Sanctuary in Himachal Pradesh."
+                },
+                {
+                    q: "What is the primary aim of UNESCO's Man and the Biosphere (MAB) Programme?",
+                    options: [
+                        "To promote conservation of biodiversity along with sustainable use of natural resources",
+                        "To map deep ocean currents and marine mineral reserves",
+                        "To regulate international wildlife poaching and illegal logging",
+                        "To establish carbon credit markets for developing nations"
+                    ],
+                    answer: 0,
+                    exp: "UNESCO's MAB Programme promotes biodiversity conservation along with sustainable use of natural resources."
+                },
+                {
+                    q: "Which of纽 the following is an accurate distinction between World Heritage Sites and Biosphere Reserves?",
+                    options: [
+                        "World Heritage sites protect heritage of Outstanding Universal Value under a 1972 convention, while Biosphere Reserves focus on MAB sustainable ecosystems.",
+                        "World Heritage sites are exclusively natural, while Biosphere Reserves are strictly cultural.",
+                        "Biosphere Reserves are managed by the UN General Assembly, whereas World Heritage sites are managed by the World Bank.",
+                        "There is no distinction; all biosphere reserves are automatically World Heritage sites."
+                    ],
+                    answer: 0,
+                    exp: "World Heritage Sites and Biosphere Reserves are separate UNESCO programmes and designations with distinct frameworks."
+                },
+                {
+                    q: "What was the precursor conference series to UNESCO that operated in London during World War II?",
+                    options: ["CAME", "UNESCO PrepCom", "London Allied Assembly", "League Educational Council"],
+                    answer: 0,
+                    exp: "CAME (Conference of Allied Ministers of Education) was the 1942-1945 precursor conference held in London."
+                },
+                {
+                    q: "Which Indian state houses the Nilgiri Biosphere Reserve, India's first UNESCO biosphere reserve?",
+                    options: [
+                        "Tamil Nadu, Kerala, and Karnataka",
+                        "Assam and Arunachal Pradesh",
+                        "Uttarakhand and Himachal Pradesh",
+                        "Odisha and West Bengal"
+                    ],
+                    answer: 0,
+                    exp: "The Nilgiri Biosphere Reserve is spread across parts of Tamil Nadu, Kerala, and Karnataka."
+                },
+                {
+                    q: "Which of the following reports is published by UNESCO to track global educational equity, access, and inclusion?",
+                    options: [
+                        "Global Education Monitoring Report",
+                        "World Development Education Index",
+                        "International Literacy Audit",
+                        "UNESCO Human Capital Report"
+                    ],
+                    answer: 0,
+                    exp: "The Global Education Monitoring (GEM) Report monitors progress towards SDG 4."
+                },
+                {
+                    q: "What is the primary geographic region in India where the Cold Desert Biosphere Reserve is situated?",
+                    options: ["Trans-Himalayan region", "Western Ghats", "Eastern Plains", "Deccan Plateau"],
+                    answer: 0,
+                    exp: "The Cold Desert Biosphere Reserve lies in the Trans-Himalayan region of Lahaul-Spiti, Himachal Pradesh."
+                },
+                {
+                    q: "Which of the following Intangible Cultural Heritage practices of India is associated with Manipur?",
+                    options: ["Sankirtana", "Chhau", "Kalbelia", "Kutiyattam"],
+                    answer: 0,
+                    exp: "Sankirtana, ritual singing, drumming and dancing of Manipur, was inscribed in 2013."
+                },
+                {
+                    q: "When was UNESCO's Constitution officially adopted in London?",
+                    options: ["16 November 1945", "24 October 1945", "15 November 1946", "10 December 1948"],
+                    answer: 0,
+                    exp: "UNESCO's Constitution was adopted in London on 16 November 1945 by representatives of 44 Allied countries."
+                },
+                {
+                    q: "Which of the following Indian natural heritage sites was inscribed in 1987, two years after the 1985 batch?",
+                    options: [
+                        "Sundarbans National Park",
+                        "Kaziranga National Park",
+                        "Manas Wildlife Sanctuary",
+                        "Keoladeo National Park"
+                    ],
+                    answer: 0,
+                    exp: "Sundarbans National Park was inscribed in 1987, whereas Kaziranga, Manas, and Keoladeo were inscribed in 1985."
+                }
+            ],
+            // SET 3
+            [
+                {
+                    q: "How many Allied countries were represented when UNESCO's Constitution was adopted in London on November 16, 1945?",
+                    options: ["30", "44", "51", "60"],
+                    answer: 1,
+                    exp: "UNESCO's Constitution was adopted in London on 16 November 1945 by representatives of 44 Allied countries."
+                },
+                {
+                    q: "What is the primary overarching objective stated in UNESCO's constitution regarding peace and security?",
+                    options: [
+                        "To contribute to peace and security through cooperation in education, science, culture, communication, and information",
+                        "To enforce international disarmament treaties across member states",
+                        "To maintain global military alliances against external aggression",
+                        "To arbitrate territorial disputes between neighboring sovereign nations"
+                    ],
+                    answer: 0,
+                    exp: "UNESCO's broad objective is to contribute to peace and security through cooperation in education, science, culture, communication, and information."
+                },
+                {
+                    q: "Which of the following indicators is NOT typically examined within the scope of the Global Education Monitoring (GEM) Report?",
+                    options: [
+                        "Access and quality of education",
+                        "Gender equality and teacher training",
+                        "Bilateral military arms trade agreements and defense spending ratios",
+                        "Inclusion and out-of-school children"
+                    ],
+                    answer: 2,
+                    exp: "Bilateral military arms trade agreements are unrelated to the GEM Report, which focuses on education access, quality, gender parity, financing, and inclusion."
+                },
+                {
+                    q: "If a Gender Parity Index (GPI) value for secondary school enrollment in a specific country is calculated as 1.0, what does this indicate?",
+                    options: [
+                        "Complete gender parity between females and males in secondary enrollment",
+                        "Absolute female dominance in educational attainment",
+                        "Complete absence of female students in schools",
+                        "Zero literacy rates across both genders"
+                    ],
+                    answer: 0,
+                    exp: "A GPI value close to 1 generally indicates gender parity between females and males."
+                },
+                {
+                    q: "How many Natural World Heritage sites does India currently possess?",
+                    options: ["5", "6", "7", "8"],
+                    answer: 2,
+                    exp: "India currently has 7 natural World Heritage properties (Kaziranga, Manas, Keoladeo, Sundarbans, Nanda Devi & Valley of Flowers, Great Himalayan, and Western Ghats)."
+                },
+                {
+                    q: "Which of the following World Heritage properties in India was inscribed in 1989?",
+                    options: ["Sanchi", "Ajanta Caves", "Qutub Minar", "Red Fort"],
+                    answer: 0,
+                    exp: "Buddhist Monuments at Sanchi were inscribed in 1989."
+                },
+                {
+                    q: "Which natural heritage site located in Himachal Pradesh was inscribed on UNESCO's World Heritage list in 2014?",
+                    options: [
+                        "Great Himalayan National Park Conservation Area",
+                        "Nanda Devi National Park",
+                        "Valley of Flowers",
+                        "Western Ghats"
+                    ],
+                    answer: 0,
+                    exp: "Great Himalayan National Park Conservation Area in Himachal Pradesh was inscribed in 2014."
+                },
+                {
+                    q: "What is the correct expansion and categorization of the acronym CAME?",
+                    options: [
+                        "Conference of Allied Ministers of Education — Precursor conference held in London (1942–1945)",
+                        "Council of Asian Maritime Experts — UNESCO advisory body",
+                        "Committee for Academic Modernization and Evaluation — UN educational wing",
+                        "Conference on Allied Media and Education — Founded in Geneva"
+                    ],
+                    answer: 0,
+                    exp: "CAME stands for Conference of Allied Ministers of Education (1942–1945, London)."
+                },
+                {
+                    q: "Which Intangible Cultural Heritage element from India was inscribed in 2014, involving traditional metal craft?",
+                    options: [
+                        "Traditional brass and copper craft of the Thatheras of Jandiala Guru",
+                        "Buddhist chanting of Ladakh",
+                        "Sankirtana of Manipur",
+                        "Kalbelia folk songs"
+                    ],
+                    answer: 0,
+                    exp: "Traditional brass and copper craft of the Thatheras of Jandiala Guru was inscribed in 2014."
+                },
+                {
+                    q: "Which of the following folk dance traditions of Rajasthan is inscribed on UNESCO's Intangible Cultural Heritage list?",
+                    options: ["Kalbelia", "Garba", "Chhau", "Bihu"],
+                    answer: 0,
+                    exp: "Kalbelia folk songs and dances of Rajasthan were inscribed in 2010."
+                },
+                {
+                    q: "Which traditional Sanskrit theatre art form from Kerala was inscribed on UNESCO's Intangible Cultural Heritage list in 2008?",
+                    options: ["Kutiyattam", "Mudiyettu", "Ramman", "Kathakali"],
+                    answer: 0,
+                    exp: "Kutiyattam — Sanskrit theatre from Kerala was inscribed in 2008."
+                },
+                {
+                    q: "The Tradition of Vedic Chanting was proclaimed as a Masterpiece of the Oral and Intangible Heritage of Humanity by UNESCO in which year?",
+                    options: ["2008", "2010", "2012", "2017"],
+                    answer: 0,
+                    exp: "The tradition of Vedic chanting was inscribed in 2008."
+                },
+                {
+                    q: "Which of the following biosphere reserves in India is located in Meghalaya and recognized by UNESCO?",
+                    options: ["Nokrek", "Similipal", "Pachmarhi", "Panna"],
+                    answer: 0,
+                    exp: "Nokrek Biosphere Reserve is located in Meghalaya and is part of India's 13 UNESCO Biosphere Reserves."
+                },
+                {
+                    q: "Which biosphere reserve in India is situated in the Andaman and Nicobar Islands group and included in UNESCO's MAB list?",
+                    options: [
+                        "Great Nicobar Biosphere Reserve",
+                        "Gulf of Mannar",
+                        "Cold Desert",
+                        "Achanakmar-Amarkantak"
+                    ],
+                    answer: 0,
+                    exp: "Great Nicobar Biosphere Reserve is located in the Andaman and Nicobar Islands."
+                },
+                {
+                    q: "Similipal Biosphere Reserve, an official UNESCO site, is located in which Indian state?",
+                    options: ["Odisha", "Madhya Pradesh", "Kerala", "Sikkim"],
+                    answer: 0,
+                    exp: "Similipal Biosphere Reserve is located in Odisha."
+                },
+                {
+                    q: "What is the primary significance of the Western Ghats inscribed on the UNESCO World Heritage list in 2012?",
+                    options: [
+                        "They are recognized globally as one of the world's eight 'hottest hotspots' of biological diversity.",
+                        "They contain the highest altitude tropical rainforests in Asia.",
+                        "They are India's only coral reef heritage ecosystem.",
+                        "They were the first natural site inscribed by India in 1983."
+                    ],
+                    answer: 0,
+                    exp: "The Western Ghats (inscribed 2012) are older than the Himalayas and recognized globally as one of the eight hottest hotspots of biological diversity."
+                },
+                {
+                    q: "Which of the following is true regarding UNESCO's definition of Tangible versus Intangible Cultural Heritage?",
+                    options: [
+                        "Intangible heritage encompasses oral traditions, performing arts, and social practices, whereas World Heritage covers physical monuments and natural sites.",
+                        "Intangible heritage requires physical stone monuments to be preserved in museums.",
+                        "World Heritage sites cannot be cultural; they must be strictly natural.",
+                        "There is no operational distinction in UNESCO's international conventions."
+                    ],
+                    answer: 0,
+                    exp: "Intangible cultural heritage covers living expressions and traditions, whereas World Heritage covers physical cultural and natural monuments."
+                },
+                {
+                    q: "Which of the following bodies or conferences is correctly paired with its role in UNESCO's timeline?",
+                    options: [
+                        "CAME — Preparatory Allied ministerial meetings in London (1942–1945) leading to UNESCO's establishment",
+                        "Geneva Summit — Direct treaty conference that created UNESCO in 1945",
+                        "Paris Accord — Convention establishing the World Heritage list in 1945",
+                        "New York Assembly — Governing body that elects the Director-General every year"
+                    ],
+                    answer: 0,
+                    exp: "CAME refers to the Conference of Allied Ministers of Education held in London (1942–1945)."
+                },
+                {
+                    q: "What role does the Director-General play within UNESCO's organizational structure?",
+                    options: [
+                        "Chief administrative officer heading the Secretariat",
+                        "Elected president of the General Conference",
+                        "Permanent representative of the host nation (France)",
+                        "Head of the World Heritage Committee"
+                    ],
+                    answer: 0,
+                    exp: "The Director-General (currently Khaled El-Enany) is the chief administrative officer heading UNESCO's Secretariat."
+                },
+                {
+                    q: "Which of the following statements regarding India's World Heritage Sites count and recent additions is fully accurate?",
+                    options: [
+                        "India has 45 properties, with the Ancient Buddhist Site of Sarnath added in 2026.",
+                        "India has exactly 50 World Heritage properties as of 2026.",
+                        "India has 40 properties with no additions since 2021.",
+                        "India has 45 properties, all of which are cultural monuments."
+                    ],
+                    answer: 0,
+                    exp: "India has 45 total properties (37 Cultural, 7 Natural, 1 Mixed), with Sarnath inscribed in 2026 as the 45th property."
+                },
+                {
+                    q: "Which biosphere reserve in India is associated with the Cold Desert ecosystem in Himachal Pradesh?",
+                    options: [
+                        "Cold Desert Biosphere Reserve",
+                        "Nanda Devi Biosphere Reserve",
+                        "Khangchendzonga Biosphere Reserve",
+                        "Great Himalayan Biosphere Reserve"
+                    ],
+                    answer: 0,
+                    exp: "The Cold Desert Biosphere Reserve in Lahaul-Spiti, Himachal Pradesh, is India's 13th biosphere reserve."
+                },
+                {
+                    q: "What is the primary focus of UNESCO's science pillar under its intergovernmental scope?",
+                    options: [
+                        "International scientific cooperation in ocean sciences, water resources, biodiversity, and sustainable development",
+                        "Regulation of commercial nuclear energy plants worldwide",
+                        "Exclusive funding for space exploration and satellite meteorology",
+                        "Standardization of industrial manufacturing patents across member states"
+                    ],
+                    answer: 0,
+                    exp: "UNESCO's science pillar focuses on international scientific cooperation, ocean sciences, water resources, biodiversity, and sustainable development."
+                },
+                {
+                    q: "Which of the following festivals from West Bengal was inscribed on UNESCO's Intangible Cultural Heritage list in 2021?",
+                    options: ["Durga Puja in Kolkata", "Kali Puja", "Rath Yatra", "Dol Jatra"],
+                    answer: 0,
+                    exp: "Durga Puja in Kolkata was inscribed on UNESCO's Intangible Cultural Heritage list in 2021."
+                },
+                {
+                    q: "Which of the following parameters is used to calculate the Gender Parity Index (GPI) in education monitoring?",
+                    options: [
+                        "Ratio of female value to male value for a given educational indicator",
+                        "Difference between female and male enrollment percentages multiplied by 100",
+                        "Ratio of female teachers to total educational expenditure",
+                        "Average years of schooling completed by females minus males"
+                    ],
+                    answer: 0,
+                    exp: "GPI is calculated as the ratio of a particular education indicator for females to that for males."
+                },
+                {
+                    q: "What distinguishes the 1972 World Heritage Convention from subsequent cultural preservation frameworks?",
+                    options: [
+                        "It established the international legal and administrative framework for identifying and protecting physical cultural and natural sites of Outstanding Universal Value.",
+                        "It created the intangible cultural heritage list for oral traditions.",
+                        "It established the Man and the Biosphere programme for ecological reserves.",
+                        "It funded the reconstruction of historical monuments destroyed in World War II."
+                    ],
+                    answer: 0,
+                    exp: "The World Heritage Convention (1972) created the international legal framework for identifying and protecting physical cultural and natural heritage of Outstanding Universal Value."
+                }
+            ]
+        ];
+
+        // State variables
+        let currentSetIndex = 0;
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // stores selected option index or null
+        let userBookmarks = []; // boolean array per question
+        let visitedStatus = []; // boolean array per question
+        let timerInterval = null;
+        let timeLeft = 45 * 60; // 45 minutes in seconds
+
+        function startTest(setIndex) {
+            currentSetIndex = setIndex;
+            currentQuestionIndex = 0;
+            const qCount = questionSets[setIndex].length;
+            userAnswers = new Array(qCount).fill(null);
+            userBookmarks = new Array(qCount).fill(false);
+            visitedStatus = new Array(qCount).fill(false);
+            visitedStatus[0] = true;
+            timeLeft = 45 * 60;
+
+            // Update UI views
+            document.getElementById('set-selection-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.remove('hidden');
+            document.getElementById('timer-container').classList.remove('hidden');
+            document.getElementById('timer-container').classList.add('flex');
+
+            document.getElementById('set-title-badge').innerText = `UNESCO Set ${setIndex + 1}`;
+
+            startTimer();
+            loadQuestion();
+            renderPalette();
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time is up! Submitting your test automatically.");
+                    submitTest();
+                    return;
+                }
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                document.getElementById('timer-display').innerText = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const qData = questionSets[currentSetIndex][currentQuestionIndex];
+            visitedStatus[currentQuestionIndex] = true;
+
+            // Header info
+            document.getElementById('question-number-badge').innerText = `Q ${currentQuestionIndex + 1} of ${questionSets[currentSetIndex].length}`;
+            document.getElementById('question-text').innerText = qData.q;
+
+            // Bookmark button state
+            const bmBtn = document.getElementById('bookmark-btn');
+            if (userBookmarks[currentQuestionIndex]) {
+                bmBtn.innerHTML = '<i class="fa-solid fa-bookmark text-amber-400 mr-1"></i> Bookmarked';
+                bmBtn.classList.add('text-amber-400', 'border-amber-500/50');
+            } else {
+                bmBtn.innerHTML = '<i class="fa-regular fa-bookmark mr-1"></i> Bookmark';
+                bmBtn.classList.remove('text-amber-400', 'border-amber-500/50');
+            }
+
+            // Options
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                const optDiv = document.createElement('div');
+                optDiv.className = `p-4 rounded-xl border cursor-pointer transition-all flex items-center space-x-3 ${
+                    isSelected 
+                        ? 'bg-blue-600/20 border-blue-500 text-white font-medium shadow-md' 
+                        : 'bg-slate-900/60 border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-900'
+                }`;
+                optDiv.onclick = () => selectOption(idx);
+                optDiv.innerHTML = `
+                    <div class="w-6 h-6 rounded-full border ${isSelected ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-600 bg-slate-800 text-slate-400'} flex items-center justify-center text-xs font-bold shrink-0">
+                        ${String.fromCharCode(65 + idx)}
+                    </div>
+                    <span class="text-sm sm:text-base">${opt}</span>
+                `;
+                optContainer.appendChild(optDiv);
+            });
+
+            // Explanation box hidden during active test
+            document.getElementById('explanation-box').classList.add('hidden');
+
+            // Previous button state
+            document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+
+            renderPalette();
+        }
+
+        function selectOption(optIdx) {
+            userAnswers[currentQuestionIndex] = optIdx;
+            loadQuestion();
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIndex] = null;
+            loadQuestion();
+        }
+
+        function toggleBookmark() {
+            userBookmarks[currentQuestionIndex] = !userBookmarks[currentQuestionIndex];
+            loadQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questionSets[currentSetIndex].length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                confirmSubmit();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function goToQuestion(idx) {
+            currentQuestionIndex = idx;
+            loadQuestion();
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('palette-grid');
+            grid.innerHTML = '';
+            const qCount = questionSets[currentSetIndex].length;
+            for (let i = 0; i < qCount; i++) {
+                const btn = document.createElement('button');
+                const isAnswered = userAnswers[i] !== null;
+                const isBookmarked = userBookmarks[i];
+                const isCurrent = i === currentQuestionIndex;
+                const isVisited = visitedStatus[i];
+
+                let bgClass = 'bg-slate-700 text-slate-300 border-slate-600';
+                if (isAnswered) {
+                    bgClass = 'bg-emerald-600 text-white border-emerald-500';
+                } else if (isBookmarked) {
+                    bgClass = 'bg-amber-600 text-white border-amber-500';
+                } else if (isVisited) {
+                    bgClass = 'bg-rose-600/30 text-rose-300 border-rose-500/50';
+                }
+
+                if (isCurrent) {
+                    bgClass += ' ring-2 ring-white';
+                }
+
+                btn.className = `w-10 h-10 rounded-xl font-bold text-xs border flex items-center justify-center transition-all ${bgClass}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => goToQuestion(i);
+                grid.appendChild(btn);
+            }
+        }
+
+        function confirmSubmit() {
+            if (confirm("Are you sure you want to submit your test? You cannot change answers after submission.")) {
+                submitTest();
+            }
+        }
+
+        function submitTest() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('timer-container').classList.add('hidden');
+            document.getElementById('results-view').classList.remove('hidden');
+
+            const questions = questionSets[currentSetIndex];
+            let correctCount = 0;
+            let incorrectCount = 0;
+
+            questions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) {
+                    correctCount++;
+                } else if (userAnswers[idx] !== null) {
+                    incorrectCount++;
+                }
+            });
+
+            const totalQ = questions.length;
+            const accuracy = Math.round((correctCount / totalQ) * 100);
+
+            document.getElementById('res-set-name').innerText = `Set ${currentSetIndex + 1}`;
+            document.getElementById('res-score').innerText = `${correctCount} / ${totalQ}`;
+            document.getElementById('res-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-incorrect').innerText = incorrectCount;
+        }
+
+        function reviewAnswers() {
+            const reviewContainer = document.getElementById('review-container');
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+            reviewContainer.classList.remove('hidden');
+
+            const questions = questionSets[currentSetIndex];
+            questions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.answer;
+                const card = document.createElement('div');
+                card.className = `bg-slate-800 border p-6 rounded-2xl space-y-4 ${isCorrect ? 'border-emerald-500/50' : 'border-rose-500/50'}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, oIdx) => {
+                    let badge = '';
+                    let borderStyle = 'border-slate-700 bg-slate-900/40 text-slate-300';
+                    if (oIdx === q.answer) {
+                        borderStyle = 'border-emerald-500 bg-emerald-600/20 text-white font-medium';
+                        badge = '<span class="ml-auto text-xs bg-emerald-600 text-white px-2 py-0.5 rounded">Correct Answer</span>';
+                    } else if (oIdx === userAns && !isCorrect) {
+                        borderStyle = 'border-rose-500 bg-rose-600/20 text-white font-medium';
+                        badge = '<span class="ml-auto text-xs bg-rose-600 text-white px-2 py-0.5 rounded">Your Answer</span>';
+                    } else if (oIdx === userAns && isCorrect) {
+                        badge = '<span class="ml-auto text-xs bg-emerald-600 text-white px-2 py-0.5 rounded">Your Answer (Correct)</span>';
+                    }
+
+                    optionsHtml += `
+                        <div class="p-3 rounded-xl border flex items-center justify-between text-sm ${borderStyle}">
+                            <span>${String.fromCharCode(65 + oIdx)}. ${opt}</span>
+                            ${badge}
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg ${isCorrect ? 'bg-emerald-900/50 text-emerald-400 border border-emerald-700' : 'bg-rose-900/50 text-rose-400 border border-rose-700'}">
+                            Question ${idx + 1} — ${isCorrect ? 'Correct' : (userAns === null ? 'Skipped' : 'Incorrect')}
+                        </span>
+                    </div>
+                    <h4 class="text-white font-semibold text-base">${q.q}</h4>
+                    <div class="space-y-2 pt-2">
+                        ${optionsHtml}
+                    </div>
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl text-xs sm:text-sm text-slate-300 space-y-1">
+                        <span class="font-bold text-blue-400"><i class="fa-solid fa-circle-info mr-1"></i> Explanation:</span>
+                        <p>${q.exp}</p>
+                    </div>
+                `;
+                reviewList.appendChild(card);
+            });
+
+            reviewContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetPortal() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('timer-container').classList.add('hidden');
+            document.getElementById('set-selection-view').classList.remove('hidden');
+            document.getElementById('review-container').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
