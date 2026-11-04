@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Government Exam CBT Mock Test</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+    body {
+        background-color: #f4f6f9;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+    header {
+        background-color: #1a365d;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid #0056b3;
+    }
+    .header-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .timer-container {
+        font-size: 16px;
+        background: #2b6cb0;
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    .timer-pulse {
+        background: #e53e3e !important;
+        animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    .main-container {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+    }
+    .question-section {
+        flex: 3;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: white;
+        border-right: 2px solid #e2e8f0;
+    }
+    .question-header {
+        font-size: 16px;
+        font-weight: bold;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #edf2f7;
+        margin-bottom: 15px;
+        color: #2b6cb0;
+    }
+    .question-text {
+        font-size: 15px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        font-weight: 600;
+    }
+    .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        border: 1px solid #cbd5e0;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+    }
+    .option-label:hover {
+        background-color: #ebf8ff;
+        border-color: #3182ce;
+    }
+    .option-label input {
+        margin-right: 12px;
+        transform: scale(1.2);
+    }
+    .navigation-palette {
+        flex: 1;
+        min-width: 280px;
+        max-width: 320px;
+        background-color: #f7fafc;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid #cbd5e0;
+    }
+    .palette-legend {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        font-size: 12px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .legend-box {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+    }
+    .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    .palette-btn {
+        height: 38px;
+        border: 1px solid #cbd5e0;
+        background-color: #e2e8f0;
+        color: #2d3748;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+    .palette-btn:hover {
+        opacity: 0.8;
+    }
+    .palette-btn.active-q {
+        border: 2px solid #3182ce;
+        box-shadow: 0 0 5px rgba(49, 130, 206, 0.5);
+    }
+    /* State Colors */
+    .btn-not-visited { background-color: #e2e8f0; color: #2d3748; }
+    .btn-not-answered { background-color: #e53e3e; color: white; }
+    .btn-answered { background-color: #38a169; color: white; }
+    .btn-marked { background-color: #805ad5; color: white; }
+
+    footer {
+        background-color: #edf2f7;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 2px solid #cbd5e0;
+    }
+    .btn-group-left, .btn-group-right {
+        display: flex;
+        gap: 10px;
+    }
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .btn-secondary { background-color: #718096; color: white; }
+    .btn-warning { background-color: #dd6b20; color: white; }
+    .btn-primary { background-color: #3182ce; color: white; }
+    .btn-success { background-color: #38a169; color: white; }
+    .btn:hover { opacity: 0.9; }
+
+    /* Scorecard & Review Styles */
+    #result-screen {
+        display: none;
+        flex: 1;
+        overflow-y: auto;
+        padding: 25px;
+        background: #f7fafc;
+    }
+    .score-summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        text-align: center;
+        border-top: 4px solid #3182ce;
+    }
+    .card h3 { font-size: 14px; color: #718096; margin-bottom: 5px; }
+    .card p { font-size: 24px; font-weight: bold; color: #2d3748; }
+
+    .review-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .review-card {
+        background: white;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+    .review-q-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #2d3748;
+    }
+    .review-ans {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    .review-ans.correct { color: #38a169; font-weight: bold; }
+    .review-ans.user-choice { color: #dd6b20; }
+    .explanation-box {
+        margin-top: 10px;
+        padding: 10px;
+        background: #ebf8ff;
+        border-left: 4px solid #3182ce;
+        font-size: 13px;
+        color: #2c5282;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-title">Government Exam Computer Based Test (CBT)</div>
+    <div class="timer-container" id="timer">Time Left: 10:00</div>
+</header>
+
+<div class="main-container" id="quiz-screen">
+    <div class="question-section">
+        <div>
+            <div class="question-header" id="q-header">Question 1</div>
+            <div class="question-text" id="q-text">Loading question...</div>
+            <div class="options-container" id="options-container"></div>
+        </div>
+    </div>
+
+    <div class="navigation-palette">
+        <div class="palette-legend">
+            <div class="legend-item"><div class="legend-box btn-not-visited"></div> Not Visited</div>
+            <div class="legend-item"><div class="legend-box btn-not-answered"></div> Not Answered</div>
+            <div class="legend-item"><div class="legend-box btn-answered"></div> Answered</div>
+            <div class="legend-item"><div class="legend-box btn-marked"></div> Marked for Review</div>
+        </div>
+        <div style="font-weight: bold; margin-bottom: 10px; font-size: 14px;">Question Palette</div>
+        <div class="palette-grid" id="palette-grid"></div>
+    </div>
+</div>
+
+<footer id="quiz-footer">
+    <div class="btn-group-left">
+        <button class="btn btn-warning" onclick="markForReview()">Mark for Review</button>
+        <button class="btn btn-secondary" onclick="clearResponse()">Clear Response</button>
+    </div>
+    <div class="btn-group-right">
+        <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">Previous</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Next</button>
+        <button class="btn btn-success" onclick="submitTest()">Submit Test</button>
+    </div>
+</footer>
+
+<div id="result-screen">
+    <h2 style="margin-bottom: 20px; color: #2b6cb0;">Test Performance Dashboard</h2>
+    <div class="score-summary">
+        <div class="card" style="border-top-color: #3182ce;"><h3>Total Score</h3><p id="res-score">0 / 20</p></div>
+        <div class="card" style="border-top-color: #38a169;"><h3>Correct Answers</h3><p id="res-correct">0</p></div>
+        <div class="card" style="border-top-color: #e53e3e;"><h3>Incorrect Answers</h3><p id="res-incorrect">0</p></div>
+        <div class="card" style="border-top-color: #718096;"><h3>Unattempted</h3><p id="res-unattempted">0</p></div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="color: #2d3748;">Detailed Review & Explanations</h3>
+        <button class="btn btn-primary" onclick="restartTest()">Retake Test</button>
+    </div>
+
+    <div class="review-container" id="review-container"></div>
+</div>
+
+<script>
+const questionsData = [
+    {
+        q: "World Braille Day was proclaimed by the UN General Assembly through which resolution?",
+        options: ["Resolution A/RES/73/161", "Resolution A/RES/70/100", "Resolution A/RES/68/150", "Resolution A/RES/75/200"],
+        ans: 0,
+        exp: "World Braille Day was proclaimed by the UN General Assembly through Resolution A/RES/73/161 on 17 Dec 2018, and was first observed on 4 Jan 2019."
+    },
+    {
+        q: "Whose birth anniversary is commemorated on World Braille Day (4th January)?",
+        options: ["Louis Pasteur", "Louis Braille", "Alexander Graham Bell", "Helen Keller"],
+        ans: 1,
+        exp: "World Braille Day marks the birth anniversary of Louis Braille, who was born in the year 1809."
+    },
+    {
+        q: "In which year was Pravasi Bharatiya Divas (NRI Day) first celebrated?",
+        options: ["2001", "2002", "2003", "2015"],
+        ans: 2,
+        exp: "Pravasi Bharatiya Divas was announced in 2002 and first celebrated in 2003. The convention has been held biennially since 2015."
+    },
+    {
+        q: "What was the official theme for the 18th Pravasi Bharatiya Divas held in 2025?",
+        options: ["Role of Indian Diaspora in Innovation", "Diaspora's Contribution to a Viksit Bharat", "Connecting the Indian Diaspora Globally", "Youth and Pravasi Bharatiya"],
+        ans: 1,
+        exp: "The theme for the 18th Pravasi Bharatiya Divas (2025) was 'Diaspora's Contribution to a Viksit Bharat'."
+    },
+    {
+        q: "World Hindi Day (Vishwa Hindi Diwas) was instituted in 2006 by which former Prime Minister of India?",
+        options: ["Atal Bihari Vajpayee", "Dr. Manmohan Singh", "PV Narasimha Rao", "Rajiv Gandhi"],
+        ans: 1,
+        exp: "World Hindi Day was instituted by the Government of India in 2006 by then Prime Minister Dr. Manmohan Singh to commemorate the first World Hindi Conference (1975)."
+    },
+    {
+        q: "What was the official theme for World Hindi Day mentioned in the document?",
+        options: ["Hindi in the Digital Era", "Promoting Hindi Globally", "From Traditional Knowledge to Artificial Intelligence", "Language of Unity"],
+        ans: 2,
+        exp: "The official theme for World Hindi Day recorded is 'From Traditional Knowledge to Artificial Intelligence'."
+    },
+    {
+        q: "When was National Youth Day declared by the Government of India, and when was it first celebrated?",
+        options: ["Declared 1980, First celebrated 1981", "Declared 1984, First celebrated 1985", "Declared 1990, First celebrated 1991", "Declared 2000, First celebrated 2001"],
+        ans: 1,
+        exp: "National Youth Day was declared by the Government of India in 1984 and was first celebrated in 1985 in honour of Swami Vivekananda's birth anniversary."
+    },
+    {
+        q: "What is the official theme for National Youth Day?",
+        options: ["Youth for Digital India", "Ignite the Self; Impact the World.", "Building a Stronger Nation", "Youth Power for Progress"],
+        ans: 1,
+        exp: "The official theme for National Youth Day is 'Ignite the Self; Impact the World.'"
+    },
+    {
+        q: "Indian Army Day marks the occasion when Field Marshal K.M. Cariappa took over as Commander-in-Chief from which British General?",
+        options: ["General Sir Francis Butcher", "General Lord Mountbatten", "General Claude Auchinleck", "General Archibald Wavell"],
+        ans: 0,
+        exp: "Indian Army Day has been celebrated since 1949, marking the day Field Marshal K.M. Cariappa became the first Indian Commander-in-Chief, replacing General Sir Francis Butcher."
+    },
+    {
+        q: "What was the official theme for Indian Army Day?",
+        options: ["Year of Technology Adoption", "Year of Networking and Data Centricity", "Modernization and Readiness", "Service Before Self"],
+        ans: 1,
+        exp: "The official theme for Indian Army Day was 'Year of Networking and Data Centricity'."
+    },
+    {
+        q: "Parakram Diwas was instituted in 2021 by which Ministry to honour Netaji Subhas Chandra Bose?",
+        options: ["Ministry of Home Affairs", "Ministry of Defense", "Ministry of Culture", "Ministry of Youth Affairs"],
+        ans: 2,
+        exp: "Parakram Diwas was instituted by the Government of India through a notification of the Ministry of Culture in 2021 to honour Netaji Subhas Chandra Bose."
+    },
+    {
+        q: "What are the key qualities highlighted in the official theme of Parakram Diwas?",
+        options: ["Courage, sacrifice, and patriotism", "Valour, discipline, and honor", "Leadership, unity, and strength", "Freedom, peace, and progress"],
+        ans: 0,
+        exp: "The official theme for Parakram Diwas focuses on 'Courage, sacrifice, and patriotism'."
+    },
+    {
+        q: "Under which Article of the Constitution of India was the Election Commission of India (ECI) established on 25 January 1950?",
+        options: ["Article 320", "Article 324", "Article 352", "Article 368"],
+        ans: 1,
+        exp: "The Election Commission of India (ECI) was established on 25 Jan 1950 under Article 324 of the Constitution of India."
+    },
+    {
+        q: "In which year was National Voters' Day first celebrated by the Election Commission of India?",
+        options: ["2005", "2010", "2011", "2015"],
+        ans: 2,
+        exp: "National Voters' Day was started by the Government of India and the ECI in 2011 to mark the foundation day of the ECI."
+    },
+    {
+        q: "What is the tagline associated with the theme 'My India, My Vote' for National Voters' Day?",
+        options: ["Citizen at the Heart of Indian Democracy.", "Every Vote Matters", "Proud Voter, Ready to Vote", "Democracy for All"],
+        ans: 0,
+        exp: "The official theme is 'My India, My Vote' with the tagline 'Citizen at the Heart of Indian Democracy.' (Press Information Bureau)."
+    },
+    {
+        q: "Which ministry observes National Tourism Day in India to promote tourism awareness?",
+        options: ["Ministry of Culture", "Ministry of Tourism", "Ministry of External Affairs", "Ministry of Home Affairs"],
+        ans: 1,
+        exp: "National Tourism Day is observed by the Ministry of Tourism, Government of India as an administrative observance."
+    },
+    {
+        q: "What was the official theme for National Tourism Day (India)?",
+        options: ["Incredible India: Green Travel", "Sustainable Journeys, Timeless Memories", "Eco-Tourism for Progress", "Explore Heritage, Protect Nature"],
+        ans: 1,
+        exp: "The official theme for National Tourism Day was 'Sustainable Journeys, Timeless Memories'."
+    },
+    {
+        q: "Pravasi Bharatiya Divas was recommended by which committee established by the Indian Government?",
+        options: ["Kothari Committee", "L.M. Singhvi Committee", "Sarkaria Commission", "Swaminathan Committee"],
+        ans: 1,
+        exp: "According to Quick Facts, Pravasi Bharatiya Divas was started in 2003 based on the recommendations of the L.M. Singhvi Committee."
+    },
+    {
+        q: "What is the nature of the legal establishment for National Tourism Day (India)?",
+        options: ["Created under an Act of Parliament", "Created by a Constitutional Amendment", "It is an administrative observance rather than one created by a specific Act or law", "Created under UN Resolution"],
+        ans: 2,
+        exp: "National Tourism Day is an administrative observance by the Ministry of Tourism rather than one created by a specific Act or law."
+    },
+    {
+        q: "Which observance commemorates the birth anniversary of Swami Vivekananda?",
+        options: ["Parakram Diwas", "National Youth Day (India)", "World Braille Day", "National Voters' Day"],
+        ans: 1,
+        exp: "National Youth Day is celebrated on 12 January in honour of Swami Vivekananda's birth anniversary."
+    }
+];
+
+let currentQ = 0;
+let userAnswers = new Array(questionsData.length).fill(null);
+let userStatus = new Array(questionsData.length).fill('not-visited'); // 'not-visited', 'not-answered', 'answered', 'marked'
+let timerSeconds = 600; // 10 minutes
+let timerInterval = null;
+
+function initQuiz() {
+    renderPalette();
+    loadQuestion(0);
+    startTimer();
+}
+
+function startTimer() {
+    const timerElem = document.getElementById('timer');
+    timerInterval = setInterval(() => {
+        timerSeconds--;
+        let min = Math.floor(timerSeconds / 60);
+        let sec = timerSeconds % 60;
+        timerElem.innerText = `Time Left: ${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`;
+
+        if (timerSeconds <= 120) {
+            timerElem.classList.add('timer-pulse');
+        }
+
+        if (timerSeconds <= 0) {
+            clearInterval(timerInterval);
+            submitTest();
+        }
+    }, 1000);
+}
+
+function renderPalette() {
+    const grid = document.getElementById('palette-grid');
+    grid.innerHTML = '';
+    questionsData.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `palette-btn btn-${userStatus[idx]}`;
+        btn.innerText = idx + 1;
+        if (idx === currentQ) btn.classList.add('active-q');
+        btn.onclick = () => jumpToQuestion(idx);
+        grid.appendChild(btn);
+    });
+}
+
+function loadQuestion(index) {
+    if (userStatus[index] === 'not-visited') {
+        userStatus[index] = 'not-answered';
+    }
+    currentQ = index;
+
+    document.getElementById('q-header').innerText = `Question ${index + 1} of ${questionsData.length}`;
+    document.getElementById('q-text').innerText = questionsData[index].q;
+
+    const optContainer = document.getElementById('options-container');
+    optContainer.innerHTML = '';
+
+    questionsData[index].options.forEach((opt, oIdx) => {
+        const label = document.createElement('label');
+        label.className = 'option-label';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'option';
+        radio.value = oIdx;
+        if (userAnswers[index] === oIdx) {
+            radio.checked = true;
+        }
+
+        radio.onchange = () => {
+            userAnswers[index] = oIdx;
+            if (userStatus[index] !== 'marked') {
+                userStatus[index] = 'answered';
+            }
+            renderPalette();
+        };
+
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(opt));
+        optContainer.appendChild(label);
+    });
+
+    document.getElementById('btn-prev').disabled = index === 0;
+    document.getElementById('btn-next').disabled = index === questionsData.length - 1;
+
+    renderPalette();
+}
+
+function jumpToQuestion(index) {
+    loadQuestion(index);
+}
+
+function nextQuestion() {
+    if (currentQ < questionsData.length - 1) {
+        loadQuestion(currentQ + 1);
+    }
+}
+
+function prevQuestion() {
+    if (currentQ > 0) {
+        loadQuestion(currentQ - 1);
+    }
+}
+
+function clearResponse() {
+    userAnswers[currentQ] = null;
+    userStatus[currentQ] = 'not-answered';
+    loadQuestion(currentQ);
+}
+
+function markForReview() {
+    userStatus[currentQ] = 'marked';
+    renderPalette();
+}
+
+function submitTest() {
+    clearInterval(timerInterval);
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('quiz-footer').style.display = 'none';
+    document.getElementById('timer').style.display = 'none';
+
+    let correct = 0;
+    let incorrect = 0;
+    let unattempted = 0;
+
+    userAnswers.forEach((ans, idx) => {
+        if (ans === null) {
+            unattempted++;
+        } else if (ans === questionsData[idx].ans) {
+            correct++;
+        } else {
+            incorrect++;
+        }
+    });
+
+    document.getElementById('res-score').innerText = `${correct} / ${questionsData.length}`;
+    document.getElementById('res-correct').innerText = correct;
+    document.getElementById('res-incorrect').innerText = incorrect;
+    document.getElementById('res-unattempted').innerText = unattempted;
+
+    const revContainer = document.getElementById('review-container');
+    revContainer.innerHTML = '';
+
+    questionsData.forEach((qObj, idx) => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+
+        const uAnsText = userAnswers[idx] !== null ? qObj.options[userAnswers[idx]] : "Not Attempted";
+        const cAnsText = qObj.options[qObj.ans];
+        const isCorrect = userAnswers[idx] === qObj.ans;
+
+        card.innerHTML = `
+            <div class="review-q-title">Q${idx + 1}: ${qObj.q}</div>
+            <div class="review-ans ${isCorrect ? 'correct' : 'user-choice'}">Your Answer: ${uAnsText}</div>
+            <div class="review-ans correct">Correct Answer: ${cAnsText}</div>
+            <div class="explanation-box"><strong>Explanation:</strong> ${qObj.exp}</div>
+        `;
+        revContainer.appendChild(card);
+    });
+
+    document.getElementById('result-screen').style.display = 'block';
+}
+
+function restartTest() {
+    userAnswers.fill(null);
+    userStatus.fill('not-visited');
+    timerSeconds = 600;
+    currentQ = 0;
+
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'flex';
+    document.getElementById('quiz-footer').style.display = 'flex';
+    document.getElementById('timer').style.display = 'block';
+    document.getElementById('timer').classList.remove('timer-pulse');
+
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>
