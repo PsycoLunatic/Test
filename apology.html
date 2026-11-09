@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm Really Sorry... 🥺</title>
+    <style>
+        /* Base Styling & Color Tokens */
+        :root {
+            --bg-primary: #fff5f7;
+            --bg-secondary: #ffe3e8;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --text-main: #4a2e35;
+            --text-muted: #8c5b68;
+            --accent-pink: #ff6b8b;
+            --accent-pink-hover: #ff4770;
+            --accent-purple: #a855f7;
+            --shadow-color: rgba(255, 107, 139, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 50%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-main);
+        }
+
+        /* Floating Background Hearts */
+        .bg-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-heart {
+            position: absolute;
+            bottom: -50px;
+            color: rgba(255, 107, 139, 0.2);
+            animation: floatUp 8s linear infinite;
+            font-size: 24px;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-115vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Main Container Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 32px;
+            padding: 40px 32px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 50px var(--shadow-color),
+                        0 2px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 10;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Cute Bear / Mascot SVG Frame */
+        .mascot-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mascot-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 8px 16px rgba(255, 107, 139, 0.2));
+            animation: pulseGently 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGently {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2rem;
+            color: #d81b60;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        p.apology-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 28px;
+        }
+
+        /* Interactive Action Area */
+        .button-zone {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 80px;
+            position: relative;
+        }
+
+        /* Buttons Base Styling */
+        .btn {
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s ease-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff6b8b 0%, #ff4757 100%);
+            color: white;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+            z-index: 20;
+        }
+
+        .btn-yes:hover {
+            background: linear-gradient(135deg, #ff4770 0%, #e8334a 100%);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.5);
+        }
+
+        .btn-yes:active {
+            transform: scale(0.96) !important;
+        }
+
+        .btn-no {
+            background-color: #f1f3f5;
+            color: #718096;
+            padding: 14px 28px;
+            font-size: 1.05rem;
+            border: 2px solid #e2e8f0;
+            z-index: 30;
+            position: relative;
+        }
+
+        .btn-no:hover {
+            background-color: #edf2f7;
+            color: #4a5568;
+        }
+
+        /* Fixed absolute escape position state for "No" */
+        .btn-no.escaped {
+            position: fixed !important;
+            transition: left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        top 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        transform 0.2s ease;
+        }
+
+        /* Success Overlay Screen */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 245, 247, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .success-card {
+            background: white;
+            padding: 40px;
+            border-radius: 36px;
+            box-shadow: 0 25px 60px rgba(255, 107, 139, 0.25);
+            max-width: 450px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .success-overlay.active .success-card {
+            transform: scale(1);
+        }
+
+        .success-title {
+            color: #d81b60;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .success-msg {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .close-note {
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 20px;
+            background: #f7fafc;
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e0;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 101;
+        }
+
+        /* Tooltip hint on playful clicks */
+        .hint-toast {
+            position: absolute;
+            bottom: 20px;
+            background: rgba(74, 46, 53, 0.85);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .hint-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 1.75rem;
+            }
+            p.apology-text {
+                font-size: 0.98rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating background hearts container -->
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <!-- Main Card -->
+    <main class="card" id="mainCard">
+        <div class="mascot-container">
+            <!-- Cute Sad Bear SVG -->
+            <svg class="mascot-svg" id="mascotSvg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Ears -->
+                <circle cx="50" cy="50" r="28" fill="#E2A684"/>
+                <circle cx="50" cy="50" r="16" fill="#F4C6B1"/>
+                <circle cx="150" cy="50" r="28" fill="#E2A684"/>
+                <circle cx="150" cy="50" r="16" fill="#F4C6B1"/>
+                <!-- Head -->
+                <circle cx="100" cy="100" r="70" fill="#EFB799"/>
+                <!-- Eyes (Sad/Pleading) -->
+                <ellipse cx="75" cy="90" rx="7" ry="10" fill="#3D2314"/>
+                <ellipse cx="125" cy="90" rx="7" ry="10" fill="#3D2314"/>
+                <!-- Eye Highlights -->
+                <circle cx="73" cy="86" r="3" fill="white"/>
+                <circle cx="123" cy="86" r="3" fill="white"/>
+                <!-- Tear Drop -->
+                <path class="tear" d="M63 98 Q60 108 63 114 Q68 118 71 112 Q73 105 63 98 Z" fill="#64B5F6"/>
+                <!-- Snout -->
+                <ellipse cx="100" cy="115" rx="22" ry="16" fill="#F4C6B1"/>
+                <!-- Nose -->
+                <ellipse cx="100" cy="108" rx="8" ry="6" fill="#3D2314"/>
+                <!-- Sad Mouth -->
+                <path d="M92 124 Q100 116 108 124" stroke="#3D2314" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <!-- Blush -->
+                <ellipse cx="60" cy="108" rx="10" ry="6" fill="#FF8A8A" opacity="0.5"/>
+                <ellipse cx="140" cy="108" rx="10" ry="6" fill="#FF8A8A" opacity="0.5"/>
+                <!-- Broken Heart Small Badge -->
+                <path d="M100 155 C90 145 75 155 85 168 L100 180 L115 168 C125 155 110 145 100 155 Z" fill="#FF5252" opacity="0.9"/>
+                <path d="M97 153 L103 162 L96 169 L104 178" stroke="white" stroke-width="2" fill="none"/>
+            </svg>
+        </div>
+
+        <h1>I'm So Sorry!</h1>
+        <p class="apology-text">
+            I know I messed up, and I feel really awful about it. You mean the world to me, and the last thing I ever want to do is hurt your feelings. Please forgive me?
+        </p>
+        
+        <div class="question-text" id="questionText">Will you forgive me? 🥺</div>
+
+        <div class="button-zone">
+            <button class="btn btn-yes" id="yesBtn">Yes, of course! ❤️</button>
+            <button class="btn btn-no" id="noBtn">No 💔</button>
+        </div>
+    </main>
+
+    <!-- Hint Toast -->
+    <div class="hint-toast" id="hintToast">Oops! You can't tap that! 😉</div>
+
+    <!-- Success Screen Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="success-card">
+            <!-- Happy Bear SVG -->
+            <div style="width: 120px; height: 120px; margin: 0 auto 16px;">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="28" fill="#E2A684"/>
+                    <circle cx="50" cy="50" r="16" fill="#F4C6B1"/>
+                    <circle cx="150" cy="50" r="28" fill="#E2A684"/>
+                    <circle cx="150" cy="50" r="16" fill="#F4C6B1"/>
+                    <circle cx="100" cy="100" r="70" fill="#EFB799"/>
+                    <!-- Happy Happy Eyes -->
+                    <path d="M68 90 Q75 80 82 90" stroke="#3D2314" stroke-width="4" stroke-linecap="round" fill="none"/>
+                    <path d="M118 90 Q125 80 132 90" stroke="#3D2314" stroke-width="4" stroke-linecap="round" fill="none"/>
+                    <!-- Snout -->
+                    <ellipse cx="100" cy="115" rx="22" ry="16" fill="#F4C6B1"/>
+                    <ellipse cx="100" cy="108" rx="8" ry="6" fill="#3D2314"/>
+                    <!-- Big Happy Smile -->
+                    <path d="M88 118 Q100 132 112 118" stroke="#3D2314" stroke-width="4" stroke-linecap="round" fill="none"/>
+                    <!-- Rosy Blush -->
+                    <ellipse cx="58" cy="105" rx="12" ry="7" fill="#FF4770" opacity="0.6"/>
+                    <ellipse cx="142" cy="105" rx="12" ry="7" fill="#FF4770" opacity="0.6"/>
+                    <!-- Floating Big Heart -->
+                    <path d="M100 35 C90 20 70 30 85 48 L100 62 L115 48 C130 30 110 20 100 35 Z" fill="#FF4770"/>
+                </svg>
+            </div>
+            <h2 class="success-title">Yay! Thank You! 🎉</h2>
+            <p class="success-msg">
+                You're the absolute sweetest! Thank you for forgiving me. I promise to make it up to you with extra love, hugs, and your favorite treat! 💕✨
+            </p>
+            <button class="btn btn-yes" id="closeBtn" style="width: 100%;">Close & Sending Hugs 🤗</button>
+            <div class="close-note" id="closeNote">
+                Note: Browser security prevents auto-closing tab. You can safely close this window now!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Variables
+        let attemptCount = 0;
+        let yesScale = 1;
+        let noScale = 1;
+
+        // Playful phrases for the "No" button
+        const noPhrases = [
+            "No 💔",
+            "Are you sure? 🥺",
+            "Think again! 💭",
+            "Give me a chance! 🙏",
+            "You can't catch me! 😜",
+            "Nice try! 🚀",
+            "Pretty please? 🌸",
+            "Just click YES! ✨",
+            "Don't be so cold! ❄️",
+            "Still NO? 😭",
+            "Look how big YES is! 👉"
+        ];
+
+        // Cute Mascot Expressions / Questions
+        const questions = [
+            "Will you forgive me? 🥺",
+            "Are you really really sure? 😢",
+            "Pretty please with cherry on top? 🍒",
+            "I'll buy you food/boba! 63%",
+            "Look how small NO is getting! 🔍",
+            "Saying YES is right there! 💕"
+        ];
+
+        // DOM Elements
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionText = document.getElementById('questionText');
+        const successOverlay = document.getElementById('successOverlay');
+        const closeBtn = document.getElementById('closeBtn');
+        const hintToast = document.getElementById('hintToast');
+        const bgHeartsContainer = document.getElementById('bgHearts');
+
+        // Generate Floating Background Hearts
+        function createBackgroundHearts() {
+            const heartIcons = ['❤️', '💖', '💗', '💕', '🌸', '✨'];
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                heart.style.fontSize = (16 + Math.random() * 20) + 'px';
+                bgHeartsContainer.appendChild(heart);
+            }
+        }
+        createBackgroundHearts();
+
+        // Move "No" Button dynamically
+        function dodgeNoButton() {
+            attemptCount++;
+
+            // Enable fixed positioning after first attempt
+            if (!noBtn.classList.contains('escaped')) {
+                noBtn.classList.add('escaped');
+            }
+
+            // Calculate safe boundaries
+            const btnWidth = noBtn.offsetWidth || 100;
+            const btnHeight = noBtn.offsetHeight || 40;
+            const padding = 30;
+
+            const maxLeft = window.innerWidth - btnWidth - padding;
+            const maxTop = window.innerHeight - btnHeight - padding;
+
+            const randomLeft = Math.max(padding, Math.floor(Math.random() * maxLeft));
+            const randomTop = Math.max(padding, Math.floor(Math.random() * maxTop));
+
+            // Move the button
+            noBtn.style.left = `${randomLeft}px`;
+            noBtn.style.top = `${randomTop}px`;
+
+            // Scale down "No" button, Scale up "Yes" button
+            noScale = Math.max(0.3, noScale - 0.08);
+            yesScale = Math.min(2.5, yesScale + 0.15);
+
+            noBtn.style.transform = `scale(${noScale})`;
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            // Update text dynamically
+            const phraseIndex = Math.min(attemptCount, noPhrases.length - 1);
+            noBtn.innerText = noPhrases[phraseIndex];
+
+            const questionIndex = Math.min(attemptCount, questions.length - 1);
+            questionText.innerText = questions[questionIndex];
+
+            // Show Toast hint on mobile / desktop
+            showHintToast();
+        }
+
+        // Show quick playful toast message
+        let toastTimeout;
+        function showHintToast() {
+            hintToast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                hintToast.classList.remove('show');
+            }, 1800);
+        }
+
+        // Event Listeners for "No" Button (Hover + Click + Touch)
+        noBtn.addEventListener('mouseenter', dodgeNoButton);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dodgeNoButton();
+        });
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dodgeNoButton();
+        });
+
+        // "Yes" Button Click Handler
+        yesBtn.addEventListener('click', () => {
+            // Trigger confetti animation
+            startConfetti();
+            
+            // Display success modal
+            successOverlay.classList.add('active');
+        });
+
+        // Close Button inside Success Overlay
+        closeBtn.addEventListener('click', () => {
+            // Attempt window close
+            try {
+                window.close();
+            } catch (err) {
+                console.log("Browser prevented window.close()");
+            }
+            // Fallback message update
+            document.getElementById('closeNote').style.background = '#ffe3e8';
+            document.getElementById('closeNote').style.color = '#d81b60';
+            document.getElementById('closeNote').innerText = "Sending extra kisses! You can safely close this tab now 😘";
+        });
+
+        // --- Canvas Confetti Engine (No External Dependencies) ---
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#ff6b8b', '#ff4757', '#74b9ff', '#a855f7', '#ffd166', '#06d6a0'];
+            const shapes = ['heart', 'circle', 'rect'];
+
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 18,
+                    vy: (Math.random() - 0.7) * 18,
+                    size: Math.random() * 10 + 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    shape: shapes[Math.floor(Math.random() * shapes.length)],
+                    rotation: Math.random() * 360,
+                    rSpeed: (Math.random() - 0.5) * 10,
+                    opacity: 1
+                });
+            }
+
+            function drawHeart(c, x, y, size, color, opacity) {
+                c.save();
+                c.translate(x, y);
+                c.globalAlpha = opacity;
+                c.fillStyle = color;
+                c.beginPath();
+                const d = size;
+                c.moveTo(0, 0);
+                c.bezierCurveTo(-d / 2, -d / 2, -d, d / 3, 0, d);
+                c.bezierCurveTo(d, d / 3, d / 2, -d / 2, 0, 0);
+                c.fill();
+                c.restore();
+            }
+
+            let animationFrame;
+            function animateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.35; // Gravity
+                    p.vx *= 0.98; // Friction
+                    p.rotation += p.rSpeed;
+                    p.opacity -= 0.008;
+
+                    if (p.opacity > 0) {
+                        alive = true;
+                        ctx.save();
+                        ctx.globalAlpha = p.opacity;
+
+                        if (p.shape === 'heart') {
+                            drawHeart(ctx, p.x, p.y, p.size, p.color, p.opacity);
+                        } else if (p.shape === 'circle') {
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+                            ctx.fillStyle = p.color;
+                            ctx.fill();
+                        } else {
+                            ctx.translate(p.x, p.y);
+                            ctx.rotate((p.rotation * Math.PI) / 180);
+                            ctx.fillStyle = p.color;
+                            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                        }
+                        ctx.restore();
+                    }
+                });
+
+                if (alive) {
+                    animationFrame = requestAnimationFrame(animateConfetti);
+                } else {
+                    cancelAnimationFrame(animationFrame);
+                }
+            }
+
+            animateConfetti();
+        }
+
+        // Handle Window Resize gracefully
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('confetti-canvas');
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
+    </script>
+</body>
+</html>
