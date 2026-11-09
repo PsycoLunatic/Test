@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Mock Test: National Sports of Different Countries</title>
+    <style>
+        /* CSS Reset & TCS iON Theme Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --header-bg: #1a237e;
+            --sub-header-bg: #283593;
+            --btn-blue: #0275d8;
+            --btn-blue-hover: #025aa5;
+            --gray-not-visited: #e0e0e0;
+            --gray-text: #333333;
+            --red-not-answered: #d9534f;
+            --green-answered: #5cb85c;
+            --purple-review: #7b1fa2;
+            --border-color: #cccccc;
+            --bg-light: #f4f6f9;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Banner & Timer Header */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .exam-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .timer-container {
+            background-color: #ffffff;
+            color: #111111;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+
+        @keyframes pulse-red {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Main Split-Screen Container */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Left Question Display Pane */
+        .question-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .question-header {
+            padding: 12px 20px;
+            background-color: #e8eaf6;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .question-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #212121;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .option-item:hover {
+            background-color: #e3f2fd;
+            border-color: #90caf9;
+        }
+
+        .option-item.selected {
+            background-color: #e3f2fd;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 1px var(--btn-blue);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 14px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-label {
+            font-size: 0.98rem;
+            color: #333333;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Right Question Palette Pane */
+        .palette-pane {
+            width: 330px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            padding: 12px 16px;
+            background-color: #e8eaf6;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--sub-header-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            font-size: 0.85rem;
+            color: #212121;
+        }
+
+        .palette-legend {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .legend-box.not-visited { background-color: var(--gray-not-visited); color: var(--gray-text); border: 1px solid #b0bec5;}
+        .legend-box.not-answered { background-color: var(--red-not-answered); }
+        .legend-box.answered { background-color: var(--green-answered); }
+        .legend-box.review { background-color: var(--purple-review); }
+        .legend-box.ans-review { background-color: var(--purple-review); }
+        .legend-box.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #5cb85c;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .palette-header {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #333333;
+            background-color: #e8eaf6;
+        }
+
+        .palette-grid-container {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid #b0bec5;
+            border-radius: 4px;
+            background-color: var(--gray-not-visited);
+            color: var(--gray-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-btn.active {
+            border: 2.5px solid #1a237e;
+            box-shadow: 0 0 5px rgba(26, 35, 126, 0.5);
+        }
+
+        .palette-btn.not-answered { background-color: var(--red-not-answered); color: white; border-color: #d9534f; }
+        .palette-btn.answered { background-color: var(--green-answered); color: white; border-color: #4cae4c; }
+        .palette-btn.review { background-color: var(--purple-review); color: white; border-color: #6a1b9a; }
+        .palette-btn.ans-review { background-color: var(--purple-review); color: white; border-color: #6a1b9a; }
+        .palette-btn.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
+            background-color: #5cb85c;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Bottom Action Bar */
+        .action-bar {
+            background-color: #e8eaf6;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group-left, .btn-group-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary { background-color: #ffffff; color: #333333; border: 1px solid #b0bec5; }
+        .btn-secondary:hover { background-color: #e0e0e0; }
+
+        .btn-purple { background-color: var(--purple-review); color: white; }
+        .btn-purple:hover { background-color: #6a1b9a; }
+
+        .btn-primary { background-color: var(--btn-blue); color: white; }
+        .btn-primary:hover { background-color: var(--btn-blue-hover); }
+
+        .btn-submit { background-color: var(--green-answered); color: white; }
+        .btn-submit:hover { background-color: #4cae4c; }
+
+        /* Dashboard Screen (Hidden initially) */
+        #results-dashboard {
+            display: none;
+            flex: 1;
+            background-color: var(--bg-light);
+            overflow-y: auto;
+            padding: 30px;
+            user-select: text;
+        }
+
+        .dashboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--header-bg);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-card.score { border-top: 4px solid var(--btn-blue); }
+        .metric-card.correct { border-top: 4px solid var(--green-answered); }
+        .metric-card.incorrect { border-top: 4px solid var(--red-not-answered); }
+        .metric-card.unattempted { border-top: 4px solid #757575; }
+
+        .metric-title {
+            font-size: 0.85rem;
+            color: #616161;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #212121;
+        }
+
+        .review-section-title {
+            font-size: 1.3rem;
+            color: var(--header-bg);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            background-color: #ffffff;
+        }
+
+        .review-item.correct-bg { border-left: 5px solid var(--green-answered); }
+        .review-item.incorrect-bg { border-left: 5px solid var(--red-not-answered); }
+        .review-item.unattempted-bg { border-left: 5px solid #757575; }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #424242;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .review-q-text {
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 12px;
+        }
+
+        .review-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .explanation-box {
+            background-color: #e8eaf6;
+            border: 1px solid #c5cae9;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: #1a237e;
+            line-height: 1.4;
+        }
+
+        .trap-tag {
+            display: inline-block;
+            background-color: #ffe0b2;
+            color: #e65100;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .retake-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .palette-pane {
+                width: 100%;
+                height: 220px;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+            }
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .review-choices {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="exam-title">CBT Exam Simulator: National Sports of Different Countries</div>
+        <div class="timer-container" id="timer-box">
+            <span>Time Remaining:</span>
+            <span id="timer-display">10:00</span>
+        </div>
+    </header>
+
+    <!-- Main CBT Interface Screen -->
+    <div class="main-container" id="quiz-interface">
+
+        <!-- Left Pane: Question Section -->
+        <main class="question-pane">
+            <div class="question-header">
+                <span id="question-number-title">Question 1 of 30</span>
+                <span>Marks: +1.0 | -0.0</span>
+            </div>
+
+            <div class="question-body">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+
+                <ul class="options-list" id="options-container">
+                    <!-- Options populated dynamically -->
+                </ul>
+            </div>
+
+            <!-- Bottom Action Controls -->
+            <footer class="action-bar">
+                <div class="btn-group-left">
+                    <button class="btn btn-purple" id="btn-mark-review">Mark for Review & Next</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear Response</button>
+                </div>
+                <div class="btn-group-right">
+                    <button class="btn btn-secondary" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" id="btn-next">Save & Next</button>
+                    <button class="btn btn-submit" id="btn-submit">Submit Test</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Right Pane: Question Palette -->
+        <aside class="palette-pane">
+            <div class="user-profile">
+                <div class="profile-avatar">A</div>
+                <div class="profile-info">
+                    <strong>Candidate:</strong> Competitive Exam Aspirant<br>
+                    <strong>Subject:</strong> General Knowledge (Sports)
+                </div>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box not-visited">0</div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box not-answered">0</div> Visited, Unanswered</div>
+                <div class="legend-item"><div class="legend-box answered">0</div> Answered</div>
+                <div class="legend-item"><div class="legend-box review">0</div> Marked for Review</div>
+                <div class="legend-item" style="grid-column: span 2;">
+                    <div class="legend-box ans-review">0</div> Answered & Marked for Review
+                </div>
+            </div>
+
+            <div class="palette-header">Question Palette</div>
+
+            <div class="palette-grid-container">
+                <div class="palette-grid" id="palette-grid">
+                    <!-- 30 Palette Buttons dynamically generated -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Results & Analytics Dashboard Screen (Initially Hidden) -->
+    <div id="results-dashboard">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h1>Exam Scorecard & Detailed Analytics</h1>
+                <p style="color: #616161;">Strictly fact-checked against official designations and traditional associations</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="metric-card score">
+                    <div class="metric-title">Total Score</div>
+                    <div class="metric-value" id="score-display">0 / 30</div>
+                </div>
+                <div class="metric-card correct">
+                    <div class="metric-title">Correct Answers</div>
+                    <div class="metric-value" id="correct-display">0</div>
+                </div>
+                <div class="metric-card incorrect">
+                    <div class="metric-title">Incorrect Answers</div>
+                    <div class="metric-value" id="incorrect-display">0</div>
+                </div>
+                <div class="metric-card unattempted">
+                    <div class="metric-title">Unattempted</div>
+                    <div class="metric-value" id="unattempted-display">0</div>
+                </div>
+            </div>
+
+            <!-- Question Review Header -->
+            <div class="review-section-title">Detailed Solutions & Exam Distinctions</div>
+
+            <!-- Question Review List -->
+            <div class="review-list" id="review-list">
+                <!-- Detailed reviews generated via JavaScript -->
+            </div>
+
+            <div class="retake-container">
+                <button class="btn btn-primary" id="btn-retake" style="padding: 12px 28px; font-size: 1rem;">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Store: 30 Questions strictly derived from provided notes
+        const questionsData = [
+            {
+                id: 1,
+                question: "What is the officially declared national game of India according to government records?",
+                options: ["Field Hockey", "Cricket", "Kabaddi", "None (No sport has been officially declared)"],
+                correct: 3,
+                explanation: "While Field Hockey is widely popular and commonly referred to as the national game in GK books, India has not officially declared any sport as its national game.",
+                trapAlert: "⚠️ EXAM TRAP: Hockey is a common association, NOT an officially declared national game!"
+            },
+            {
+                id: 2,
+                question: "Under Canada's National Sports Act, which two sports are officially designated as Canada's national winter and summer sports?",
+                options: [
+                    "Winter: Ice Hockey | Summer: Lacrosse",
+                    "Winter: Ice Hockey | Summer: Baseball",
+                    "Winter: Alpine Skiing | Summer: Lacrosse",
+                    "Winter: Curling | Summer: Field Hockey"
+                ],
+                correct: 0,
+                explanation: "Under Canada's National Sports Act, Ice Hockey is the official national winter sport, and Lacrosse is the official national summer sport.",
+                trapAlert: "Official Designation: Canada has TWO official national sports (Winter & Summer)."
+            },
+            {
+                id: 3,
+                question: "Which sport is officially recognized as the national sport of Nepal?",
+                options: ["Cricket", "Volleyball", "Football", "Archery"],
+                correct: 1,
+                explanation: "Volleyball was officially declared and recognized as the national sport of Nepal.",
+                trapAlert: "Official Status: Volleyball is official for both Nepal and Sri Lanka."
+            },
+            {
+                id: 4,
+                question: "What is the official national sport of Argentina, played on horseback with a handle-equipped ball?",
+                options: ["Buzkashi", "Charrería", "Pato", "Chilean Rodeo"],
+                correct: 2,
+                explanation: "Pato is Argentina's official national sport. It is played on horseback where players carry a ball with handles and score through a hoop.",
+                trapAlert: "Equestrian Distinction: Argentina = Pato | Mexico = Charrería | Chile = Rodeo."
+            },
+            {
+                id: 5,
+                question: "What is the national game of Bangladesh?",
+                options: ["Cricket", "Kabaddi", "Volleyball", "Football"],
+                correct: 1,
+                explanation: "Kabaddi is the official national game of Bangladesh.",
+                trapAlert: "Direct Fact: Bangladesh national game = Kabaddi."
+            },
+            {
+                id: 6,
+                question: "Which traditional martial art and stick-fighting technique is the official national sport and martial art of the Philippines?",
+                options: ["Muay Thai", "Arnis", "Kun Khmer", "Sepak Takraw"],
+                correct: 1,
+                explanation: "Arnis is an official Filipino martial art and national sport involving sticks, blades, and empty-hand techniques.",
+                trapAlert: "Martial Arts: Philippines = Arnis (Official)."
+            },
+            {
+                id: 7,
+                question: "What is the officially recognized traditional equestrian sport of Mexico involving horse-riding and livestock skills?",
+                options: ["Charrería", "Pato", "Buzkashi", "Bullfighting"],
+                correct: 0,
+                explanation: "Charrería is the officially recognized traditional equestrian sport of Mexico.",
+                trapAlert: "Traditional Equestrian: Mexico = Charrería."
+            },
+            {
+                id: 8,
+                question: "Which country officially recognizes Volleyball as its national sport alongside Nepal?",
+                options: ["Maldives", "Sri Lanka", "Myanmar", "Bhutan"],
+                correct: 1,
+                explanation: "Sri Lanka recognizes Volleyball as its official national sport.",
+                trapAlert: "Volleyball Duo: Both Nepal and Sri Lanka recognize Volleyball."
+            },
+            {
+                id: 9,
+                question: "What is Pesäpallo, commonly known as Finnish baseball?",
+                options: [
+                    "A sport with horizontal bowling targets",
+                    "A baseball-style sport with a distinctive vertical pitch",
+                    "A horseback archery game",
+                    "A variant of field hockey played indoors"
+                ],
+                correct: 1,
+                explanation: "Pesäpallo is the Finnish national baseball-style sport featuring a unique vertical pitch.",
+                trapAlert: "Finland: Pesäpallo = Finnish baseball."
+            },
+            {
+                id: 10,
+                question: "In Afghanistan's traditional horseback sport Buzkashi, what do horsemen compete to carry towards a scoring area?",
+                options: ["A ball with handles", "A goat or calf carcass", "A wooden stick", "A leather sack"],
+                correct: 1,
+                explanation: "In Buzkashi, horsemen compete to control and carry a goat or calf carcass towards a scoring zone.",
+                trapAlert: "Central Asian Tradition: Afghanistan = Buzkashi."
+            },
+            {
+                id: 11,
+                question: "Which country has Archery as its official national sport?",
+                options: ["Mongolia", "Bhutan", "Nepal", "China"],
+                correct: 1,
+                explanation: "Archery is the official national sport of Bhutan. (Mongolia also traditionally practices archery alongside wrestling and horse racing).",
+                trapAlert: "Bhutan = Archery (Official)."
+            },
+            {
+                id: 12,
+                question: "How is Baseball legally categorized in the United States?",
+                options: [
+                    "Officially declared by an Act of Congress",
+                    "Known as the national pastime, but NOT an officially declared national sport",
+                    "Declared winter national sport",
+                    "Federal official sport since 1900"
+                ],
+                correct: 1,
+                explanation: "Baseball is culturally known as America's 'national pastime', but it is not officially declared as a national sport by law.",
+                trapAlert: "USA Trap: Baseball = National pastime, NOT officially declared."
+            },
+            {
+                id: 13,
+                question: "Which of the following statements about Bullfighting in Spain is accurate?",
+                options: [
+                    "It is the officially declared national team sport of Spain.",
+                    "It is a traditional spectacle, but NOT an established official national sport.",
+                    "It is officially named 'Bull Racing'.",
+                    "It is a summer olympic sport in Spain."
+                ],
+                correct: 1,
+                explanation: "Bullfighting in Spain is a traditional spectacle and cultural phenomenon, not a bull race, and is not an established official national sport.",
+                trapAlert: "Spain: Bullfighting is traditional spectacle, NOT bull racing & NOT official."
+            },
+            {
+                id: 14,
+                question: "Which body technique is STRICTLY FORBIDDEN in Sepak Takraw?",
+                options: ["Using feet", "Using knees and chest", "Using hands and arms", "Using head"],
+                correct: 2,
+                explanation: "In Sepak Takraw (popular in Malaysia and Southeast Asia), players send a ball over a net using feet, knees, chest, and head; hands and arms are NOT allowed.",
+                trapAlert: "Sepak Takraw Rule: No hands or arms permitted!"
+            },
+            {
+                id: 15,
+                question: "What is the status of Table Tennis in China?",
+                options: [
+                    "Officially enacted by government law as the national sport",
+                    "Popularly associated with China, but NOT a formal official national designation",
+                    "Declared the national winter sport",
+                    "Banned from traditional games"
+                ],
+                correct: 1,
+                explanation: "Table Tennis is overwhelmingly popular and culturally associated with China, but lacks a formal official national designation by law.",
+                trapAlert: "China: Table Tennis is popular, not an official legal designation."
+            },
+            {
+                id: 16,
+                question: "Which traditional sport is officially recognized in Chile?",
+                options: ["Pato", "Chilean Rodeo", "Charrería", "Alpine Skiing"],
+                correct: 1,
+                explanation: "Chilean Rodeo is an officially recognized national sport of Chile.",
+                trapAlert: "Chile = Chilean Rodeo (Official)."
+            },
+            {
+                id: 17,
+                question: "What is Sumo Wrestling's status in Japan?",
+                options: [
+                    "Traditional national sport",
+                    "Discontinued sport",
+                    "Declared summer Olympic sport only",
+                    "Imported European sport"
+                ],
+                correct: 0,
+                explanation: "Sumo wrestling is recognized as the traditional national sport of Japan.",
+                trapAlert: "Japan = Sumo Wrestling."
+            },
+            {
+                id: 18,
+                question: "Which winter sport is strongly associated with Norwegian sporting culture?",
+                options: ["Pesäpallo", "Bandy", "Cross-country skiing", "Ice Hockey"],
+                correct: 2,
+                explanation: "Cross-country skiing is deeply embedded in and strongly associated with Norwegian sporting culture.",
+                trapAlert: "Norway = Cross-country skiing."
+            },
+            {
+                id: 19,
+                question: "Which sport has a strong historical association with Scotland, having developed there?",
+                options: ["Rugby Union", "Golf", "Cricket", "Field Hockey"],
+                correct: 1,
+                explanation: "Golf developed in Scotland and shares a strong historical association with Scottish identity.",
+                trapAlert: "Scotland = Golf."
+            },
+            {
+                id: 20,
+                question: "What is the status of Bandy and Chess in Russia?",
+                options: [
+                    "Bandy is the official national sport; chess is banned.",
+                    "Chess is the declared winter sport; Bandy is summer.",
+                    "Bandy is commonly associated; Chess is a major intellectual sport, neither is official national sport.",
+                    "Both are enacted by law as co-national sports."
+                ],
+                correct: 2,
+                explanation: "In Russia, Bandy is commonly associated and Chess is a major intellectual sport, but neither is formally declared as Russia's official national sport.",
+                trapAlert: "Russia: Bandy & Chess associated, not official legal designations."
+            },
+            {
+                id: 21,
+                question: "Kun Khmer is the traditional martial art of which nation?",
+                options: ["Thailand", "Laos", "Cambodia", "Philippines"],
+                correct: 2,
+                explanation: "Kun Khmer is a traditional martial art of Cambodia.",
+                trapAlert: "Combat Sports: Cambodia = Kun Khmer | Thailand = Muay Thai."
+            },
+            {
+                id: 22,
+                question: "Which sport is strongly associated with Welsh sporting identity?",
+                options: ["Rugby Union", "Golf", "Cricket", "Football"],
+                correct: 0,
+                explanation: "Rugby Union is deeply tied to Welsh sporting identity and culture.",
+                trapAlert: "Wales = Rugby Union."
+            },
+            {
+                id: 23,
+                question: "In addition to Wrestling, which traditional sport system is culturally important in Iran?",
+                options: ["Capoeira", "Varzesh-e Bastani", "Kun Khmer", "Arnis"],
+                correct: 1,
+                explanation: "In Iran, Wrestling is a primary traditional sport alongside Varzesh-e Bastani (traditional gymnastics/strength training).",
+                trapAlert: "Iran = Wrestling / Varzesh-e Bastani."
+            },
+            {
+                id: 24,
+                question: "Which martial art/cultural practice is highlighted as culturally important in Brazil alongside Football?",
+                options: ["Muay Thai", "Capoeira", "Arnis", "Charrería"],
+                correct: 1,
+                explanation: "Football is the most popular sport in Brazil, while Capoeira is an important cultural Afro-Brazilian martial art.",
+                trapAlert: "Brazil = Football & Capoeira."
+            },
+            {
+                id: 25,
+                question: "What sports are popularly associated with Switzerland?",
+                options: ["Shooting and Gymnastics", "Alpine Skiing and Ice Hockey", "Golf and Rugby", "Bandy and Chess"],
+                correct: 0,
+                explanation: "Shooting and Gymnastics have traditional/popular associations with Switzerland, though not established as official national sports.",
+                trapAlert: "Switzerland = Shooting & Gymnastics (Popular association)."
+            },
+            {
+                id: 26,
+                question: "What is Muay Thai?",
+                options: [
+                    "A traditional Cambodian stick sport",
+                    "Traditional martial art and combat sport of Thailand",
+                    "A horseback game of Laos",
+                    "A ball game played without hands in Vietnam"
+                ],
+                correct: 1,
+                explanation: "Muay Thai is the traditional martial art and combat sport of Thailand.",
+                trapAlert: "Thailand = Muay Thai."
+            },
+            {
+                id: 27,
+                question: "Which sport is popularly associated with Hungary?",
+                options: ["Ice Hockey", "Water Polo", "Field Hockey", "Basketball"],
+                correct: 1,
+                explanation: "Water Polo is popularly associated with Hungary, though not an official formal designation.",
+                trapAlert: "Hungary = Water Polo (Popular association)."
+            },
+            {
+                id: 28,
+                question: "Which traditional sports form the central sporting culture of Mongolia alongside Archery?",
+                options: [
+                    "Mongolian wrestling and Horse racing",
+                    "Sumo wrestling and Judo",
+                    "Buzkashi and Pato",
+                    "Cricket and Field Hockey"
+                ],
+                correct: 0,
+                explanation: "Mongolia's sporting culture centers around the 'Three Manly Games': Archery, Mongolian Wrestling, and Horse Racing.",
+                trapAlert: "Mongolia = Archery, Mongolian Wrestling, Horse Racing."
+            },
+            {
+                id: 29,
+                question: "What sport is popularly associated with Slovenia?",
+                options: ["Cross-country skiing", "Alpine skiing", "Pesäpallo", "Ice Hockey"],
+                correct: 1,
+                explanation: "Alpine skiing is popularly associated with Slovenia.",
+                trapAlert: "Slovenia = Alpine Skiing."
+            },
+            {
+                id: 30,
+                question: "Which European nation is popularly associated with Basketball as its major sport?",
+                options: ["Estonia", "France", "Italy", "Ukraine"],
+                correct: 0,
+                explanation: "Basketball is popularly associated with Estonia, though not officially designated by law.",
+                trapAlert: "Estonia = Basketball."
+            }
+        ];
+
+        // State Tracking (TCS iON Standard: 0=Not Visited, 1=Not Answered, 2=Answered, 3=Review, 4=Ans & Review)
+        const STATE = {
+            NOT_VISITED: 0,
+            NOT_ANSWERED: 1,
+            ANSWERED: 2,
+            REVIEW: 3,
+            ANS_REVIEW: 4
+        };
+
+        let userAnswers = new Array(30).fill(null);
+        let questionStates = new Array(30).fill(STATE.NOT_VISITED);
+        let currentQuestionIdx = 0;
+
+        // Timer Variables (10 Minutes = 600 seconds)
+        const TOTAL_TIME = 600;
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBox = document.getElementById('timer-box');
+        const questionNumberTitle = document.getElementById('question-number-title');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const paletteGrid = document.getElementById('palette-grid');
+
+        // Buttons
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const btnMarkReview = document.getElementById('btn-mark-review');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnRetake = document.getElementById('btn-retake');
+
+        // Initialize Application
+        window.onload = function() {
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+            attachEventListeners();
+        };
+
+        // Timer Implementation
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = TOTAL_TIME;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+
+                if (timeRemaining <= 120) { // Pulse red under 2 mins
+                    timerBox.classList.add('timer-pulse');
+                } else {
+                    timerBox.classList.remove('timer-pulse');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize Palette Buttons Grid
+        function initPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.addEventListener('click', () => navigateToQuestion(i));
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteUI();
+        }
+
+        // Render Current Question
+        function loadQuestion(index) {
+            currentQuestionIdx = index;
+            const q = questionsData[index];
+
+            // Mark visited if previously not visited
+            if (questionStates[index] === STATE.NOT_VISITED) {
+                questionStates[index] = STATE.NOT_ANSWERED;
+            }
+
+            questionNumberTitle.textContent = `Question ${index + 1} of 30`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+
+            // Options Rendering
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'quiz-option';
+                radio.id = `opt-${optIdx}`;
+                radio.value = optIdx;
+                radio.checked = userAnswers[index] === optIdx;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `opt-${optIdx}`;
+                label.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+
+                li.appendChild(radio);
+                li.appendChild(label);
+
+                li.addEventListener('click', () => {
+                    radio.checked = true;
+                    selectOption(optIdx);
+                });
+
+                optionsContainer.appendChild(li);
+            });
+
+            updatePaletteUI();
+            updateNavigationButtons();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIdx] = optionIndex;
+            const items = optionsContainer.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                if (idx === optionIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            btnPrev.disabled = currentQuestionIdx === 0;
+            btnPrev.style.opacity = currentQuestionIdx === 0 ? "0.5" : "1";
+            btnNext.textContent = currentQuestionIdx === 29 ? "Save" : "Save & Next";
+        }
+
+        function navigateToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        // Action Handlers
+        function saveAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+
+            if (questionStates[currentQuestionIdx] !== STATE.REVIEW && questionStates[currentQuestionIdx] !== STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANSWERED : STATE.NOT_ANSWERED;
+            } else {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+            }
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+            questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIdx] = null;
+            if (questionStates[currentQuestionIdx] === STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = STATE.REVIEW;
+            } else {
+                questionStates[currentQuestionIdx] = STATE.NOT_ANSWERED;
+            }
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function updatePaletteUI() {
+            let counts = { notVisited: 0, notAnswered: 0, answered: 0, review: 0, ansReview: 0 };
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                btn.className = 'palette-btn';
+
+                if (i === currentQuestionIdx) {
+                    btn.classList.add('active');
+                }
+
+                switch (questionStates[i]) {
+                    case STATE.NOT_VISITED:
+                        btn.classList.add('not-visited');
+                        counts.notVisited++;
+                        break;
+                    case STATE.NOT_ANSWERED:
+                        btn.classList.add('not-answered');
+                        counts.notAnswered++;
+                        break;
+                    case STATE.ANSWERED:
+                        btn.classList.add('answered');
+                        counts.answered++;
+                        break;
+                    case STATE.REVIEW:
+                        btn.classList.add('review');
+                        counts.review++;
+                        break;
+                    case STATE.ANS_REVIEW:
+                        btn.classList.add('ans-review');
+                        counts.ansReview++;
+                        break;
+                }
+            }
+
+            // Update Legend Counters
+            const legendBoxes = document.querySelectorAll('.legend-box');
+            if (legendBoxes.length >= 5) {
+                legendBoxes[0].textContent = counts.notVisited;
+                legendBoxes[1].textContent = counts.notAnswered;
+                legendBoxes[2].textContent = counts.answered;
+                legendBoxes[3].textContent = counts.review;
+                legendBoxes[4].textContent = counts.ansReview;
+            }
+        }
+
+        // Attach Event Listeners
+        function attachEventListeners() {
+            btnNext.addEventListener('click', saveAndNext);
+            btnPrev.addEventListener('click', () => {
+                if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+            });
+            btnClear.addEventListener('click', clearResponse);
+            btnMarkReview.addEventListener('click', markForReviewAndNext);
+            btnSubmit.addEventListener('click', () => {
+                if (confirm("Are you sure you want to submit the test?")) {
+                    submitTest();
+                }
+            });
+            btnRetake.addEventListener('click', resetAndRetake);
+        }
+
+        function autoSubmitTest() {
+            alert("Time limit reached! Your test has been submitted automatically.");
+            submitTest();
+        }
+
+        // Scorecard & Dashboard Logic
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const isUnattempted = userAns === null;
+
+                if (isUnattempted) {
+                    unattemptedCount++;
+                } else if (isCorrect) {
+                    score += 1;
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+
+                // Render Detailed Question Review Card
+                const item = document.createElement('div');
+                item.className = `review-item ${isUnattempted ? 'unattempted-bg' : (isCorrect ? 'correct-bg' : 'incorrect-bg')}`;
+
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = `Question ${idx + 1} • ${isUnattempted ? 'Unattempted' : (isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)')}`;
+
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+
+                const choices = document.createElement('div');
+                choices.className = 'review-choices';
+
+                const userChoiceStr = userAns !== null ? `${String.fromCharCode(65 + userAns)}. ${q.options[userAns]}` : "None Selected";
+                const correctChoiceStr = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                choices.innerHTML = `
+                    <div><strong>Your Response:</strong> <span style="color: ${isCorrect ? '#5cb85c' : (isUnattempted ? '#757575' : '#d9534f')}">${userChoiceStr}</span></div>
+                    <div><strong>Correct Answer:</strong> <span style="color: #5cb85c">${correctChoiceStr}</span></div>
+                `;
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <div class="trap-tag">${q.trapAlert}</div><br>
+                    <strong>Explanation:</strong> ${q.explanation}
+                `;
+
+                item.appendChild(qNum);
+                item.appendChild(qText);
+                item.appendChild(choices);
+                item.appendChild(explanation);
+
+                reviewList.appendChild(item);
+            });
+
+            // Update Metrics UI
+            document.getElementById('score-display').textContent = `${score} / 30`;
+            document.getElementById('correct-display').textContent = correctCount;
+            document.getElementById('incorrect-display').textContent = incorrectCount;
+            document.getElementById('unattempted-display').textContent = unattemptedCount;
+
+            // Switch Screen View
+            document.getElementById('quiz-interface').style.display = 'none';
+            document.getElementById('results-dashboard').style.display = 'block';
+        }
+
+        // Reset & Retake Test
+        function resetAndRetake() {
+            userAnswers = new Array(30).fill(null);
+            questionStates = new Array(30).fill(STATE.NOT_VISITED);
+            currentQuestionIdx = 0;
+
+            document.getElementById('results-dashboard').style.display = 'none';
+            document.getElementById('quiz-interface').style.display = 'flex';
+
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+    </script>
+</body>
+</html>

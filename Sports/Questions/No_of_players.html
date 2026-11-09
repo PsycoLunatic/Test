@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Mock Test: Number of Players in Sports</title>
+    <style>
+        /* CSS Reset & Base Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --primary-blue: #1a365d;
+            --header-bg: #2b6cb0;
+            --btn-blue: #3182ce;
+            --btn-blue-hover: #2b6cb0;
+            --gray-not-visited: #e2e8f0;
+            --gray-text: #4a5568;
+            --red-not-answered: #e53e3e;
+            --green-answered: #38a169;
+            --purple-review: #805ad5;
+            --border-color: #cbd5e0;
+            --bg-light: #f7fafc;
+        }
+
+        body {
+            background-color: #edf2f7;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        header {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        .exam-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-container {
+            background-color: #ffffff;
+            color: #2d3748;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+            background-color: #fff5f5;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        @keyframes pulse-red {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Main Container Split View */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Left Question Pane */
+        .question-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .question-header {
+            padding: 12px 20px;
+            background-color: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .question-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #1a202c;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .option-item:hover {
+            background-color: #ebf8ff;
+            border-color: #90cdf4;
+        }
+
+        .option-item.selected {
+            background-color: #ebf8ff;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 1px var(--btn-blue);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 14px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--btn-blue);
+        }
+
+        .option-label {
+            font-size: 0.98rem;
+            color: #2d3748;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Right Question Palette Pane */
+        .palette-pane {
+            width: 320px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            padding: 12px 16px;
+            background-color: #edf2f7;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--header-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            font-size: 0.85rem;
+            color: #2d3748;
+        }
+
+        .palette-legend {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .legend-box.not-visited { background-color: var(--gray-not-visited); color: var(--gray-text); border: 1px solid #cbd5e0;}
+        .legend-box.not-answered { background-color: var(--red-not-answered); }
+        .legend-box.answered { background-color: var(--green-answered); }
+        .legend-box.review { background-color: var(--purple-review); }
+        .legend-box.ans-review { background-color: var(--purple-review); }
+        .legend-box.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #48bb78;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .palette-header {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #4a5568;
+            background-color: #edf2f7;
+        }
+
+        .palette-grid-container {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            background-color: var(--gray-not-visited);
+            color: var(--gray-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-btn.active {
+            border: 2px solid #2b6cb0;
+            box-shadow: 0 0 4px rgba(43, 108, 176, 0.6);
+        }
+
+        .palette-btn.not-answered { background-color: var(--red-not-answered); color: white; border-color: #c53030; }
+        .palette-btn.answered { background-color: var(--green-answered); color: white; border-color: #276749; }
+        .palette-btn.review { background-color: var(--purple-review); color: white; border-color: #553c9a; }
+        .palette-btn.ans-review { background-color: var(--purple-review); color: white; border-color: #553c9a; }
+        .palette-btn.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
+            background-color: #48bb78;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Bottom Action Bar */
+        .action-bar {
+            background-color: #edf2f7;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group-left, .btn-group-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary { background-color: #e2e8f0; color: #2d3748; border: 1px solid #cbd5e0; }
+        .btn-secondary:hover { background-color: #cbd5e0; }
+
+        .btn-warning { background-color: #ed8936; color: white; }
+        .btn-warning:hover { background-color: #dd6b20; }
+
+        .btn-purple { background-color: var(--purple-review); color: white; }
+        .btn-purple:hover { background-color: #6b46c1; }
+
+        .btn-primary { background-color: var(--btn-blue); color: white; }
+        .btn-primary:hover { background-color: var(--btn-blue-hover); }
+
+        .btn-submit { background-color: #38a169; color: white; }
+        .btn-submit:hover { background-color: #276749; }
+
+        /* Dashboard Screen (Hidden initially) */
+        #results-dashboard {
+            display: none;
+            flex: 1;
+            background-color: var(--bg-light);
+            overflow-y: auto;
+            padding: 30px;
+            user-select: text;
+        }
+
+        .dashboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-card.score { border-top: 4px solid var(--btn-blue); }
+        .metric-card.correct { border-top: 4px solid var(--green-answered); }
+        .metric-card.incorrect { border-top: 4px solid var(--red-not-answered); }
+        .metric-card.unattempted { border-top: 4px solid #a0aec0; }
+
+        .metric-title {
+            font-size: 0.85rem;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #2d3748;
+        }
+
+        .review-section-title {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            background-color: #ffffff;
+        }
+
+        .review-item.correct-bg { border-left: 5px solid var(--green-answered); }
+        .review-item.incorrect-bg { border-left: 5px solid var(--red-not-answered); }
+        .review-item.unattempted-bg { border-left: 5px solid #a0aec0; }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #4a5568;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .review-q-text {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+
+        .review-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .explanation-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: #2c5282;
+            line-height: 1.4;
+        }
+
+        .trick-tag {
+            display: inline-block;
+            background-color: #feebc8;
+            color: #744210;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .retake-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Responsive Layouts */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .palette-pane {
+                width: 100%;
+                height: 220px;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+            }
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .review-choices {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="exam-title">Government Exam CBT Mock Test: Number of Players in Sports</div>
+        <div class="timer-container" id="timer-box">
+            <span>Time Remaining:</span>
+            <span id="timer-display">10:00</span>
+        </div>
+    </header>
+
+    <!-- Main CBT Interface Screen -->
+    <div class="main-container" id="quiz-interface">
+
+        <!-- Left Pane: Question Section -->
+        <main class="question-pane">
+            <div class="question-header">
+                <span id="question-number-title">Question 1 of 30</span>
+                <span>Marks: +1.0 | -0.0</span>
+            </div>
+
+            <div class="question-body">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+
+                <ul class="options-list" id="options-container">
+                    <!-- Options populated dynamically -->
+                </ul>
+            </div>
+
+            <!-- Bottom Action Controls -->
+            <footer class="action-bar">
+                <div class="btn-group-left">
+                    <button class="btn btn-purple" id="btn-mark-review">Mark for Review & Next</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear Response</button>
+                </div>
+                <div class="btn-group-right">
+                    <button class="btn btn-secondary" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" id="btn-next">Save & Next</button>
+                    <button class="btn btn-submit" id="btn-submit">Submit Test</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Right Pane: Question Palette -->
+        <aside class="palette-pane">
+            <div class="user-profile">
+                <div class="profile-avatar">C</div>
+                <div class="profile-info">
+                    <strong>Candidate Name:</strong> Aspirant<br>
+                    <strong>Exam:</strong> SSC/RRB/UPSC General Knowledge
+                </div>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box not-visited">0</div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box not-answered">0</div> Visited, Unanswered</div>
+                <div class="legend-item"><div class="legend-box answered">0</div> Answered</div>
+                <div class="legend-item"><div class="legend-box review">0</div> Marked for Review</div>
+                <div class="legend-item" style="grid-column: span 2;">
+                    <div class="legend-box ans-review">0</div> Answered & Marked for Review
+                </div>
+            </div>
+
+            <div class="palette-header">Question Navigation Palette</div>
+
+            <div class="palette-grid-container">
+                <div class="palette-grid" id="palette-grid">
+                    <!-- 30 Buttons dynamically generated -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Results & Analytics Dashboard Screen (Initially Hidden) -->
+    <div id="results-dashboard">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h1>Exam Performance & Analytics Dashboard</h1>
+                <p style="color: #718096;">Strictly based on fact-checked competitive exam notes</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="metric-card score">
+                    <div class="metric-title">Total Score</div>
+                    <div class="metric-value" id="score-display">0 / 30</div>
+                </div>
+                <div class="metric-card correct">
+                    <div class="metric-title">Correct Answers</div>
+                    <div class="metric-value" id="correct-display">0</div>
+                </div>
+                <div class="metric-card incorrect">
+                    <div class="metric-title">Incorrect Answers</div>
+                    <div class="metric-value" id="incorrect-display">0</div>
+                </div>
+                <div class="metric-card unattempted">
+                    <div class="metric-title">Unattempted</div>
+                    <div class="metric-value" id="unattempted-display">0</div>
+                </div>
+            </div>
+
+            <!-- Question Review Header -->
+            <div class="review-section-title">Detailed Solutions & Explanations</div>
+
+            <!-- Question Review List -->
+            <div class="review-list" id="review-list">
+                <!-- Detailed reviews generated via JavaScript -->
+            </div>
+
+            <div class="retake-container">
+                <button class="btn btn-primary" id="btn-retake" style="padding: 12px 28px; font-size: 1rem;">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Store: 30 Questions strictly derived from provided sports notes
+        const questionsData = [
+            {
+                id: 1,
+                question: "How many active players are present on the field per side during a traditional game of Kho-Kho?",
+                options: ["12 players", "9 players", "8 players", "7 players"],
+                correct: 1,
+                explanation: "In Kho-Kho, a traditional team squad has 12 players in total, but exactly 9 players are actively on the field per side. Of these 9, eight sit in the central lane and one acts as the active chaser.",
+                memoryTrick: "Group of 9: Kho-Kho & Baseball."
+            },
+            {
+                id: 2,
+                question: "What is the total number of players in a standard squad of a Kabaddi team versus those playing on the court?",
+                options: ["12 total, 7 on court", "11 total, 7 on court", "9 total, 5 on court", "15 total, 11 on court"],
+                correct: 0,
+                explanation: "In Kabaddi, exactly 7 players play on the court at a time, while a standard full team squad consists of 12 players. The offensive player entering the opponent's half is called a raider.",
+                memoryTrick: "Group of 7: Kabaddi, Water Polo, Handball, Netball."
+            },
+            {
+                id: 3,
+                question: "Which of the following combinations of sports ALL have exactly 11 players per side?",
+                options: ["Cricket, Football, Kho-Kho", "Cricket, Football, Field Hockey", "Football, Ice Hockey, Field Hockey", "Field Hockey, Rugby Union, Cricket"],
+                correct: 1,
+                explanation: "Cricket, Football (Soccer), and Field Hockey all require 11 players per side on the field.",
+                memoryTrick: "11 Players Group: 🏏 Cricket | ⚽ Football | 🏑 Hockey."
+            },
+            {
+                id: 4,
+                question: "Under standard IFAB rules, what is the minimum number of players a football team must have on the field to start or continue a match?",
+                options: ["11 players", "9 players", "7 players", "5 players"],
+                correct: 2,
+                explanation: "Under IFAB (International Football Association Board) rules, a football match cannot start or continue if either team has fewer than 7 players.",
+                memoryTrick: "Football minimum field requirement = 7 players."
+            },
+            {
+                id: 5,
+                question: "How many players compete per side in a standard match of Rugby Union?",
+                options: ["15 players", "13 players", "11 players", "7 players"],
+                correct: 0,
+                explanation: "Rugby Union has 15 players per side on the field. Do not confuse this with Rugby League (13 players) or Rugby Sevens (7 players).",
+                memoryTrick: "Rugby Formats: Union = 15, League = 13, Sevens = 7."
+            },
+            {
+                id: 6,
+                question: "How many total players per team are on the ice during an Ice Hockey game?",
+                options: ["5 players", "6 players", "7 players", "11 players"],
+                correct: 1,
+                explanation: "Ice Hockey has 6 players per side on the ice, which typically consists of 5 skaters and 1 goalkeeper.",
+                memoryTrick: "Group of 6: Volleyball & Ice Hockey."
+            },
+            {
+                id: 7,
+                question: "In Water Polo, how are the 7 players per side categorized?",
+                options: ["7 field players only", "6 field players + 1 goalkeeper", "5 field players + 2 goalkeepers", "4 field players + 3 goalkeepers"],
+                correct: 1,
+                explanation: "Water Polo features 7 players per team, specifically divided into 6 field players and 1 goalkeeper.",
+                memoryTrick: "Group of 7: Water Polo (6+1), Handball (6+1), Kabaddi, Netball."
+            },
+            {
+                id: 8,
+                question: "How many players per team compete on the court in Basketball?",
+                options: ["4 players", "5 players", "6 players", "7 players"],
+                correct: 1,
+                explanation: "Basketball is played with 5 players per side on the court.",
+                memoryTrick: "Single Sport 5-player Group: 🏀 Basketball."
+            },
+            {
+                id: 9,
+                question: "What is the player count per team for Field Polo compared to Arena Polo?",
+                options: ["Field Polo: 4 | Arena Polo: 3", "Field Polo: 3 | Arena Polo: 4", "Field Polo: 6 | Arena Polo: 4", "Field Polo: 5 | Arena Polo: 3"],
+                correct: 0,
+                explanation: "Field Polo (traditional outdoor polo) has 4 players per side. Arena Polo is played with 3 players per side.",
+                memoryTrick: "Polo Distinction: Field Polo = 4 | Arena Polo = 3."
+            },
+            {
+                id: 10,
+                question: "How many players per side are on the field in Baseball?",
+                options: ["7 players", "9 players", "10 players", "11 players"],
+                correct: 1,
+                explanation: "Baseball features 9 players per side on the field during play.",
+                memoryTrick: "Group of 9: 🏃 Kho-Kho (active) & ⚾ Baseball."
+            },
+            {
+                id: 11,
+                question: "How many players are on court per team in Handball?",
+                options: ["6 court players + 1 goalkeeper (Total 7)", "5 court players + 1 goalkeeper (Total 6)", "7 court players + 1 goalkeeper (Total 8)", "11 players total"],
+                correct: 0,
+                explanation: "Handball has 7 players on court per team, consisting of 6 court players and 1 goalkeeper.",
+                memoryTrick: "Group of 7: Handball, Netball, Kabaddi, Water Polo."
+            },
+            {
+                id: 12,
+                question: "Which rugby variant is played with 13 players per side?",
+                options: ["Rugby Union", "Rugby Sevens", "Rugby League", "Touch Rugby"],
+                correct: 2,
+                explanation: "Rugby League features 13 players per side. Rugby Union has 15 and Rugby Sevens has 7.",
+                memoryTrick: "Tricky Distinction: Rugby League = 13."
+            },
+            {
+                id: 13,
+                question: "In Netball, how many players per side are on the court?",
+                options: ["5 players", "6 players", "7 players", "9 players"],
+                correct: 2,
+                explanation: "Netball features 7 players per side on the court.",
+                memoryTrick: "Group of 7: Netball, Handball, Kabaddi, Water Polo."
+            },
+            {
+                id: 14,
+                question: "How many players are on the field per team in Men's Field Lacrosse?",
+                options: ["9 players", "10 players", "11 players", "12 players"],
+                correct: 1,
+                explanation: "Lacrosse (Men's field) has 10 players per side in its traditional field format.",
+                memoryTrick: "Lacrosse = 10 players."
+            },
+            {
+                id: 15,
+                question: "How many players per side compete in a fast-pitch Softball game?",
+                options: ["7 players", "8 players", "9 players", "10 players"],
+                correct: 2,
+                explanation: "Softball (fast-pitch format) features 9 players per side, matching baseball.",
+                memoryTrick: "Softball = 9 players (Same as Baseball)."
+            },
+            {
+                id: 16,
+                question: "How many players per side participate in Volleyball?",
+                options: ["5 players", "6 players", "7 players", "9 players"],
+                correct: 1,
+                explanation: "Volleyball features 6 players per team on the court.",
+                memoryTrick: "Group of 6: 🏐 Volleyball | 🏒 Ice Hockey."
+            },
+            {
+                id: 17,
+                question: "In Kho-Kho, how many of the 9 active field players sit in the central lane?",
+                options: ["9 players", "8 players", "7 players", "1 player"],
+                correct: 1,
+                explanation: "Out of the 9 active players on the field in Kho-Kho, 8 sit in the central lane and 1 is the active chaser.",
+                memoryTrick: "Kho-Kho Layout: 8 sitting in central lane + 1 active chaser = 9."
+            },
+            {
+                id: 18,
+                question: "How many players per side compete in Tennis Doubles, Badminton Doubles, and Table Tennis Doubles?",
+                options: ["1 player", "2 players", "4 players", "3 players"],
+                correct: 1,
+                explanation: "Doubles events across Tennis, Badminton, and Table Tennis feature exactly 2 players per side (4 players total on the court/table).",
+                memoryTrick: "Doubles = 2 players per side."
+            },
+            {
+                id: 19,
+                question: "What is the player count per side for standard Billiards and Snooker matches?",
+                options: ["1 player per side", "2 players per side", "3 players per side", "4 players per side"],
+                correct: 0,
+                explanation: "Both Billiards and Snooker are standard singles formats played with 1 player per side.",
+                memoryTrick: "Singles format = 1 player per side."
+            },
+            {
+                id: 20,
+                question: "What is the player count in a standard match of Boxing and Chess?",
+                options: ["1 player per side", "2 players per side", "3 players per side", "11 players per side"],
+                correct: 0,
+                explanation: "Both Boxing and Chess are individual sports featuring 1 player per side.",
+                memoryTrick: "Individual combat/board sports = 1 player."
+            },
+            {
+                id: 21,
+                question: "What is the term for a player in Kabaddi who enters the opponent's half to score points?",
+                options: ["Chaser", "Raider", "Defender", "Blocker"],
+                correct: 1,
+                explanation: "A player entering the opponent's half to score points in Kabaddi is called a raider.",
+                memoryTrick: "Kabaddi offensive role = Raider."
+            },
+            {
+                id: 22,
+                question: "Which sport has the HIGHEST number of players per side on the field among all standard sports listed in competitive exams?",
+                options: ["Rugby League (13)", "Lacrosse (10)", "Rugby Union (15)", "Football (11)"],
+                correct: 2,
+                explanation: "Rugby Union has 15 players per side, which is the largest team size on the field among standard sports listed.",
+                memoryTrick: "Highest field count = Rugby Union (15)."
+            },
+            {
+                id: 23,
+                question: "Which of the following sports requires EXACTLY 7 players per side?",
+                options: ["Volleyball", "Basketball", "Water Polo", "Ice Hockey"],
+                correct: 2,
+                explanation: "Water Polo requires 7 players per side (6 field + 1 goalkeeper). Volleyball has 6, Basketball 5, and Ice Hockey 6.",
+                memoryTrick: "7 Players: Kabaddi, Water Polo, Handball, Netball, Rugby Sevens."
+            },
+            {
+                id: 24,
+                question: "How many total players are in a traditional Kho-Kho team squad (including substitutes)?",
+                options: ["9 players", "10 players", "11 players", "12 players"],
+                correct: 3,
+                explanation: "A traditional Kho-Kho team squad consists of 12 players in total, though only 9 are active on the field.",
+                memoryTrick: "Kho-Kho Squad = 12 total, 9 active."
+            },
+            {
+                id: 25,
+                question: "If an Ice Hockey team has 1 goalkeeper on the ice, how many skaters are alongside the goalkeeper?",
+                options: ["4 skaters", "5 skaters", "6 skaters", "7 skaters"],
+                correct: 1,
+                explanation: "An Ice Hockey team on the ice has 6 total players, usually consisting of 5 skaters and 1 goalkeeper.",
+                memoryTrick: "Ice Hockey breakdown: 5 skaters + 1 GK = 6 total."
+            },
+            {
+                id: 26,
+                question: "How many players per team compete on the court in Rugby Sevens?",
+                options: ["15 players", "13 players", "9 players", "7 players"],
+                correct: 3,
+                explanation: "As the name indicates, Rugby Sevens is a shorter format played with 7 players per side.",
+                memoryTrick: "Rugby Sevens = 7 players."
+            },
+            {
+                id: 27,
+                question: "Which of the following statements regarding Field Hockey is TRUE?",
+                options: ["It has 9 players per side.", "It has 11 players per side.", "It has 7 players per side.", "It has 6 players per side."],
+                correct: 1,
+                explanation: "Field Hockey is played with 11 players per side on the field.",
+                memoryTrick: "Big 3 (11 players): Cricket, Football, Field Hockey."
+            },
+            {
+                id: 28,
+                question: "How many players per team compete in Field Polo?",
+                options: ["3 players", "4 players", "5 players", "6 players"],
+                correct: 1,
+                explanation: "Field Polo is played with 4 players per side on horseback.",
+                memoryTrick: "Polo = 4 letters = 4 players (Field Polo)."
+            },
+            {
+                id: 29,
+                question: "In Table Tennis Singles, how many players compete on each side?",
+                options: ["1 player", "2 players", "3 players", "4 players"],
+                correct: 0,
+                explanation: "Singles matches in Table Tennis, Tennis, and Badminton consist of 1 player per side.",
+                memoryTrick: "Singles = 1 player per side."
+            },
+            {
+                id: 30,
+                question: "Which sport features 6 players per team on the court/field?",
+                options: ["Basketball", "Volleyball", "Kabaddi", "Water Polo"],
+                correct: 1,
+                explanation: "Volleyball (and Ice Hockey) features 6 players per side. Basketball has 5, Kabaddi has 7, and Water Polo has 7.",
+                memoryTrick: "Group of 6: Volleyball & Ice Hockey."
+            }
+        ];
+
+        // State Tracking (TCS iON Standard: 0=Not Visited, 1=Not Answered, 2=Answered, 3=Review, 4=Ans & Review)
+        const STATE = {
+            NOT_VISITED: 0,
+            NOT_ANSWERED: 1,
+            ANSWERED: 2,
+            REVIEW: 3,
+            ANS_REVIEW: 4
+        };
+
+        let userAnswers = new Array(30).fill(null);
+        let questionStates = new Array(30).fill(STATE.NOT_VISITED);
+        let currentQuestionIdx = 0;
+
+        // Timer Variables (10 Minutes = 600 seconds)
+        const TOTAL_TIME = 600;
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBox = document.getElementById('timer-box');
+        const questionNumberTitle = document.getElementById('question-number-title');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const paletteGrid = document.getElementById('palette-grid');
+
+        // Buttons
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const btnMarkReview = document.getElementById('btn-mark-review');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnRetake = document.getElementById('btn-retake');
+
+        // Initialize Application
+        window.onload = function() {
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+            attachEventListeners();
+        };
+
+        // Timer Implementation
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = TOTAL_TIME;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+
+                if (timeRemaining <= 120) { // Pulse red under 2 mins
+                    timerBox.classList.add('timer-pulse');
+                } else {
+                    timerBox.classList.remove('timer-pulse');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize Palette Buttons Grid
+        function initPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.addEventListener('click', () => navigateToQuestion(i));
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteUI();
+        }
+
+        // Render Current Question
+        function loadQuestion(index) {
+            currentQuestionIdx = index;
+            const q = questionsData[index];
+
+            // Mark visited if previously not visited
+            if (questionStates[index] === STATE.NOT_VISITED) {
+                questionStates[index] = STATE.NOT_ANSWERED;
+            }
+
+            questionNumberTitle.textContent = `Question ${index + 1} of 30`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+
+            // Options Rendering
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'quiz-option';
+                radio.id = `opt-${optIdx}`;
+                radio.value = optIdx;
+                radio.checked = userAnswers[index] === optIdx;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `opt-${optIdx}`;
+                label.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+
+                li.appendChild(radio);
+                li.appendChild(label);
+
+                li.addEventListener('click', () => {
+                    radio.checked = true;
+                    selectOption(optIdx);
+                });
+
+                optionsContainer.appendChild(li);
+            });
+
+            updatePaletteUI();
+            updateNavigationButtons();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIdx] = optionIndex;
+            // Update UI selection classes
+            const items = optionsContainer.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                if (idx === optionIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            btnPrev.disabled = currentQuestionIdx === 0;
+            btnPrev.style.opacity = currentQuestionIdx === 0 ? "0.5" : "1";
+            btnNext.textContent = currentQuestionIdx === 29 ? "Save" : "Save & Next";
+        }
+
+        function navigateToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        // Action Handlers
+        function saveAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+
+            if (questionStates[currentQuestionIdx] !== STATE.REVIEW && questionStates[currentQuestionIdx] !== STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANSWERED : STATE.NOT_ANSWERED;
+            } else {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+            }
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+            questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIdx] = null;
+            if (questionStates[currentQuestionIdx] === STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = STATE.REVIEW;
+            } else {
+                questionStates[currentQuestionIdx] = STATE.NOT_ANSWERED;
+            }
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function updatePaletteUI() {
+            let counts = { notVisited: 0, notAnswered: 0, answered: 0, review: 0, ansReview: 0 };
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                btn.className = 'palette-btn';
+
+                if (i === currentQuestionIdx) {
+                    btn.classList.add('active');
+                }
+
+                switch (questionStates[i]) {
+                    case STATE.NOT_VISITED:
+                        btn.classList.add('not-visited');
+                        counts.notVisited++;
+                        break;
+                    case STATE.NOT_ANSWERED:
+                        btn.classList.add('not-answered');
+                        counts.notAnswered++;
+                        break;
+                    case STATE.ANSWERED:
+                        btn.classList.add('answered');
+                        counts.answered++;
+                        break;
+                    case STATE.REVIEW:
+                        btn.classList.add('review');
+                        counts.review++;
+                        break;
+                    case STATE.ANS_REVIEW:
+                        btn.classList.add('ans-review');
+                        counts.ansReview++;
+                        break;
+                }
+            }
+
+            // Update Legend Counters
+            const legendBoxes = document.querySelectorAll('.legend-box');
+            if (legendBoxes.length >= 5) {
+                legendBoxes[0].textContent = counts.notVisited;
+                legendBoxes[1].textContent = counts.notAnswered;
+                legendBoxes[2].textContent = counts.answered;
+                legendBoxes[3].textContent = counts.review;
+                legendBoxes[4].textContent = counts.ansReview;
+            }
+        }
+
+        // Attach Event Listeners
+        function attachEventListeners() {
+            btnNext.addEventListener('click', saveAndNext);
+            btnPrev.addEventListener('click', () => {
+                if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+            });
+            btnClear.addEventListener('click', clearResponse);
+            btnMarkReview.addEventListener('click', markForReviewAndNext);
+            btnSubmit.addEventListener('click', () => {
+                if (confirm("Are you sure you want to submit the test?")) {
+                    submitTest();
+                }
+            });
+            btnRetake.addEventListener('click', resetAndRetake);
+        }
+
+        function autoSubmitTest() {
+            alert("Time is up! Your exam is being automatically submitted.");
+            submitTest();
+        }
+
+        // Scorecard & Dashboard Logic
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const isUnattempted = userAns === null;
+
+                if (isUnattempted) {
+                    unattemptedCount++;
+                } else if (isCorrect) {
+                    score += 1;
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+
+                // Render Detailed Question Review Card
+                const item = document.createElement('div');
+                item.className = `review-item ${isUnattempted ? 'unattempted-bg' : (isCorrect ? 'correct-bg' : 'incorrect-bg')}`;
+
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = `Question ${idx + 1} • ${isUnattempted ? 'Unattempted' : (isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)')}`;
+
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+
+                const choices = document.createElement('div');
+                choices.className = 'review-choices';
+
+                const userChoiceStr = userAns !== null ? `${String.fromCharCode(65 + userAns)}. ${q.options[userAns]}` : "None Selected";
+                const correctChoiceStr = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                choices.innerHTML = `
+                    <div><strong>Your Response:</strong> <span style="color: ${isCorrect ? '#276749' : (isUnattempted ? '#718096' : '#c53030')}">${userChoiceStr}</span></div>
+                    <div><strong>Correct Answer:</strong> <span style="color: #276749">${correctChoiceStr}</span></div>
+                `;
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <div class="trick-tag">💡 Memory Trick / Fact Note</div><br>
+                    <strong>Explanation:</strong> ${q.explanation}<br>
+                    <strong>Key Trick:</strong> ${q.memoryTrick}
+                `;
+
+                item.appendChild(qNum);
+                item.appendChild(qText);
+                item.appendChild(choices);
+                item.appendChild(explanation);
+
+                reviewList.appendChild(item);
+            });
+
+            // Update Metrics UI
+            document.getElementById('score-display').textContent = `${score} / 30`;
+            document.getElementById('correct-display').textContent = correctCount;
+            document.getElementById('incorrect-display').textContent = incorrectCount;
+            document.getElementById('unattempted-display').textContent = unattemptedCount;
+
+            // Switch Screen View
+            document.getElementById('quiz-interface').style.display = 'none';
+            document.getElementById('results-dashboard').style.display = 'block';
+        }
+
+        // Reset & Retake Test
+        function resetAndRetake() {
+            userAnswers = new Array(30).fill(null);
+            questionStates = new Array(30).fill(STATE.NOT_VISITED);
+            currentQuestionIdx = 0;
+
+            document.getElementById('results-dashboard').style.display = 'none';
+            document.getElementById('quiz-interface').style.display = 'flex';
+
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+    </script>
+</body>
+</html>
