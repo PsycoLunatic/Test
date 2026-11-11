@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Mock Test: Badminton GK Notes & Rules</title>
+    <style>
+        /* TCS iON / NTA Computer Based Test Theme Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --header-bg: #1e3a8a;
+            --header-accent: #2563eb;
+            --btn-blue: #2563eb;
+            --btn-blue-hover: #1d4ed8;
+            --gray-not-visited: #e2e8f0;
+            --gray-text: #475569;
+            --red-not-answered: #dc2626;
+            --green-answered: #16a34a;
+            --purple-review: #7c3aed;
+            --border-color: #cbd5e1;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header Bar */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+
+        .exam-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .timer-container {
+            background-color: #ffffff;
+            color: #0f172a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        @keyframes pulse-red {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Split-Screen Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Left Question Display Pane */
+        .question-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .question-header {
+            padding: 12px 20px;
+            background-color: #eff6ff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .question-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #0f172a;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .option-item:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .option-item.selected {
+            background-color: #eff6ff;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 1px var(--btn-blue);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 14px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-label {
+            font-size: 0.98rem;
+            color: #334155;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Right Question Palette Pane */
+        .palette-pane {
+            width: 330px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            padding: 12px 16px;
+            background-color: #eff6ff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--header-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        .palette-legend {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .legend-box.not-visited { background-color: var(--gray-not-visited); color: var(--gray-text); border: 1px solid #94a3b8;}
+        .legend-box.not-answered { background-color: var(--red-not-answered); }
+        .legend-box.answered { background-color: var(--green-answered); }
+        .legend-box.review { background-color: var(--purple-review); }
+        .legend-box.ans-review { background-color: var(--purple-review); }
+        .legend-box.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .palette-header {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #334155;
+            background-color: #eff6ff;
+        }
+
+        .palette-grid-container {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background-color: var(--gray-not-visited);
+            color: var(--gray-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-btn.active {
+            border: 2.5px solid #1e3a8a;
+            box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+        }
+
+        .palette-btn.not-answered { background-color: var(--red-not-answered); color: white; border-color: #b91c1c; }
+        .palette-btn.answered { background-color: var(--green-answered); color: white; border-color: #15803d; }
+        .palette-btn.review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Action Footer */
+        .action-bar {
+            background-color: #eff6ff;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group-left, .btn-group-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary { background-color: #ffffff; color: #334155; border: 1px solid #cbd5e1; }
+        .btn-secondary:hover { background-color: #f1f5f9; }
+
+        .btn-purple { background-color: var(--purple-review); color: white; }
+        .btn-purple:hover { background-color: #6d28d9; }
+
+        .btn-primary { background-color: var(--btn-blue); color: white; }
+        .btn-primary:hover { background-color: var(--btn-blue-hover); }
+
+        .btn-submit { background-color: var(--green-answered); color: white; }
+        .btn-submit:hover { background-color: #15803d; }
+
+        /* Dashboard Screen */
+        #results-dashboard {
+            display: none;
+            flex: 1;
+            background-color: var(--bg-light);
+            overflow-y: auto;
+            padding: 30px;
+            user-select: text;
+        }
+
+        .dashboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--header-bg);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-card.score { border-top: 4px solid var(--btn-blue); }
+        .metric-card.correct { border-top: 4px solid var(--green-answered); }
+        .metric-card.incorrect { border-top: 4px solid var(--red-not-answered); }
+        .metric-card.unattempted { border-top: 4px solid #64748b; }
+        .metric-card.accuracy { border-top: 4px solid #0284c7; }
+
+        .metric-title {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #0f172a;
+        }
+
+        .review-section-title {
+            font-size: 1.3rem;
+            color: var(--header-bg);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            background-color: #ffffff;
+        }
+
+        .review-item.correct-bg { border-left: 5px solid var(--green-answered); }
+        .review-item.incorrect-bg { border-left: 5px solid var(--red-not-answered); }
+        .review-item.unattempted-bg { border-left: 5px solid #64748b; }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .review-q-text {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .review-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .explanation-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            line-height: 1.4;
+        }
+
+        .memory-tag {
+            display: inline-block;
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .retake-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .palette-pane {
+                width: 100%;
+                height: 220px;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+            }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .review-choices { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header Bar -->
+    <header>
+        <div class="exam-title">CBT Mock Test: Badminton GK Notes & Rules</div>
+        <div class="timer-container" id="timer-box">
+            <span>Time Remaining:</span>
+            <span id="timer-display">10:00</span>
+        </div>
+    </header>
+
+    <!-- Main Quiz Interface -->
+    <div class="main-container" id="quiz-interface">
+        
+        <!-- Left Pane: Question Section -->
+        <main class="question-pane">
+            <div class="question-header">
+                <span id="question-number-title">Question 1 of 30</span>
+                <span>Marks: +1.0 | -0.0</span>
+            </div>
+            
+            <div class="question-body">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+                
+                <ul class="options-list" id="options-container">
+                    <!-- Populated dynamically -->
+                </ul>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <footer class="action-bar">
+                <div class="btn-group-left">
+                    <button class="btn btn-purple" id="btn-mark-review">Mark for Review & Next</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear Response</button>
+                </div>
+                <div class="btn-group-right">
+                    <button class="btn btn-secondary" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" id="btn-next">Save & Next</button>
+                    <button class="btn btn-submit" id="btn-submit">Submit Test</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Right Pane: Question Palette -->
+        <aside class="palette-pane">
+            <div class="user-profile">
+                <div class="profile-avatar">🏸</div>
+                <div class="profile-info">
+                    <strong>Candidate:</strong> Govt Exam Aspirant<br>
+                    <strong>Subject:</strong> Sports GK (Badminton)
+                </div>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box not-visited">0</div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box not-answered">0</div> Visited, Unanswered</div>
+                <div class="legend-item"><div class="legend-box answered">0</div> Answered</div>
+                <div class="legend-item"><div class="legend-box review">0</div> Marked for Review</div>
+                <div class="legend-item" style="grid-column: span 2;">
+                    <div class="legend-box ans-review">0</div> Answered & Marked for Review
+                </div>
+            </div>
+
+            <div class="palette-header">Question Palette</div>
+
+            <div class="palette-grid-container">
+                <div class="palette-grid" id="palette-grid">
+                    <!-- 30 Palette Buttons dynamically generated -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Results & Analytics Dashboard Screen -->
+    <div id="results-dashboard">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h1>Performance Summary & Solutions</h1>
+                <p style="color: #64748b;">Fact-checked against official BWF laws & historical badminton notes</p>
+            </div>
+
+            <!-- Summary Grid -->
+            <div class="summary-grid">
+                <div class="metric-card score">
+                    <div class="metric-title">Total Score</div>
+                    <div class="metric-value" id="score-display">0 / 30</div>
+                </div>
+                <div class="metric-card correct">
+                    <div class="metric-title">Correct</div>
+                    <div class="metric-value" id="correct-display">0</div>
+                </div>
+                <div class="metric-card incorrect">
+                    <div class="metric-title">Incorrect</div>
+                    <div class="metric-value" id="incorrect-display">0</div>
+                </div>
+                <div class="metric-card unattempted">
+                    <div class="metric-title">Unattempted</div>
+                    <div class="metric-value" id="unattempted-display">0</div>
+                </div>
+                <div class="metric-card accuracy">
+                    <div class="metric-title">Accuracy</div>
+                    <div class="metric-value" id="accuracy-display">0%</div>
+                </div>
+            </div>
+
+            <!-- Review List Header -->
+            <div class="review-section-title">Detailed Explanations & Key Facts</div>
+            
+            <div class="review-list" id="review-list">
+                <!-- Detailed reviews generated via JavaScript -->
+            </div>
+
+            <div class="retake-container">
+                <button class="btn btn-primary" id="btn-retake" style="padding: 12px 28px; font-size: 1rem;">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 30 High-Yield MCQs derived strictly from the provided Badminton study notes
+        const questionsData = [
+            {
+                id: 1,
+                question: "What was the earlier name of badminton when played by British army officers in Pune, India?",
+                options: ["Battledore", "Poona (Poonah)", "Whiff-Whaff", "Ping-Pong"],
+                correct: 1,
+                explanation: "Before being named Badminton, the game was played by British army officers in Pune, Maharashtra, and was known as Poona (also spelled Poonah).",
+                memoryTip: "Earlier Indian Name: Poona (Pune, Maharashtra)."
+            },
+            {
+                id: 2,
+                question: "The modern name 'Badminton' is derived from Badminton House, located in which country/estate?",
+                options: [
+                    "Estate of the Duke of Beaufort in Gloucestershire, England",
+                    "Royal Palace of Scotland",
+                    "Colonial Army Cantonment in New Delhi, India",
+                    "Olympic Headquarters in Lausanne, Switzerland"
+                ],
+                correct: 0,
+                explanation: "The name 'Badminton' was derived from Badminton House, the country estate of the Duke of Beaufort in Gloucestershire, England.",
+                memoryTip: "Modern Name Origin: Badminton House, Gloucestershire, England."
+            },
+            {
+                id: 3,
+                question: "In which year was the Badminton Association of England (BAE) formed to establish the first formal rules?",
+                options: ["1893", "1934", "1936", "1888"],
+                correct: 0,
+                explanation: "The Badminton Association of England was formed in 1893 to publish the first official standardized rules of the game.",
+                memoryTip: "BAE Formed: 📅 1893."
+            },
+            {
+                id: 4,
+                question: "When was the International Badminton Federation (IBF) established, and what is its present name?",
+                options: [
+                    "1934; now Badminton World Federation (BWF)",
+                    "1924; now International Olympic Badminton Federation",
+                    "1948; now World Badminton Union",
+                    "1936; now Asian Badminton Federation"
+                ],
+                correct: 0,
+                explanation: "The International Badminton Federation (IBF) was established in 1934. Its name was officially changed to the Badminton World Federation (BWF) in 2006.",
+                memoryTip: "IBF Established: 1934 | Name changed to BWF in 2006."
+            },
+            {
+                id: 5,
+                question: "Where is the global headquarters of the Badminton World Federation (BWF) located?",
+                options: ["London, England", "Kuala Lumpur, Malaysia", "Lausanne, Switzerland", "New Delhi, India"],
+                correct: 1,
+                explanation: "The headquarters of the BWF is situated in Kuala Lumpur, Malaysia.",
+                memoryTip: "BWF HQ: 🇲🇾 Kuala Lumpur, Malaysia."
+            },
+            {
+                id: 6,
+                question: "In what year and capacity did India join the International Badminton Federation (IBF)?",
+                options: [
+                    "1934 as a founding member",
+                    "1936 as an affiliate member",
+                    "1950 as an associate member",
+                    "1992 as an Olympic delegate"
+                ],
+                correct: 1,
+                explanation: "India joined the IBF in 1936 as an affiliate member (not as one of the 9 founding members of 1934).",
+                memoryTip: "India Joined IBF: 1936 as an affiliate."
+            },
+            {
+                id: 7,
+                question: "What is the exact overall length of a standard badminton court for both Singles and Doubles?",
+                options: ["13.40 m", "14.00 m", "12.80 m", "15.00 m"],
+                correct: 0,
+                explanation: "The court length is identical for both Singles and Doubles at 13.40 m.",
+                memoryTip: "Court Length: 📏 13.40 m for both Singles & Doubles."
+            },
+            {
+                id: 8,
+                question: "What are the correct court widths for Singles and Doubles matches respectively?",
+                options: [
+                    "Singles: 6.10 m | Doubles: 5.18 m",
+                    "Singles: 5.18 m | Doubles: 6.10 m",
+                    "Singles: 5.00 m | Doubles: 6.00 m",
+                    "Singles: 5.50 m | Doubles: 6.50 m"
+                ],
+                correct: 1,
+                explanation: "Singles uses a narrow court (width = 5.18 m), while Doubles uses a wide court (width = 6.10 m).",
+                memoryTip: "🧠 Memory Trick: Singles = Narrow (5.18 m) | Doubles = Wide (6.10 m)."
+            },
+            {
+                id: 9,
+                question: "What is the official height of the badminton net at the posts and at the centre of the court?",
+                options: [
+                    "Posts: 1.55 m | Centre: 1.524 m",
+                    "Posts: 1.50 m | Centre: 1.45 m",
+                    "Posts: 1.60 m | Centre: 1.55 m",
+                    "Posts: 1.524 m | Centre: 1.55 m"
+                ],
+                correct: 0,
+                explanation: "The net height is 1.55 m at the posts and sags slightly to 1.524 m at the centre of the court.",
+                memoryTip: "Net Height: 🕸️ Posts = 1.55 m | Centre = 1.524 m."
+            },
+            {
+                id: 10,
+                question: "What is the distance of the short service line from the net, and what is the standard court line width?",
+                options: [
+                    "Short Service Line: 1.98 m | Line Width: 40 mm",
+                    "Short Service Line: 2.10 m | Line Width: 50 mm",
+                    "Short Service Line: 1.80 m | Line Width: 35 mm",
+                    "Short Service Line: 2.00 m | Line Width: 40 mm"
+                ],
+                correct: 0,
+                explanation: "The short service line is 1.98 m from the net, and all court marking lines are 40 mm wide.",
+                memoryTip: "Line Specs: Short Service Line = 1.98 m | Line Width = 40 mm."
+            },
+            {
+                id: 11,
+                question: "According to standard BWF laws, what is the match format and points per game?",
+                options: [
+                    "Best of 5 games, 15 points per game",
+                    "Best of 3 games, 21 points per game (Rally-point system)",
+                    "Best of 3 games, 11 points per game",
+                    "Single game of 30 points"
+                ],
+                correct: 1,
+                explanation: "Matches are played as the best of 3 games of 21 points each using a rally-point scoring system.",
+                memoryTip: "Match Format: 🎯 Best of 3 games to 21 points."
+            },
+            {
+                id: 12,
+                question: "In a tied 20–20 game (Deuce), what winning margin is required, and what is the maximum score cap?",
+                options: [
+                    "Must win by 1 point; cap at 25 points",
+                    "Must win by 2 points; cap at 30 points (at 29–29, next point wins)",
+                    "Must win by 3 points; cap at 30 points",
+                    "Must win by 2 points; no maximum cap"
+                ],
+                correct: 1,
+                explanation: "At 20–20, a side must lead by 2 points to win. If the score reaches 29–29, the side scoring the 30th point wins that game (maximum 30 points).",
+                memoryTip: "Deuce Rules: 20–20 requires 2-point lead | 29–29 cap (30th point wins)."
+            },
+            {
+                id: 13,
+                question: "Under standard BWF laws, what is the allowed interval timing when the leading score reaches 11 points in a game?",
+                options: ["Maximum 60 seconds", "Maximum 90 seconds", "Maximum 120 seconds", "Maximum 3 minutes"],
+                correct: 0,
+                explanation: "When the leading score reaches 11 points in any game, players are allowed an interval of up to 60 seconds.",
+                memoryTip: "⏱️ Interval at 11 pts: Maximum 60 seconds."
+            },
+            {
+                id: 14,
+                question: "What is the maximum allowed interval time between the first and second game, and between the second and third game?",
+                options: ["60 seconds", "90 seconds", "Maximum 120 seconds", "3 minutes"],
+                correct: 2,
+                explanation: "An interval not exceeding 120 seconds (2 minutes) is allowed between the 1st & 2nd game, as well as between the 2nd & 3rd game.",
+                memoryTip: "⏱️ Interval between games: Maximum 120 seconds."
+            },
+            {
+                id: 15,
+                question: "What are the meanings of Yellow, Red, and Black cards in badminton penalization?",
+                options: [
+                    "Yellow = Warning | Red = Fault (point penalty) | Black = Disqualification",
+                    "Yellow = Point penalty | Red = Disqualification | Black = Warning",
+                    "Yellow = Warning | Red = Disqualification | Black = Match replay",
+                    "Yellow = Timeout | Red = Warning | Black = Fault"
+                ],
+                correct: 0,
+                explanation: "🟨 Yellow = Warning for misconduct; 🟥 Red = Fault awarded (opponent gets a point); ⬛ Black = Disqualification from the tournament.",
+                memoryTip: "🟨 Yellow = Warning | 🟥 Red = Fault | ⬛ Black = Disqualification."
+            },
+            {
+                id: 16,
+                question: "Which official term describes a rule violation resulting in the loss of a rally?",
+                options: ["Fail", "Fault", "Let", "Out"],
+                correct: 1,
+                explanation: "A 'Fault' is a formal rule violation (such as hitting into the net or out of bounds) resulting in loss of the rally. (Note: 'Fail' is a common misnomer).",
+                memoryTip: "Term Check: Fault = Rule violation."
+            },
+            {
+                id: 17,
+                question: "What does the term 'Love' represent in badminton scoring?",
+                options: ["A score of 20–20", "Zero score", "Match point", "Service fault"],
+                correct: 1,
+                explanation: "In racket sports including badminton, 'Love' signifies a score of zero.",
+                memoryTip: "Love = 0 score."
+            },
+            {
+                id: 18,
+                question: "Which shot is defined as a fast, flat trajectory shot that travels horizontally across the net?",
+                options: ["Clear", "Drop shot", "Drive", "Smash"],
+                correct: 2,
+                explanation: "A 'Drive' is a fast, flat shot hit horizontally just over the net into the opponent's midcourt or backcourt.",
+                memoryTip: "Shot Types: Drive = Fast, flat & horizontal shot."
+            },
+            {
+                id: 19,
+                question: "What is the difference between a 'Clear' and a 'Drop shot'?",
+                options: [
+                    "Clear: Soft shot close to net; Drop shot: Powerful downward strike",
+                    "Clear: High, deep shot to opponent's backcourt; Drop shot: Soft shot falling close to net",
+                    "Clear: Fast horizontal shot; Drop shot: Underhand serve",
+                    "Both shots travel at the same velocity"
+                ],
+                correct: 1,
+                explanation: "A 'Clear' is hit high and deep toward the opponent's rear court. A 'Drop shot' is hit softly so it drops sharply just over the net.",
+                memoryTip: "Clear = High deep shot | Drop = Soft shot near net."
+            },
+            {
+                id: 20,
+                question: "What is the side strip of the court used in doubles play, outside the singles sidelines, called?",
+                options: ["Backcourt", "Alley", "Tramline", "Trench"],
+                correct: 1,
+                explanation: "The side strip between the singles and doubles sidelines is called the Alley.",
+                memoryTip: "Alley = Doubles side strip outside singles line."
+            },
+            {
+                id: 21,
+                question: "Which major international tournament represents the Men's World Team Championship in badminton?",
+                options: ["Uber Cup", "Sudirman Cup", "Thomas Cup", "All England Championship"],
+                correct: 2,
+                explanation: "The Thomas Cup is the official Men's International Team Championship, first held in 1948–49.",
+                memoryTip: "🏆 Thomas Cup = Men's World Team Championship (First 1948–49)."
+            },
+            {
+                id: 22,
+                question: "Which major international trophy represents the Women's World Team Championship?",
+                options: ["Uber Cup", "Thomas Cup", "Sudirman Cup", "Chadha Cup"],
+                correct: 0,
+                explanation: "The Uber Cup is the official Women's International Team Championship, first held in 1956–57.",
+                memoryTip: "🏆 Uber Cup = Women's World Team Championship (First 1956–57)."
+            },
+            {
+                id: 23,
+                question: "After whom is the Sudirman Cup named, and what format of championship does it represent?",
+                options: [
+                    "Named after Dick Sudirman (Indonesian administrator); Mixed-team world championship",
+                    "Named after Prakash Sudirman; Men's singles world championship",
+                    "Named after a Malaysian King; Doubles championship",
+                    "Named after an IBF founder; Junior championship"
+                ],
+                correct: 0,
+                explanation: "The Sudirman Cup is the World Mixed Team Championship (first held in 1989), named in honor of Dick Sudirman, an Indonesian badminton founder/administrator.",
+                memoryTip: "🏆 Sudirman Cup = Mixed-Team World Championship (Named after Dick Sudirman)."
+            },
+            {
+                id: 24,
+                question: "Which of the following cups is an Indian national-level badminton trophy, NOT an international team championship?",
+                options: ["Thomas Cup", "Uber Cup", "Sudirman Cup", "Amrit Diwan Cup"],
+                correct: 3,
+                explanation: "The Amrit Diwan Cup (along with Ibrahim Rahmatullah Challenger Cup, Konica Cup, Aggarwal Cup, Chadha Cup, Narang Cup) is listed in Indian national GK references.",
+                memoryTip: "Indian Badminton Trophies: Amrit Diwan, Chadha, Narang, Aggarwal Cups."
+            },
+            {
+                id: 25,
+                question: "In which Olympic Games did Badminton make its official medal sport debut?",
+                options: ["1972 Munich", "1988 Seoul", "1992 Barcelona", "1996 Atlanta"],
+                correct: 2,
+                explanation: "Badminton debuted as an official medal sport at the 1992 Barcelona Olympic Games (having been a demonstration sport in 1972 and 1988).",
+                memoryTip: "Olympic Debut: 🏅 1992 Barcelona (Official medal sport)."
+            },
+            {
+                id: 26,
+                question: "In which year's Olympic Games was Mixed Doubles added to the official badminton event lineup?",
+                options: ["1992 Barcelona", "1996 Atlanta", "2000 Sydney", "2004 Athens"],
+                correct: 1,
+                explanation: "Mixed Doubles was introduced to the Olympic badminton competition at the 1996 Atlanta Games.",
+                memoryTip: "Mixed Doubles Olympic Entry: 🏅 1996 Atlanta."
+            },
+            {
+                id: 27,
+                question: "In which year did badminton make its debut at the Commonwealth Games?",
+                options: ["1950", "1966", "1978", "1990"],
+                correct: 1,
+                explanation: "Badminton made its debut at the Commonwealth Games in Kingston, Jamaica, in 1966.",
+                memoryTip: "Commonwealth Games Debut: 1966."
+            },
+            {
+                id: 28,
+                question: "Who was the FIRST Indian player to win the prestigious All England Men's Singles Open title?",
+                options: ["Pullela Gopichand", "Prakash Padukone", "Chetan Anand", "Nandu Natekar"],
+                correct: 1,
+                explanation: "Prakash Padukone became the first Indian to win the All England Men's Singles title in 1980.",
+                memoryTip: "Indian Milestone: Prakash Padukone (1980 All England Champion)."
+            },
+            {
+                id: 29,
+                question: "What is the name of the national governing body for badminton in India?",
+                options: [
+                    "Indian Badminton Federation (IBF)",
+                    "Badminton Association of India (BAI)",
+                    "All India Badminton Council (AIBC)",
+                    "Board of Control for Badminton in India (BCBI)"
+                ],
+                correct: 1,
+                explanation: "The governing body in India is the Badminton Association of India (BAI).",
+                memoryTip: "National Body: Badminton Association of India (BAI)."
+            },
+            {
+                id: 30,
+                question: "What is the player count in a standard singles vs doubles match in badminton?",
+                options: [
+                    "Singles: 2 (1 vs 1) | Doubles: 4 (2 vs 2)",
+                    "Singles: 4 (2 vs 2) | Doubles: 6 (3 vs 3)",
+                    "Singles: 1 per court | Doubles: 2 per court",
+                    "Singles: 2 (1 vs 1) | Doubles: 8 (4 vs 4)"
+                ],
+                correct: 0,
+                explanation: "Singles features 2 total players (1 on 1) and Doubles features 4 total players (2 on 2).",
+                memoryTip: "Player Count: Singles = 2 | Doubles = 4."
+            }
+        ];
+
+        // State Management (TCS iON Standard: 0=Not Visited, 1=Not Answered, 2=Answered, 3=Review, 4=Ans & Review)
+        const STATE = {
+            NOT_VISITED: 0,
+            NOT_ANSWERED: 1,
+            ANSWERED: 2,
+            REVIEW: 3,
+            ANS_REVIEW: 4
+        };
+
+        let userAnswers = new Array(30).fill(null);
+        let questionStates = new Array(30).fill(STATE.NOT_VISITED);
+        let currentQuestionIdx = 0;
+        
+        // Timer Variables (10 Minutes = 600 s)
+        const TOTAL_TIME = 600;
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+
+        // DOM Element References
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBox = document.getElementById('timer-box');
+        const questionNumberTitle = document.getElementById('question-number-title');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const paletteGrid = document.getElementById('palette-grid');
+
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const btnMarkReview = document.getElementById('btn-mark-review');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnRetake = document.getElementById('btn-retake');
+
+        // Initial Load Event
+        window.onload = function() {
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+            attachEventListeners();
+        };
+
+        // Timer Implementation
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = TOTAL_TIME;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+
+                if (timeRemaining <= 120) { // Pulse red under 2 minutes
+                    timerBox.classList.add('timer-pulse');
+                } else {
+                    timerBox.classList.remove('timer-pulse');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize Navigation Palette Grid
+        function initPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.addEventListener('click', () => navigateToQuestion(i));
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteUI();
+        }
+
+        // Render Selected Question
+        function loadQuestion(index) {
+            currentQuestionIdx = index;
+            const q = questionsData[index];
+
+            if (questionStates[index] === STATE.NOT_VISITED) {
+                questionStates[index] = STATE.NOT_ANSWERED;
+            }
+
+            questionNumberTitle.textContent = `Question ${index + 1} of 30`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'quiz-option';
+                radio.id = `opt-${optIdx}`;
+                radio.value = optIdx;
+                radio.checked = userAnswers[index] === optIdx;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `opt-${optIdx}`;
+                label.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+
+                li.appendChild(radio);
+                li.appendChild(label);
+
+                li.addEventListener('click', () => {
+                    radio.checked = true;
+                    selectOption(optIdx);
+                });
+
+                optionsContainer.appendChild(li);
+            });
+
+            updatePaletteUI();
+            updateNavigationButtons();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIdx] = optionIndex;
+            const items = optionsContainer.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                if (idx === optionIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            btnPrev.disabled = currentQuestionIdx === 0;
+            btnPrev.style.opacity = currentQuestionIdx === 0 ? "0.5" : "1";
+            btnNext.textContent = currentQuestionIdx === 29 ? "Save" : "Save & Next";
+        }
+
+        function navigateToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        // Action Handlers
+        function saveAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+
+            if (questionStates[currentQuestionIdx] !== STATE.REVIEW && questionStates[currentQuestionIdx] !== STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANSWERED : STATE.NOT_ANSWERED;
+            } else {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+            }
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+            questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIdx] = null;
+            if (questionStates[currentQuestionIdx] === STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = STATE.REVIEW;
+            } else {
+                questionStates[currentQuestionIdx] = STATE.NOT_ANSWERED;
+            }
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function updatePaletteUI() {
+            let counts = { notVisited: 0, notAnswered: 0, answered: 0, review: 0, ansReview: 0 };
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                btn.className = 'palette-btn';
+
+                if (i === currentQuestionIdx) {
+                    btn.classList.add('active');
+                }
+
+                switch (questionStates[i]) {
+                    case STATE.NOT_VISITED:
+                        btn.classList.add('not-visited');
+                        counts.notVisited++;
+                        break;
+                    case STATE.NOT_ANSWERED:
+                        btn.classList.add('not-answered');
+                        counts.notAnswered++;
+                        break;
+                    case STATE.ANSWERED:
+                        btn.classList.add('answered');
+                        counts.answered++;
+                        break;
+                    case STATE.REVIEW:
+                        btn.classList.add('review');
+                        counts.review++;
+                        break;
+                    case STATE.ANS_REVIEW:
+                        btn.classList.add('ans-review');
+                        counts.ansReview++;
+                        break;
+                }
+            }
+
+            const legendBoxes = document.querySelectorAll('.legend-box');
+            if (legendBoxes.length >= 5) {
+                legendBoxes[0].textContent = counts.notVisited;
+                legendBoxes[1].textContent = counts.notAnswered;
+                legendBoxes[2].textContent = counts.answered;
+                legendBoxes[3].textContent = counts.review;
+                legendBoxes[4].textContent = counts.ansReview;
+            }
+        }
+
+        function attachEventListeners() {
+            btnNext.addEventListener('click', saveAndNext);
+            btnPrev.addEventListener('click', () => {
+                if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+            });
+            btnClear.addEventListener('click', clearResponse);
+            btnMarkReview.addEventListener('click', markForReviewAndNext);
+            btnSubmit.addEventListener('click', () => {
+                if (confirm("Are you sure you want to submit your test?")) {
+                    submitTest();
+                }
+            });
+            btnRetake.addEventListener('click', resetAndRetake);
+        }
+
+        function autoSubmitTest() {
+            alert("Time limit reached! Your CBT exam is auto-submitting.");
+            submitTest();
+        }
+
+        // Scorecard Generation
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const isUnattempted = userAns === null;
+
+                if (isUnattempted) {
+                    unattemptedCount++;
+                } else if (isCorrect) {
+                    score += 1;
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+
+                const item = document.createElement('div');
+                item.className = `review-item ${isUnattempted ? 'unattempted-bg' : (isCorrect ? 'correct-bg' : 'incorrect-bg')}`;
+
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = `Question ${idx + 1} • ${isUnattempted ? 'Unattempted' : (isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)')}`;
+
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+
+                const choices = document.createElement('div');
+                choices.className = 'review-choices';
+                
+                const userChoiceStr = userAns !== null ? `${String.fromCharCode(65 + userAns)}. ${q.options[userAns]}` : "None Selected";
+                const correctChoiceStr = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                choices.innerHTML = `
+                    <div><strong>Your Choice:</strong> <span style="color: ${isCorrect ? '#16a34a' : (isUnattempted ? '#64748b' : '#dc2626')}">${userChoiceStr}</span></div>
+                    <div><strong>Correct Answer:</strong> <span style="color: #16a34a">${correctChoiceStr}</span></div>
+                `;
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <div class="memory-tag">${q.memoryTip}</div><br>
+                    <strong>Explanation:</strong> ${q.explanation}
+                `;
+
+                item.appendChild(qNum);
+                item.appendChild(qText);
+                item.appendChild(choices);
+                item.appendChild(explanation);
+
+                reviewList.appendChild(item);
+            });
+
+            const attemptedTotal = correctCount + incorrectCount;
+            const accuracy = attemptedTotal > 0 ? Math.round((correctCount / attemptedTotal) * 100) : 0;
+
+            document.getElementById('score-display').textContent = `${score} / 30`;
+            document.getElementById('correct-display').textContent = correctCount;
+            document.getElementById('incorrect-display').textContent = incorrectCount;
+            document.getElementById('unattempted-display').textContent = unattemptedCount;
+            document.getElementById('accuracy-display').textContent = `${accuracy}%`;
+
+            document.getElementById('quiz-interface').style.display = 'none';
+            document.getElementById('results-dashboard').style.display = 'block';
+        }
+
+        function resetAndRetake() {
+            userAnswers = new Array(30).fill(null);
+            questionStates = new Array(30).fill(STATE.NOT_VISITED);
+            currentQuestionIdx = 0;
+
+            document.getElementById('results-dashboard').style.display = 'none';
+            document.getElementById('quiz-interface').style.display = 'flex';
+
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+    </script>
+</body>
+</html>

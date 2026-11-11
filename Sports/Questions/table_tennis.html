@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Mock Test: Table Tennis Notes & Facts</title>
+    <style>
+        /* Modern TCS iON CBT Styling & Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --header-bg: #1e3a8a;
+            --header-accent: #2563eb;
+            --btn-blue: #2563eb;
+            --btn-blue-hover: #1d4ed8;
+            --gray-not-visited: #e2e8f0;
+            --gray-text: #475569;
+            --red-not-answered: #dc2626;
+            --green-answered: #16a34a;
+            --purple-review: #7c3aed;
+            --border-color: #cbd5e1;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Bar */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .exam-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .timer-container {
+            background-color: #ffffff;
+            color: #0f172a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        @keyframes pulse-red {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Split-Screen Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Question Pane Left */
+        .question-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .question-header {
+            padding: 12px 20px;
+            background-color: #eff6ff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .question-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #0f172a;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .option-item:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .option-item.selected {
+            background-color: #eff6ff;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 1px var(--btn-blue);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 14px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-label {
+            font-size: 0.98rem;
+            color: #334155;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Palette Pane Right */
+        .palette-pane {
+            width: 330px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            padding: 12px 16px;
+            background-color: #eff6ff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--header-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        .palette-legend {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .legend-box.not-visited { background-color: var(--gray-not-visited); color: var(--gray-text); border: 1px solid #94a3b8;}
+        .legend-box.not-answered { background-color: var(--red-not-answered); }
+        .legend-box.answered { background-color: var(--green-answered); }
+        .legend-box.review { background-color: var(--purple-review); }
+        .legend-box.ans-review { background-color: var(--purple-review); }
+        .legend-box.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .palette-header {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #334155;
+            background-color: #eff6ff;
+        }
+
+        .palette-grid-container {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background-color: var(--gray-not-visited);
+            color: var(--gray-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-btn.active {
+            border: 2.5px solid #1e3a8a;
+            box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+        }
+
+        .palette-btn.not-answered { background-color: var(--red-not-answered); color: white; border-color: #b91c1c; }
+        .palette-btn.answered { background-color: var(--green-answered); color: white; border-color: #15803d; }
+        .palette-btn.review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Action Footer */
+        .action-bar {
+            background-color: #eff6ff;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group-left, .btn-group-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary { background-color: #ffffff; color: #334155; border: 1px solid #cbd5e1; }
+        .btn-secondary:hover { background-color: #f1f5f9; }
+
+        .btn-purple { background-color: var(--purple-review); color: white; }
+        .btn-purple:hover { background-color: #6d28d9; }
+
+        .btn-primary { background-color: var(--btn-blue); color: white; }
+        .btn-primary:hover { background-color: var(--btn-blue-hover); }
+
+        .btn-submit { background-color: var(--green-answered); color: white; }
+        .btn-submit:hover { background-color: #15803d; }
+
+        /* Dashboard Screen */
+        #results-dashboard {
+            display: none;
+            flex: 1;
+            background-color: var(--bg-light);
+            overflow-y: auto;
+            padding: 30px;
+            user-select: text;
+        }
+
+        .dashboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--header-bg);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-card.score { border-top: 4px solid var(--btn-blue); }
+        .metric-card.correct { border-top: 4px solid var(--green-answered); }
+        .metric-card.incorrect { border-top: 4px solid var(--red-not-answered); }
+        .metric-card.unattempted { border-top: 4px solid #64748b; }
+        .metric-card.accuracy { border-top: 4px solid #0284c7; }
+
+        .metric-title {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #0f172a;
+        }
+
+        .review-section-title {
+            font-size: 1.3rem;
+            color: var(--header-bg);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            background-color: #ffffff;
+        }
+
+        .review-item.correct-bg { border-left: 5px solid var(--green-answered); }
+        .review-item.incorrect-bg { border-left: 5px solid var(--red-not-answered); }
+        .review-item.unattempted-bg { border-left: 5px solid #64748b; }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .review-q-text {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .review-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .explanation-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            line-height: 1.4;
+        }
+
+        .memory-tag {
+            display: inline-block;
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .retake-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .palette-pane {
+                width: 100%;
+                height: 220px;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+            }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .review-choices { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header Bar -->
+    <header>
+        <div class="exam-title">CBT Mock Test: Table Tennis Notes & Facts</div>
+        <div class="timer-container" id="timer-box">
+            <span>Time Remaining:</span>
+            <span id="timer-display">10:00</span>
+        </div>
+    </header>
+
+    <!-- Main Quiz Interface -->
+    <div class="main-container" id="quiz-interface">
+
+        <!-- Left: Question Display -->
+        <main class="question-pane">
+            <div class="question-header">
+                <span id="question-number-title">Question 1 of 30</span>
+                <span>Marks: +1.0 | -0.0</span>
+            </div>
+
+            <div class="question-body">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+
+                <ul class="options-list" id="options-container">
+                    <!-- Populated dynamically -->
+                </ul>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <footer class="action-bar">
+                <div class="btn-group-left">
+                    <button class="btn btn-purple" id="btn-mark-review">Mark for Review & Next</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear Response</button>
+                </div>
+                <div class="btn-group-right">
+                    <button class="btn btn-secondary" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" id="btn-next">Save & Next</button>
+                    <button class="btn btn-submit" id="btn-submit">Submit Test</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Right: Question Palette -->
+        <aside class="palette-pane">
+            <div class="user-profile">
+                <div class="profile-avatar">TT</div>
+                <div class="profile-info">
+                    <strong>Candidate:</strong> Govt Exam Aspirant<br>
+                    <strong>Subject:</strong> Sports GK (Table Tennis)
+                </div>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box not-visited">0</div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box not-answered">0</div> Visited, Unanswered</div>
+                <div class="legend-item"><div class="legend-box answered">0</div> Answered</div>
+                <div class="legend-item"><div class="legend-box review">0</div> Marked for Review</div>
+                <div class="legend-item" style="grid-column: span 2;">
+                    <div class="legend-box ans-review">0</div> Answered & Marked for Review
+                </div>
+            </div>
+
+            <div class="palette-header">Question Palette</div>
+
+            <div class="palette-grid-container">
+                <div class="palette-grid" id="palette-grid">
+                    <!-- 30 Palette Buttons dynamically generated -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Scorecard & Dashboard Screen -->
+    <div id="results-dashboard">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h1>Performance Summary & Solutions</h1>
+                <p style="color: #64748b;">Fact-checked against official ITTF & Indian National Championship Prospectus</p>
+            </div>
+
+            <!-- Metric Summary Grid -->
+            <div class="summary-grid">
+                <div class="metric-card score">
+                    <div class="metric-title">Total Score</div>
+                    <div class="metric-value" id="score-display">0 / 30</div>
+                </div>
+                <div class="metric-card correct">
+                    <div class="metric-title">Correct</div>
+                    <div class="metric-value" id="correct-display">0</div>
+                </div>
+                <div class="metric-card incorrect">
+                    <div class="metric-title">Incorrect</div>
+                    <div class="metric-value" id="incorrect-display">0</div>
+                </div>
+                <div class="metric-card unattempted">
+                    <div class="metric-title">Unattempted</div>
+                    <div class="metric-value" id="unattempted-display">0</div>
+                </div>
+                <div class="metric-card accuracy">
+                    <div class="metric-title">Accuracy</div>
+                    <div class="metric-value" id="accuracy-display">0%</div>
+                </div>
+            </div>
+
+            <!-- Solution Section -->
+            <div class="review-section-title">Detailed Explanations & Quick Memory Revision</div>
+
+            <div class="review-list" id="review-list">
+                <!-- Detailed reviews generated via JavaScript -->
+            </div>
+
+            <div class="retake-container">
+                <button class="btn btn-primary" id="btn-retake" style="padding: 12px 28px; font-size: 1rem;">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 30 High-Yield Questions directly built from provided Table Tennis notes
+        const questionsData = [
+            {
+                id: 1,
+                question: "In which country did Table Tennis originate during the late 19th century?",
+                options: ["China", "England", "Switzerland", "France"],
+                correct: 1,
+                explanation: "Table Tennis originated in England during the late 19th century.",
+                memoryTip: "Origin: 🇬🇧 England (late 19th century)."
+            },
+            {
+                id: 2,
+                question: "What early alternative name was associated with Table Tennis alongside 'Ping-Pong'?",
+                options: ["Whiff-Whaff", "Poona", "Battledore", "Diwddle"],
+                correct: 0,
+                explanation: "Whiff-Whaff and Ping-Pong were early names associated with Table Tennis in England.",
+                memoryTip: "Alternate Names: Ping-Pong & Whiff-Whaff."
+            },
+            {
+                id: 3,
+                question: "In which year was the International Table Tennis Federation (ITTF) founded?",
+                options: ["1900", "1926", "1936", "1948"],
+                correct: 1,
+                explanation: "The ITTF was established in the year 1926.",
+                memoryTip: "ITTF Established: 📅 1926."
+            },
+            {
+                id: 4,
+                question: "Where is the global headquarters of the International Table Tennis Federation (ITTF) located?",
+                options: ["London, England", "Lausanne, Switzerland", "Beijing, China", "Geneva, Switzerland"],
+                correct: 1,
+                explanation: "The ITTF headquarters is situated in Lausanne, Switzerland.",
+                memoryTip: "ITTF HQ: Lausanne, Switzerland."
+            },
+            {
+                id: 5,
+                question: "What is the exact standard length and width of an official Table Tennis table?",
+                options: [
+                    "Length: 2.75 m | Width: 1.50 m",
+                    "Length: 2.74 m | Width: 1.525 m",
+                    "Length: 3.00 m | Width: 1.75 m",
+                    "Length: 2.50 m | Width: 1.525 m"
+                ],
+                correct: 1,
+                explanation: "The official dimensions of a table are 2.74 m (9 ft) in length and 1.525 m (5 ft) in width.",
+                memoryTip: "Table Dimensions: 📏 2.74 m × 1.525 m (Height: 76 cm)."
+            },
+            {
+                id: 6,
+                question: "What is the official height of a standard Table Tennis table from the floor?",
+                options: ["76 cm (2.5 ft)", "76 m", "85 cm", "65 cm"],
+                correct: 0,
+                explanation: "The height of the table from the floor is 76 cm (2.5 ft). Note the correction from common typos like 76 m!",
+                memoryTip: "Table Height: ↕️ 76 cm (2.5 ft)."
+            },
+            {
+                id: 7,
+                question: "What is the standard height of the net in Table Tennis?",
+                options: ["12.50 cm", "15.25 cm (6 inches)", "18.00 cm", "20.00 cm"],
+                correct: 1,
+                explanation: "The net height is exactly 15.25 cm (6 inches).",
+                memoryTip: "Net Height: 🕸️ 15.25 cm."
+            },
+            {
+                id: 8,
+                question: "What are the official ball specifications (diameter and weight) used in Table Tennis?",
+                options: [
+                    "38 mm diameter and 2.5 g weight",
+                    "40 mm diameter and 2.7 g weight",
+                    "42 mm diameter and 3.0 g weight",
+                    "40 mm diameter and 3.2 g weight"
+                ],
+                correct: 1,
+                explanation: "An official Table Tennis ball has a diameter of 40 mm and weighs exactly 2.7 g.",
+                memoryTip: "Ball Specs: ⚪ 40 mm diameter, 2.7 g weight."
+            },
+            {
+                id: 9,
+                question: "Which term describes rotating the racket in the hand to use its opposite rubber surface during play?",
+                options: ["Twiddle", "Chop", "Jamming", "Half Volley"],
+                correct: 0,
+                explanation: "Twiddle means rotating the racket in the hand to switch rubber surfaces.",
+                memoryTip: "Term: Twiddle = Racket rotation."
+            },
+            {
+                id: 10,
+                question: "What does the term 'Chop' mean in Table Tennis terminology?",
+                options: [
+                    "Powerful attacking stroke with topspin",
+                    "Defensive stroke producing backspin",
+                    "Hitting the ball immediately after it bounces",
+                    "Serving diagonally across the net"
+                ],
+                correct: 1,
+                explanation: "Chop is a defensive stroke that produces backspin on the ball.",
+                memoryTip: "Chop = Defensive stroke + Backspin."
+            },
+            {
+                id: 11,
+                question: "What is 'Jamming' in Table Tennis?",
+                options: [
+                    "Striking the net during a serve",
+                    "Playing the ball towards the opponent's body to restrict movement",
+                    "Hitting the ball before it bounces on your court",
+                    "Rotating the racket between points"
+                ],
+                correct: 1,
+                explanation: "Jamming means playing the ball directly towards the opponent's body, restricting their movement and stroke flexibility.",
+                memoryTip: "Jamming = Target opponent's body."
+            },
+            {
+                id: 12,
+                question: "What is a 'Half Volley' in Table Tennis?",
+                options: [
+                    "Hitting the ball before it bounces on the court",
+                    "Hitting the ball immediately after it bounces",
+                    "A serve that touches the net and lands out",
+                    "A stroke played from behind the back"
+                ],
+                correct: 1,
+                explanation: "A Half Volley is executed by hitting the ball immediately after it bounces on the table.",
+                memoryTip: "Half Volley = Hitting right after bounce."
+            },
+            {
+                id: 13,
+                question: "What happens when a 'Let' is declared by the umpire?",
+                options: [
+                    "Point awarded to the receiver",
+                    "Point awarded to the server",
+                    "Rally is replayed without awarding a point",
+                    "The serving player loses service"
+                ],
+                correct: 2,
+                explanation: "A Let results in the rally being replayed without awarding any point to either player.",
+                memoryTip: "Let = Replayed rally, no score change."
+            },
+            {
+                id: 14,
+                question: "Which trophy is awarded to the champions of the Men's World Team Championship?",
+                options: ["Corbillon Cup", "Swaythling Cup", "St Bride Vase", "Iran Cup"],
+                correct: 1,
+                explanation: "The Swaythling Cup is awarded for the Men's World Team Championship.",
+                memoryTip: "🧠 Core Trick: Swaythling = Men's World Team."
+            },
+            {
+                id: 15,
+                question: "Which international trophy represents the Women's World Team Championship?",
+                options: ["Corbillon Cup", "Swaythling Cup", "G Geist Prize", "W. J. Pope Trophy"],
+                correct: 0,
+                explanation: "The Corbillon Cup (Marcel Corbillon Cup) is awarded for the Women's World Team Championship.",
+                memoryTip: "🧠 Core Trick: Corbillon = Women's World Team."
+            },
+            {
+                id: 16,
+                question: "Which trophy is awarded for the Men's World Singles Championship?",
+                options: ["St Bride Vase", "Iran Cup", "Swaythling Cup", "Barna-Bellack Cup"],
+                correct: 0,
+                explanation: "The St Bride Vase is the international trophy for Men's World Singles.",
+                memoryTip: "Men's Singles (World) = St Bride Vase."
+            },
+            {
+                id: 17,
+                question: "Which prize/trophy is designated for the Women's World Singles Championship?",
+                options: ["G Geist Prize", "W. J. Pope Trophy", "Heydusek Prize", "Jayalakshmi Cup"],
+                correct: 0,
+                explanation: "The G Geist Prize is awarded for the Women's World Singles Championship.",
+                memoryTip: "Women's Singles (World) = G Geist Prize."
+            },
+            {
+                id: 18,
+                question: "Match the international doubles trophies correctly: What are the trophies for Men's and Women's World Doubles?",
+                options: [
+                    "Men: Iran Cup | Women: W. J. Pope Trophy",
+                    "Men: W. J. Pope Trophy | Women: Iran Cup",
+                    "Men: Heydusek Prize | Women: G Geist Prize",
+                    "Men: Corbillon Cup | Women: Swaythling Cup"
+                ],
+                correct: 0,
+                explanation: "The Iran Cup is for Men's World Doubles and the W. J. Pope Trophy is for Women's World Doubles.",
+                memoryTip: "Doubles Trophies: Iran Cup (Men) & W. J. Pope Trophy (Women)."
+            },
+            {
+                id: 19,
+                question: "Which trophy is awarded for the Mixed Doubles World Championship in Table Tennis?",
+                options: ["Heydusek Prize", "St Bride Vase", "Iran Cup", "Travancore Cup"],
+                correct: 0,
+                explanation: "The Heydusek Prize is awarded to the winners of the Mixed Doubles World Championship.",
+                memoryTip: "Mixed Doubles (World) = Heydusek Prize."
+            },
+            {
+                id: 20,
+                question: "In Indian national table tennis, which cup is awarded for the Men's Team Championship?",
+                options: ["Jayalakshmi Cup", "Barna-Bellack Cup", "Maharaja Pithapuram Cup", "Travancore Cup"],
+                correct: 1,
+                explanation: "The Barna-Bellack Cup is the official trophy for the Men's Team Championship in Indian national table tennis.",
+                memoryTip: "Indian Men's Team = Barna-Bellack Cup."
+            },
+            {
+                id: 21,
+                question: "In Indian national championships, which trophy is awarded for the Women's Team Championship?",
+                options: ["Jayalakshmi Cup", "Travancore Cup", "Rajkumari Challenge Cup", "Electra Gold Cup"],
+                correct: 0,
+                explanation: "The Jayalakshmi Cup is awarded for the Women's Team Championship in Indian national tournaments.",
+                memoryTip: "Indian Women's Team = Jayalakshmi Cup."
+            },
+            {
+                id: 22,
+                question: "Which cup represents the Men's Singles title in Indian national table tennis championships?",
+                options: ["Maharaja Pithapuram Cup", "Travancore Cup", "Ramanujan Trophy", "Kamala Ramanujan Cup"],
+                correct: 0,
+                explanation: "The Maharaja Pithapuram Cup is awarded for Men's Singles at the Indian Senior National Championships.",
+                memoryTip: "Indian Men's Singles = Maharaja Pithapuram Cup."
+            },
+            {
+                id: 23,
+                question: "Which trophy is designated for the Women's Singles title in Indian national championships?",
+                options: ["Travancore Cup", "Jayalakshmi Cup", "Rajkumari Challenge Cup", "Electra Gold Cup"],
+                correct: 0,
+                explanation: "The Travancore Cup is awarded for Women's Singles at the Indian Senior National Championships.",
+                memoryTip: "Indian Women's Singles = Travancore Cup."
+            },
+            {
+                id: 24,
+                question: "The Rajkumari Challenge Cup in Indian Table Tennis is associated with which event?",
+                options: [
+                    "Junior Girls' Competition",
+                    "Senior Men's Doubles",
+                    "Veteran Mixed Doubles",
+                    "Men's Singles Championship"
+                ],
+                correct: 0,
+                explanation: "The Rajkumari Challenge Cup is traditionally associated with junior girls' competition in India.",
+                memoryTip: "Rajkumari Challenge Cup = Junior Girls' Competition."
+            },
+            {
+                id: 25,
+                question: "How many points are required to win a standard game of Table Tennis, and what margin is required?",
+                options: [
+                    "21 points with a margin of 1 point",
+                    "11 points with a margin of at least 2 points",
+                    "15 points with a margin of 2 points",
+                    "10 points with a margin of 2 points"
+                ],
+                correct: 1,
+                explanation: "A standard game is played to 11 points. The winning player/pair must lead by at least 2 points.",
+                memoryTip: "Game Rule: 🎯 11 points (must win by 2)."
+            },
+            {
+                id: 26,
+                question: "How frequently does service alternate between players during a standard game before reaching a Deuce (10–10)?",
+                options: ["Every point", "Every 2 points", "Every 5 points", "Every 4 points"],
+                correct: 1,
+                explanation: "Service changes every 2 points until the score reaches 10–10 (Deuce).",
+                memoryTip: "Service Rule: Rotates every 2 points."
+            },
+            {
+                id: 27,
+                question: "When the score reaches Deuce (10–10), how often does the service alternate?",
+                options: ["Every 2 points", "After every 1 point", "Every 3 points", "Service remains with the server until game end"],
+                correct: 1,
+                explanation: "At Deuce (10–10), the service changes after every single point until a player gains a 2-point lead.",
+                memoryTip: "Deuce Rule: Service rotates after EVERY point."
+            },
+            {
+                id: 28,
+                question: "What are the mandated colors for the two sides of a Table Tennis racket blade's rubber?",
+                options: [
+                    "Both sides must be black",
+                    "One side black; other side bright red",
+                    "One side green; other side blue",
+                    "One side white; other side yellow"
+                ],
+                correct: 1,
+                explanation: "Official rules mandate that one side of the racket must be black and the other side must be bright red.",
+                memoryTip: "Racket Colors: 🟥 Bright Red on one side, ⬛ Black on the other."
+            },
+            {
+                id: 29,
+                question: "In Table Tennis Doubles, how MUST the service be delivered across the table?",
+                options: [
+                    "Straight down the line on the server's left",
+                    "Diagonally from server's right half-court to receiver's right half-court",
+                    "Diagonally from server's left half-court to receiver's left half-court",
+                    "Any direction as long as it clears the net"
+                ],
+                correct: 1,
+                explanation: "In doubles, service must travel diagonally from the server's right half-court to the receiver's right half-court.",
+                memoryTip: "Doubles Serve: Right half-court ➔ Right half-court (Diagonally)."
+            },
+            {
+                id: 30,
+                question: "Which of the following color options are legally permitted for an official Table Tennis ball?",
+                options: ["Yellow or Red", "White or Orange", "Green or White", "Pink or Orange"],
+                correct: 1,
+                explanation: "According to official rules, table tennis balls must be either white or orange with a matte finish.",
+                memoryTip: "Ball Colors: ⚪ White or 🟠 Orange."
+            }
+        ];
+
+        // State Tracking (TCS iON Standard: 0=Not Visited, 1=Not Answered, 2=Answered, 3=Review, 4=Ans & Review)
+        const STATE = {
+            NOT_VISITED: 0,
+            NOT_ANSWERED: 1,
+            ANSWERED: 2,
+            REVIEW: 3,
+            ANS_REVIEW: 4
+        };
+
+        let userAnswers = new Array(30).fill(null);
+        let questionStates = new Array(30).fill(STATE.NOT_VISITED);
+        let currentQuestionIdx = 0;
+
+        // Timer Setup (10 Minutes = 600 s)
+        const TOTAL_TIME = 600;
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+
+        // DOM Referencing
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBox = document.getElementById('timer-box');
+        const questionNumberTitle = document.getElementById('question-number-title');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const paletteGrid = document.getElementById('palette-grid');
+
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const btnMarkReview = document.getElementById('btn-mark-review');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnRetake = document.getElementById('btn-retake');
+
+        window.onload = function() {
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+            attachEventListeners();
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = TOTAL_TIME;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+
+                if (timeRemaining <= 120) {
+                    timerBox.classList.add('timer-pulse');
+                } else {
+                    timerBox.classList.remove('timer-pulse');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function initPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.addEventListener('click', () => navigateToQuestion(i));
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteUI();
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIdx = index;
+            const q = questionsData[index];
+
+            if (questionStates[index] === STATE.NOT_VISITED) {
+                questionStates[index] = STATE.NOT_ANSWERED;
+            }
+
+            questionNumberTitle.textContent = `Question ${index + 1} of 30`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'quiz-option';
+                radio.id = `opt-${optIdx}`;
+                radio.value = optIdx;
+                radio.checked = userAnswers[index] === optIdx;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `opt-${optIdx}`;
+                label.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+
+                li.appendChild(radio);
+                li.appendChild(label);
+
+                li.addEventListener('click', () => {
+                    radio.checked = true;
+                    selectOption(optIdx);
+                });
+
+                optionsContainer.appendChild(li);
+            });
+
+            updatePaletteUI();
+            updateNavigationButtons();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIdx] = optionIndex;
+            const items = optionsContainer.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                if (idx === optionIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            btnPrev.disabled = currentQuestionIdx === 0;
+            btnPrev.style.opacity = currentQuestionIdx === 0 ? "0.5" : "1";
+            btnNext.textContent = currentQuestionIdx === 29 ? "Save" : "Save & Next";
+        }
+
+        function navigateToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function saveAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+
+            if (questionStates[currentQuestionIdx] !== STATE.REVIEW && questionStates[currentQuestionIdx] !== STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANSWERED : STATE.NOT_ANSWERED;
+            } else {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+            }
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+            questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIdx] = null;
+            if (questionStates[currentQuestionIdx] === STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = STATE.REVIEW;
+            } else {
+                questionStates[currentQuestionIdx] = STATE.NOT_ANSWERED;
+            }
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function updatePaletteUI() {
+            let counts = { notVisited: 0, notAnswered: 0, answered: 0, review: 0, ansReview: 0 };
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                btn.className = 'palette-btn';
+
+                if (i === currentQuestionIdx) {
+                    btn.classList.add('active');
+                }
+
+                switch (questionStates[i]) {
+                    case STATE.NOT_VISITED:
+                        btn.classList.add('not-visited');
+                        counts.notVisited++;
+                        break;
+                    case STATE.NOT_ANSWERED:
+                        btn.classList.add('not-answered');
+                        counts.notAnswered++;
+                        break;
+                    case STATE.ANSWERED:
+                        btn.classList.add('answered');
+                        counts.answered++;
+                        break;
+                    case STATE.REVIEW:
+                        btn.classList.add('review');
+                        counts.review++;
+                        break;
+                    case STATE.ANS_REVIEW:
+                        btn.classList.add('ans-review');
+                        counts.ansReview++;
+                        break;
+                }
+            }
+
+            const legendBoxes = document.querySelectorAll('.legend-box');
+            if (legendBoxes.length >= 5) {
+                legendBoxes[0].textContent = counts.notVisited;
+                legendBoxes[1].textContent = counts.notAnswered;
+                legendBoxes[2].textContent = counts.answered;
+                legendBoxes[3].textContent = counts.review;
+                legendBoxes[4].textContent = counts.ansReview;
+            }
+        }
+
+        function attachEventListeners() {
+            btnNext.addEventListener('click', saveAndNext);
+            btnPrev.addEventListener('click', () => {
+                if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+            });
+            btnClear.addEventListener('click', clearResponse);
+            btnMarkReview.addEventListener('click', markForReviewAndNext);
+            btnSubmit.addEventListener('click', () => {
+                if (confirm("Are you sure you want to submit your test?")) {
+                    submitTest();
+                }
+            });
+            btnRetake.addEventListener('click', resetAndRetake);
+        }
+
+        function autoSubmitTest() {
+            alert("Time limit reached! Your CBT exam is auto-submitting.");
+            submitTest();
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const isUnattempted = userAns === null;
+
+                if (isUnattempted) {
+                    unattemptedCount++;
+                } else if (isCorrect) {
+                    score += 1;
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+
+                const item = document.createElement('div');
+                item.className = `review-item ${isUnattempted ? 'unattempted-bg' : (isCorrect ? 'correct-bg' : 'incorrect-bg')}`;
+
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = `Question ${idx + 1} • ${isUnattempted ? 'Unattempted' : (isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)')}`;
+
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+
+                const choices = document.createElement('div');
+                choices.className = 'review-choices';
+
+                const userChoiceStr = userAns !== null ? `${String.fromCharCode(65 + userAns)}. ${q.options[userAns]}` : "None Selected";
+                const correctChoiceStr = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                choices.innerHTML = `
+                    <div><strong>Your Choice:</strong> <span style="color: ${isCorrect ? '#16a34a' : (isUnattempted ? '#64748b' : '#dc2626')}">${userChoiceStr}</span></div>
+                    <div><strong>Correct Answer:</strong> <span style="color: #16a34a">${correctChoiceStr}</span></div>
+                `;
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <div class="memory-tag">${q.memoryTip}</div><br>
+                    <strong>Explanation:</strong> ${q.explanation}
+                `;
+
+                item.appendChild(qNum);
+                item.appendChild(qText);
+                item.appendChild(choices);
+                item.appendChild(explanation);
+
+                reviewList.appendChild(item);
+            });
+
+            const attemptedTotal = correctCount + incorrectCount;
+            const accuracy = attemptedTotal > 0 ? Math.round((correctCount / attemptedTotal) * 100) : 0;
+
+            document.getElementById('score-display').textContent = `${score} / 30`;
+            document.getElementById('correct-display').textContent = correctCount;
+            document.getElementById('incorrect-display').textContent = incorrectCount;
+            document.getElementById('unattempted-display').textContent = unattemptedCount;
+            document.getElementById('accuracy-display').textContent = `${accuracy}%`;
+
+            document.getElementById('quiz-interface').style.display = 'none';
+            document.getElementById('results-dashboard').style.display = 'block';
+        }
+
+        function resetAndRetake() {
+            userAnswers = new Array(30).fill(null);
+            questionStates = new Array(30).fill(STATE.NOT_VISITED);
+            currentQuestionIdx = 0;
+
+            document.getElementById('results-dashboard').style.display = 'none';
+            document.getElementById('quiz-interface').style.display = 'flex';
+
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+    </script>
+</body>
+</html>

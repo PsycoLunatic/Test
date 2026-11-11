@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Mock Test: Chess GK Notes & Rules</title>
+    <style>
+        /* Modern TCS iON / NTA Exam Styling & Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --header-bg: #1e293b;
+            --header-accent: #3b82f6;
+            --btn-blue: #2563eb;
+            --btn-blue-hover: #1d4ed8;
+            --gray-not-visited: #e2e8f0;
+            --gray-text: #475569;
+            --red-not-answered: #dc2626;
+            --green-answered: #16a34a;
+            --purple-review: #7c3aed;
+            --border-color: #cbd5e1;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header Bar */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+
+        .exam-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .timer-container {
+            background-color: #ffffff;
+            color: #0f172a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        @keyframes pulse-red {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Split-Screen Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Left Question Display Pane */
+        .question-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .question-header {
+            padding: 12px 20px;
+            background-color: #f1f5f9;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .question-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #0f172a;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .option-item:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .option-item.selected {
+            background-color: #eff6ff;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 1px var(--btn-blue);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 14px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-label {
+            font-size: 0.98rem;
+            color: #334155;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Right Question Palette Pane */
+        .palette-pane {
+            width: 330px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            padding: 12px 16px;
+            background-color: #f1f5f9;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--header-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        .palette-legend {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .legend-box.not-visited { background-color: var(--gray-not-visited); color: var(--gray-text); border: 1px solid #94a3b8;}
+        .legend-box.not-answered { background-color: var(--red-not-answered); }
+        .legend-box.answered { background-color: var(--green-answered); }
+        .legend-box.review { background-color: var(--purple-review); }
+        .legend-box.ans-review { background-color: var(--purple-review); }
+        .legend-box.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .palette-header {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #334155;
+            background-color: #f1f5f9;
+        }
+
+        .palette-grid-container {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background-color: var(--gray-not-visited);
+            color: var(--gray-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-btn.active {
+            border: 2.5px solid #1e293b;
+            box-shadow: 0 0 5px rgba(30, 41, 59, 0.5);
+        }
+
+        .palette-btn.not-answered { background-color: var(--red-not-answered); color: white; border-color: #b91c1c; }
+        .palette-btn.answered { background-color: var(--green-answered); color: white; border-color: #15803d; }
+        .palette-btn.review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Action Footer */
+        .action-bar {
+            background-color: #f1f5f9;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group-left, .btn-group-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary { background-color: #ffffff; color: #334155; border: 1px solid #cbd5e1; }
+        .btn-secondary:hover { background-color: #e2e8f0; }
+
+        .btn-purple { background-color: var(--purple-review); color: white; }
+        .btn-purple:hover { background-color: #6d28d9; }
+
+        .btn-primary { background-color: var(--btn-blue); color: white; }
+        .btn-primary:hover { background-color: var(--btn-blue-hover); }
+
+        .btn-submit { background-color: var(--green-answered); color: white; }
+        .btn-submit:hover { background-color: #15803d; }
+
+        /* Dashboard Screen */
+        #results-dashboard {
+            display: none;
+            flex: 1;
+            background-color: var(--bg-light);
+            overflow-y: auto;
+            padding: 30px;
+            user-select: text;
+        }
+
+        .dashboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--header-bg);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-card.score { border-top: 4px solid var(--btn-blue); }
+        .metric-card.correct { border-top: 4px solid var(--green-answered); }
+        .metric-card.incorrect { border-top: 4px solid var(--red-not-answered); }
+        .metric-card.unattempted { border-top: 4px solid #64748b; }
+        .metric-card.accuracy { border-top: 4px solid #0284c7; }
+
+        .metric-title {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #0f172a;
+        }
+
+        .review-section-title {
+            font-size: 1.3rem;
+            color: var(--header-bg);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            background-color: #ffffff;
+        }
+
+        .review-item.correct-bg { border-left: 5px solid var(--green-answered); }
+        .review-item.incorrect-bg { border-left: 5px solid var(--red-not-answered); }
+        .review-item.unattempted-bg { border-left: 5px solid #64748b; }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .review-q-text {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .review-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .explanation-box {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        .memory-tag {
+            display: inline-block;
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .retake-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .palette-pane {
+                width: 100%;
+                height: 220px;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+            }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .review-choices { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header Bar -->
+    <header>
+        <div class="exam-title">CBT Mock Test: Chess Facts, FIDE & Rules</div>
+        <div class="timer-container" id="timer-box">
+            <span>Time Remaining:</span>
+            <span id="timer-display">10:00</span>
+        </div>
+    </header>
+
+    <!-- Main Quiz Interface -->
+    <div class="main-container" id="quiz-interface">
+
+        <!-- Left Pane: Question Section -->
+        <main class="question-pane">
+            <div class="question-header">
+                <span id="question-number-title">Question 1 of 30</span>
+                <span>Marks: +1.0 | -0.0</span>
+            </div>
+
+            <div class="question-body">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+
+                <ul class="options-list" id="options-container">
+                    <!-- Populated dynamically -->
+                </ul>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <footer class="action-bar">
+                <div class="btn-group-left">
+                    <button class="btn btn-purple" id="btn-mark-review">Mark for Review & Next</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear Response</button>
+                </div>
+                <div class="btn-group-right">
+                    <button class="btn btn-secondary" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" id="btn-next">Save & Next</button>
+                    <button class="btn btn-submit" id="btn-submit">Submit Test</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Right Pane: Question Palette -->
+        <aside class="palette-pane">
+            <div class="user-profile">
+                <div class="profile-avatar">♟️</div>
+                <div class="profile-info">
+                    <strong>Candidate:</strong> Govt Exam Aspirant<br>
+                    <strong>Subject:</strong> Sports GK (Chess)
+                </div>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box not-visited">0</div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box not-answered">0</div> Visited, Unanswered</div>
+                <div class="legend-item"><div class="legend-box answered">0</div> Answered</div>
+                <div class="legend-item"><div class="legend-box review">0</div> Marked for Review</div>
+                <div class="legend-item" style="grid-column: span 2;">
+                    <div class="legend-box ans-review">0</div> Answered & Marked for Review
+                </div>
+            </div>
+
+            <div class="palette-header">Question Palette</div>
+
+            <div class="palette-grid-container">
+                <div class="palette-grid" id="palette-grid">
+                    <!-- 30 Palette Buttons dynamically generated -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Results & Analytics Dashboard Screen -->
+    <div id="results-dashboard">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h1>Performance Summary & Solutions</h1>
+                <p style="color: #64748b;">Fact-checked against official FIDE records & historical chess notes</p>
+            </div>
+
+            <!-- Summary Grid -->
+            <div class="summary-grid">
+                <div class="metric-card score">
+                    <div class="metric-title">Total Score</div>
+                    <div class="metric-value" id="score-display">0 / 30</div>
+                </div>
+                <div class="metric-card correct">
+                    <div class="metric-title">Correct</div>
+                    <div class="metric-value" id="correct-display">0</div>
+                </div>
+                <div class="metric-card incorrect">
+                    <div class="metric-title">Incorrect</div>
+                    <div class="metric-value" id="incorrect-display">0</div>
+                </div>
+                <div class="metric-card unattempted">
+                    <div class="metric-title">Unattempted</div>
+                    <div class="metric-value" id="unattempted-display">0</div>
+                </div>
+                <div class="metric-card accuracy">
+                    <div class="metric-title">Accuracy</div>
+                    <div class="metric-value" id="accuracy-display">0%</div>
+                </div>
+            </div>
+
+            <!-- Review List Header -->
+            <div class="review-section-title">Detailed Explanations & Key Facts</div>
+
+            <div class="review-list" id="review-list">
+                <!-- Detailed reviews generated via JavaScript -->
+            </div>
+
+            <div class="retake-container">
+                <button class="btn btn-primary" id="btn-retake" style="padding: 12px 28px; font-size: 1rem;">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 30 High-Yield MCQs derived strictly from the provided Chess study notes
+        const questionsData = [
+            {
+                id: 1,
+                question: "In which country and during which period did chess originate?",
+                options: [
+                    "Persia, during the 5th century CE",
+                    "India, around the 6th century CE during the Gupta period",
+                    "China, during the Han Dynasty",
+                    "Greece, during the Hellenistic period"
+                ],
+                correct: 1,
+                explanation: "Chess originated in ancient India around the 6th century CE during the Gupta dynasty.",
+                memoryTip: "Origin: 🇮🇳 India, 6th century CE, Gupta Dynasty."
+            },
+            {
+                id: 2,
+                question: "What was the ancient Sanskrit name of chess in India, and what does it literally mean?",
+                options: [
+                    "Shatranj, meaning 'King's game'",
+                    "Chaturanga, meaning 'Four divisions of the army'",
+                    "Chatrang, meaning 'Board of 64 squares'",
+                    "Ashtapada, meaning 'Eight steps'"
+                ],
+                correct: 1,
+                explanation: "The ancient Indian name for chess is Chaturanga (चतुरंग), which translates to 'Four divisions of the army' (infantry, cavalry, elephants, and chariots).",
+                memoryTip: "Ancient Name: Chaturanga = 4 army divisions."
+            },
+            {
+                id: 3,
+                question: "In ancient Chaturanga, which modern chess pieces correspond to the Elephants and Chariots respectively?",
+                options: [
+                    "Elephants = Knights, Chariots = Bishops",
+                    "Elephants = Bishops, Chariots = Rooks",
+                    "Elephants = Queens, Chariots = Kings",
+                    "Elephants = Pawns, Chariots = Knights"
+                ],
+                correct: 1,
+                explanation: "In Chaturanga: Infantry = Pawns, Cavalry = Knights, Elephants = Bishops, and Chariots = Rooks.",
+                memoryTip: "Chaturanga Pieces: Elephants ➔ Bishops | Chariots ➔ Rooks."
+            },
+            {
+                id: 4,
+                question: "Trace the historical transmission path of chess before it reached Europe:",
+                options: [
+                    "India ➔ China ➔ Russia ➔ Europe",
+                    "India (Chaturanga) ➔ Persia (Chatrang/Shatranj) ➔ Arab World ➔ Europe",
+                    "Persia ➔ India ➔ Arab World ➔ Europe",
+                    "India ➔ Egypt ➔ Greece ➔ Europe"
+                ],
+                correct: 1,
+                explanation: "Chess spread from India (Chaturanga) to Persia (where it was known as Chatrang or Shatranj), then to the Arab world, and finally into Europe.",
+                memoryTip: "Spread Sequence: India ➔ Persia ➔ Arab World ➔ Europe."
+            },
+            {
+                id: 5,
+                question: "Around which century did major rule changes transform the game into modern chess in Europe?",
+                options: ["10th century", "12th century", "15th century", "18th century"],
+                correct: 2,
+                explanation: "Modern chess evolved in Europe with major rule modifications occurring around the 15th century.",
+                memoryTip: "Modern Chess Era: 15th century in Europe."
+            },
+            {
+                id: 6,
+                question: "What is the full official French name of FIDE?",
+                options: [
+                    "Fédération Internationale des Échecs",
+                    "Fédération International de l'Echiquier",
+                    "Federation of International Digital Esports",
+                    "Forum International des Échecs"
+                ],
+                correct: 0,
+                explanation: "FIDE stands for Fédération Internationale des Échecs (World Chess Federation).",
+                memoryTip: "FIDE Name: Fédération Internationale des Échecs."
+            },
+            {
+                id: 7,
+                question: "On what date and in which city was FIDE established?",
+                options: [
+                    "20 July 1924 in Paris, France",
+                    "20 July 1926 in Lausanne, Switzerland",
+                    "15 August 1947 in London, England",
+                    "20 June 1924 in Moscow, Russia"
+                ],
+                correct: 0,
+                explanation: "FIDE was founded on 20 July 1924 in Paris, France, by 15 delegates.",
+                memoryTip: "FIDE Founding: 20 July 1924, Paris (by 15 delegates)."
+            },
+            {
+                id: 8,
+                question: "Where is the global headquarters of FIDE situated today?",
+                options: ["Paris, France", "Lausanne, Switzerland", "Geneva, Switzerland", "Athens, Greece"],
+                correct: 1,
+                explanation: "FIDE's international headquarters is located in Lausanne, Switzerland.",
+                memoryTip: "FIDE HQ: Lausanne, Switzerland."
+            },
+            {
+                id: 9,
+                question: "What is the official motto of FIDE, and what is its English translation?",
+                options: [
+                    "Citius, Altius, Fortius - Faster, Higher, Stronger",
+                    "Gens una Sumus - We are one family",
+                    "Ludus pro patria - Sports for country",
+                    "Pax per desportum - Peace through sports"
+                ],
+                correct: 1,
+                explanation: "The official FIDE motto is 'Gens una Sumus', which translates to 'We are one family'.",
+                memoryTip: "FIDE Motto: Gens una Sumus = We are one family."
+            },
+            {
+                id: 10,
+                question: "On which date is International Chess Day celebrated globally each year?",
+                options: ["20 June", "20 July", "15 August", "1 December"],
+                correct: 1,
+                explanation: "International Chess Day is celebrated worldwide on 20 July to commemorate the founding date of FIDE in 1924.",
+                memoryTip: "International Chess Day: 📅 20 July."
+            },
+            {
+                id: 11,
+                question: "What is the crucial distinction between a Stalemate and a Checkmate in chess?",
+                options: [
+                    "Stalemate is a win for White; Checkmate is a draw.",
+                    "Stalemate: King is NOT in check, but has no legal move (Draw); Checkmate: King IS in check and cannot escape (Win/Loss).",
+                    "Stalemate: King is under attack; Checkmate: King has no legal move.",
+                    "Both result in an automatic tie-break."
+                ],
+                correct: 1,
+                explanation: "In Stalemate, the king is not under attack but the player has no legal moves (resulting in a Draw). In Checkmate, the king is attacked and has no legal escape (resulting in a Win for the attacker).",
+                memoryTip: "🧠 Stalemate = Draw (No check) | Checkmate = Loss/Win (King in check)."
+            },
+            {
+                id: 12,
+                question: "What is a 'Gambit' in chess?",
+                options: [
+                    "A move that places two pieces in check",
+                    "Deliberately sacrificing material (usually a pawn) for positional or development advantage",
+                    "A special king and rook maneuver",
+                    "Promoting a pawn to a queen"
+                ],
+                correct: 1,
+                explanation: "A Gambit is a tactical opening where a player sacrifices material (typically a pawn) to gain an advantage in space or piece development.",
+                memoryTip: "Gambit = Tactical material sacrifice for advantage."
+            },
+            {
+                id: 13,
+                question: "What are the exact rules governing the special move 'Castling'?",
+                options: [
+                    "The king moves three squares towards a rook, and the rook jumps over the king.",
+                    "The king moves two squares towards a rook, and the rook moves to the square next to the king.",
+                    "The rook moves two squares towards the queen, and the queen steps aside.",
+                    "The king moves diagonally across one square."
+                ],
+                correct: 1,
+                explanation: "In castling, the king moves two squares towards a rook on the first rank, and that rook slides to the square the king just crossed.",
+                memoryTip: "Castling: King moves 2 squares towards Rook; Rook steps next to King."
+            },
+            {
+                id: 14,
+                question: "What occurs during the special pawn move known as 'En Passant'?",
+                options: [
+                    "A pawn captures an adjacent enemy pawn that has just advanced two squares from its starting position.",
+                    "A pawn moves three squares forward on its first turn.",
+                    "A pawn moves diagonally without capturing an enemy piece.",
+                    "A pawn swaps places with a knight."
+                ],
+                correct: 0,
+                explanation: "En passant ('in passing') allows a pawn to capture an adjacent enemy pawn that moved two squares past it on the previous move.",
+                memoryTip: "En Passant = Special pawn capture of adjacent 2-square pawn step."
+            },
+            {
+                id: 15,
+                question: "Which piece tactic involves a single piece attacking TWO OR MORE enemy pieces simultaneously?",
+                options: ["Pin", "Skewer", "Fork", "Zugzwang"],
+                correct: 2,
+                explanation: "A Fork occurs when a single piece attacks two or more of the opponent's pieces at the same time.",
+                memoryTip: "Fork = 1 piece attacking 2+ enemy pieces."
+            },
+            {
+                id: 16,
+                question: "What is a 'Zugzwang' position in chess?",
+                options: [
+                    "A position where a player can checkmate in one move",
+                    "A situation in which any legal move a player makes worsens their position",
+                    "A position where neither player can move a pawn",
+                    "A special draw rule after 50 moves"
+                ],
+                correct: 1,
+                explanation: "Zugzwang is a German term referring to a situation where a player is forced to move, but every available move degrades their evaluation or position.",
+                memoryTip: "Zugzwang = Obligation to move that hurts your position."
+            },
+            {
+                id: 17,
+                question: "What is the difference between a 'Pin' and a 'Skewer'?",
+                options: [
+                    "Pin: Valuable piece behind a lesser piece; Skewer: Lesser piece behind a valuable piece.",
+                    "Pin: Piece cannot move without exposing a more valuable piece behind it; Skewer: Attack on a valuable piece forcing it to move and exposing a piece behind it.",
+                    "Pin refers only to pawns; Skewer refers only to rooks.",
+                    "Pin is an offensive tactic; Skewer is a defensive draw."
+                ],
+                correct: 1,
+                explanation: "In a Pin, the target piece cannot move because it would expose a more valuable piece behind it. In a Skewer, a high-value piece is attacked and forced to move, exposing a lower-value piece behind it.",
+                memoryTip: "Pin = Pinned piece shields back piece | Skewer = Valuable piece front line forced to move."
+            },
+            {
+                id: 18,
+                question: "Which famous international chess tournament is historically held in Spain and associated with the 'Linares City Trophy'?",
+                options: ["Wijk aan Zee", "Linares Chess Tournament", "Tata Steel Masters", "Sinquefield Cup"],
+                correct: 1,
+                explanation: "The Linares City Trophy is associated with the prestigious Linares chess tournament held in Linares, Andalusia, Spain.",
+                memoryTip: "Linares Trophy = Famous Spanish tournament in Linares."
+            },
+            {
+                id: 19,
+                question: "Which tournament determines the direct challenger to face the reigning Classical World Chess Champion?",
+                options: ["Chess Olympiad", "World Rapid Championship", "Candidates Tournament", "FIDE Grand Prix"],
+                correct: 2,
+                explanation: "The Candidates Tournament is FIDE's official event to select the challenger for the World Chess Championship.",
+                memoryTip: "Candidates Tournament ➔ World Championship Challenger."
+            },
+            {
+                id: 20,
+                question: "How many total squares are on a standard chessboard, and how many total pieces start on the board?",
+                options: [
+                    "64 squares and 32 total pieces (16 per player)",
+                    "100 squares and 40 total pieces",
+                    "64 squares and 28 total pieces",
+                    "81 squares and 36 total pieces"
+                ],
+                correct: 0,
+                explanation: "A standard chessboard has an 8 × 8 grid (64 squares) and begins with 32 total pieces (16 White, 16 Black).",
+                memoryTip: "Board: 64 squares | Setup: 32 pieces total (16 each)."
+            },
+            {
+                id: 21,
+                question: "What is the exact starting piece breakdown for EACH player at the beginning of a game?",
+                options: [
+                    "1 King, 1 Queen, 2 Rooks, 2 Bishops, 2 Knights, 8 Pawns",
+                    "1 King, 2 Queens, 2 Rooks, 2 Bishops, 1 Knight, 8 Pawns",
+                    "1 King, 1 Queen, 4 Rooks, 2 Bishops, 2 Knights, 6 Pawns",
+                    "2 Kings, 1 Queen, 2 Rooks, 2 Bishops, 2 Knights, 7 Pawns"
+                ],
+                correct: 0,
+                explanation: "Each player starts with 16 pieces: 1 King, 1 Queen, 2 Rooks, 2 Bishops, 2 Knights, and 8 Pawns.",
+                memoryTip: "Piece Count per Player = 1K + 1Q + 2R + 2B + 2N + 8P = 16."
+            },
+            {
+                id: 22,
+                question: "In standard chess rules, which side ALWAYS executes the first move of the game?",
+                options: ["Black", "White", "Decided by a coin toss", "The higher-rated player"],
+                correct: 1,
+                explanation: "White always moves first in a standard game of chess.",
+                memoryTip: "First Move: ⚪ White moves first."
+            },
+            {
+                id: 23,
+                question: "Which piece is the MOST IMPORTANT piece on the board, and which is the MOST POWERFUL by movement?",
+                options: [
+                    "Most Important: Queen | Most Powerful: King",
+                    "Most Important: King | Most Powerful: Queen",
+                    "Most Important: Rook | Most Powerful: Knight",
+                    "Most Important: King | Most Powerful: Rook"
+                ],
+                correct: 1,
+                explanation: "The King is the most important piece (its capture/checkmate ends the game), whereas the Queen is the most powerful piece due to its mobility in all directions.",
+                memoryTip: "Piece Power: King = Most Important | Queen = Most Powerful."
+            },
+            {
+                id: 24,
+                question: "Under FIDE time control classifications, how is 'Rapid Chess' defined?",
+                options: [
+                    "10 minutes or less per player",
+                    "More than 10 minutes and less than 60 minutes per player",
+                    "Exactly 60 minutes per player with no increment",
+                    "1 minute per player"
+                ],
+                correct: 1,
+                explanation: "Rapid chess is classified by FIDE as a format where each player has more than 10 minutes and less than 60 minutes.",
+                memoryTip: "Time Formats: Rapid = >10 mins & <60 mins."
+            },
+            {
+                id: 25,
+                question: "What is the time classification for 'Blitz' chess according to FIDE rules?",
+                options: [
+                    "10 minutes or less per player",
+                    "Between 15 and 30 minutes per player",
+                    "More than 60 minutes",
+                    "Exactly 2 hours per side"
+                ],
+                correct: 0,
+                explanation: "Blitz chess is classified as 10 minutes or less per player.",
+                memoryTip: "Time Formats: Blitz = 10 mins or less."
+            },
+            {
+                id: 26,
+                question: "What ultra-fast online chess format generally allocates around 1 minute per player?",
+                options: ["Rapid", "Classical", "Bullet", "Armageddon"],
+                correct: 2,
+                explanation: "Bullet chess is an ultra-fast online format commonly allocated at 1 minute per player.",
+                memoryTip: "Time Formats: Bullet ≈ 1 minute per player."
+            },
+            {
+                id: 27,
+                question: "Who was the FIRST Indian player to become the undisputed Classical World Chess Champion?",
+                options: ["Pentala Harikrishna", "Viswanathan Anand", "D. Gukesh", "Rameshbabu Praggnanandhaa"],
+                correct: 1,
+                explanation: "Viswanathan Anand became India's first Grandmaster in 1988 and the first Indian to become World Chess Champion.",
+                memoryTip: "Indian Legend: Viswanathan Anand = 1st Indian World Champion."
+            },
+            {
+                id: 28,
+                question: "Who achieved the historic milestone of becoming the youngest undisputed World Chess Champion in 2024?",
+                options: ["Viswanathan Anand", "D. Gukesh", "Arjun Erigaisi", "Nihal Sarin"],
+                correct: 1,
+                explanation: "Dommaraju Gukesh (D. Gukesh) became the youngest undisputed World Chess Champion in history in 2024.",
+                memoryTip: "Milestone 2024: D. Gukesh = Youngest Undisputed World Champion."
+            },
+            {
+                id: 29,
+                question: "In which Indian city was the prestigious 44th Chess Olympiad hosted in 2022?",
+                options: ["New Delhi", "Mumbai", "Chennai", "Kolkata"],
+                correct: 2,
+                explanation: "The 44th Chess Olympiad 2022 was hosted in Chennai (Mahabalipuram), Tamil Nadu, India.",
+                memoryTip: "Chess Olympiad 2022 Host: 🇮🇳 Chennai, India."
+            },
+            {
+                id: 30,
+                question: "Which leading Indian female chess grandmaster won the FIDE Women's World Rapid Chess Championship?",
+                options: ["Tania Sachdev", "Koneru Humpy", "Harika Dronavalli", "Vantika Agrawal"],
+                correct: 1,
+                explanation: "Koneru Humpy is one of India's leading female grandmasters and a former Women's World Rapid Champion.",
+                memoryTip: "Indian Women's Pioneer: Koneru Humpy."
+            }
+        ];
+
+        // State Management (TCS iON Standard: 0=Not Visited, 1=Not Answered, 2=Answered, 3=Review, 4=Ans & Review)
+        const STATE = {
+            NOT_VISITED: 0,
+            NOT_ANSWERED: 1,
+            ANSWERED: 2,
+            REVIEW: 3,
+            ANS_REVIEW: 4
+        };
+
+        let userAnswers = new Array(30).fill(null);
+        let questionStates = new Array(30).fill(STATE.NOT_VISITED);
+        let currentQuestionIdx = 0;
+
+        // Timer Variables (10 Minutes = 600 s)
+        const TOTAL_TIME = 600;
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+
+        // DOM Element References
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBox = document.getElementById('timer-box');
+        const questionNumberTitle = document.getElementById('question-number-title');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const paletteGrid = document.getElementById('palette-grid');
+
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const btnMarkReview = document.getElementById('btn-mark-review');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnRetake = document.getElementById('btn-retake');
+
+        // Initial Load Event
+        window.onload = function() {
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+            attachEventListeners();
+        };
+
+        // Timer Implementation
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = TOTAL_TIME;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+
+                if (timeRemaining <= 120) { // Pulse red under 2 minutes
+                    timerBox.classList.add('timer-pulse');
+                } else {
+                    timerBox.classList.remove('timer-pulse');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize Navigation Palette Grid
+        function initPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.addEventListener('click', () => navigateToQuestion(i));
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteUI();
+        }
+
+        // Render Selected Question
+        function loadQuestion(index) {
+            currentQuestionIdx = index;
+            const q = questionsData[index];
+
+            if (questionStates[index] === STATE.NOT_VISITED) {
+                questionStates[index] = STATE.NOT_ANSWERED;
+            }
+
+            questionNumberTitle.textContent = `Question ${index + 1} of 30`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'quiz-option';
+                radio.id = `opt-${optIdx}`;
+                radio.value = optIdx;
+                radio.checked = userAnswers[index] === optIdx;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `opt-${optIdx}`;
+                label.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+
+                li.appendChild(radio);
+                li.appendChild(label);
+
+                li.addEventListener('click', () => {
+                    radio.checked = true;
+                    selectOption(optIdx);
+                });
+
+                optionsContainer.appendChild(li);
+            });
+
+            updatePaletteUI();
+            updateNavigationButtons();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIdx] = optionIndex;
+            const items = optionsContainer.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                if (idx === optionIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            btnPrev.disabled = currentQuestionIdx === 0;
+            btnPrev.style.opacity = currentQuestionIdx === 0 ? "0.5" : "1";
+            btnNext.textContent = currentQuestionIdx === 29 ? "Save" : "Save & Next";
+        }
+
+        function navigateToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        // Action Handlers
+        function saveAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+
+            if (questionStates[currentQuestionIdx] !== STATE.REVIEW && questionStates[currentQuestionIdx] !== STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANSWERED : STATE.NOT_ANSWERED;
+            } else {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+            }
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+            questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIdx] = null;
+            if (questionStates[currentQuestionIdx] === STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = STATE.REVIEW;
+            } else {
+                questionStates[currentQuestionIdx] = STATE.NOT_ANSWERED;
+            }
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function updatePaletteUI() {
+            let counts = { notVisited: 0, notAnswered: 0, answered: 0, review: 0, ansReview: 0 };
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                btn.className = 'palette-btn';
+
+                if (i === currentQuestionIdx) {
+                    btn.classList.add('active');
+                }
+
+                switch (questionStates[i]) {
+                    case STATE.NOT_VISITED:
+                        btn.classList.add('not-visited');
+                        counts.notVisited++;
+                        break;
+                    case STATE.NOT_ANSWERED:
+                        btn.classList.add('not-answered');
+                        counts.notAnswered++;
+                        break;
+                    case STATE.ANSWERED:
+                        btn.classList.add('answered');
+                        counts.answered++;
+                        break;
+                    case STATE.REVIEW:
+                        btn.classList.add('review');
+                        counts.review++;
+                        break;
+                    case STATE.ANS_REVIEW:
+                        btn.classList.add('ans-review');
+                        counts.ansReview++;
+                        break;
+                }
+            }
+
+            const legendBoxes = document.querySelectorAll('.legend-box');
+            if (legendBoxes.length >= 5) {
+                legendBoxes[0].textContent = counts.notVisited;
+                legendBoxes[1].textContent = counts.notAnswered;
+                legendBoxes[2].textContent = counts.answered;
+                legendBoxes[3].textContent = counts.review;
+                legendBoxes[4].textContent = counts.ansReview;
+            }
+        }
+
+        function attachEventListeners() {
+            btnNext.addEventListener('click', saveAndNext);
+            btnPrev.addEventListener('click', () => {
+                if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+            });
+            btnClear.addEventListener('click', clearResponse);
+            btnMarkReview.addEventListener('click', markForReviewAndNext);
+            btnSubmit.addEventListener('click', () => {
+                if (confirm("Are you sure you want to submit your test?")) {
+                    submitTest();
+                }
+            });
+            btnRetake.addEventListener('click', resetAndRetake);
+        }
+
+        function autoSubmitTest() {
+            alert("Time limit reached! Your CBT exam is auto-submitting.");
+            submitTest();
+        }
+
+        // Scorecard Generation
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const isUnattempted = userAns === null;
+
+                if (isUnattempted) {
+                    unattemptedCount++;
+                } else if (isCorrect) {
+                    score += 1;
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+
+                const item = document.createElement('div');
+                item.className = `review-item ${isUnattempted ? 'unattempted-bg' : (isCorrect ? 'correct-bg' : 'incorrect-bg')}`;
+
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = `Question ${idx + 1} • ${isUnattempted ? 'Unattempted' : (isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)')}`;
+
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+
+                const choices = document.createElement('div');
+                choices.className = 'review-choices';
+
+                const userChoiceStr = userAns !== null ? `${String.fromCharCode(65 + userAns)}. ${q.options[userAns]}` : "None Selected";
+                const correctChoiceStr = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                choices.innerHTML = `
+                    <div><strong>Your Choice:</strong> <span style="color: ${isCorrect ? '#16a34a' : (isUnattempted ? '#64748b' : '#dc2626')}">${userChoiceStr}</span></div>
+                    <div><strong>Correct Answer:</strong> <span style="color: #16a34a">${correctChoiceStr}</span></div>
+                `;
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <div class="memory-tag">${q.memoryTip}</div><br>
+                    <strong>Explanation:</strong> ${q.explanation}
+                `;
+
+                item.appendChild(qNum);
+                item.appendChild(qText);
+                item.appendChild(choices);
+                item.appendChild(explanation);
+
+                reviewList.appendChild(item);
+            });
+
+            const attemptedTotal = correctCount + incorrectCount;
+            const accuracy = attemptedTotal > 0 ? Math.round((correctCount / attemptedTotal) * 100) : 0;
+
+            document.getElementById('score-display').textContent = `${score} / 30`;
+            document.getElementById('correct-display').textContent = correctCount;
+            document.getElementById('incorrect-display').textContent = incorrectCount;
+            document.getElementById('unattempted-display').textContent = unattemptedCount;
+            document.getElementById('accuracy-display').textContent = `${accuracy}%`;
+
+            document.getElementById('quiz-interface').style.display = 'none';
+            document.getElementById('results-dashboard').style.display = 'block';
+        }
+
+        function resetAndRetake() {
+            userAnswers = new Array(30).fill(null);
+            questionStates = new Array(30).fill(STATE.NOT_VISITED);
+            currentQuestionIdx = 0;
+
+            document.getElementById('results-dashboard').style.display = 'none';
+            document.getElementById('quiz-interface').style.display = 'flex';
+
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+    </script>
+</body>
+</html>

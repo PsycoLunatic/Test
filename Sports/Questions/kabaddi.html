@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kabaddi GK CBT Examination</title>
+    <style>
+        /* TCS iON / NTA Computer Based Test Theme Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --header-bg: #1e3a8a;
+            --header-accent: #2563eb;
+            --btn-blue: #2563eb;
+            --btn-blue-hover: #1d4ed8;
+            --gray-not-visited: #e2e8f0;
+            --gray-text: #475569;
+            --red-not-answered: #dc2626;
+            --green-answered: #16a34a;
+            --purple-review: #7c3aed;
+            --border-color: #cbd5e1;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header Bar */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+
+        .exam-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .timer-container {
+            background-color: #ffffff;
+            color: #0f172a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        @keyframes pulse-red {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Split-Screen Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Left Question Display Pane */
+        .question-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .question-header {
+            padding: 12px 20px;
+            background-color: #eff6ff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .question-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #0f172a;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .option-item:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .option-item.selected {
+            background-color: #eff6ff;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 1px var(--btn-blue);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 14px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-label {
+            font-size: 0.98rem;
+            color: #334155;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Right Question Palette Pane */
+        .palette-pane {
+            width: 330px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            padding: 12px 16px;
+            background-color: #eff6ff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--header-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        .palette-legend {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .legend-box.not-visited { background-color: var(--gray-not-visited); color: var(--gray-text); border: 1px solid #94a3b8;}
+        .legend-box.not-answered { background-color: var(--red-not-answered); }
+        .legend-box.answered { background-color: var(--green-answered); }
+        .legend-box.review { background-color: var(--purple-review); }
+        .legend-box.ans-review { background-color: var(--purple-review); }
+        .legend-box.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .palette-header {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #334155;
+            background-color: #eff6ff;
+        }
+
+        .palette-grid-container {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background-color: var(--gray-not-visited);
+            color: var(--gray-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-btn.active {
+            border: 2.5px solid #1e3a8a;
+            box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+        }
+
+        .palette-btn.not-answered { background-color: var(--red-not-answered); color: white; border-color: #b91c1c; }
+        .palette-btn.answered { background-color: var(--green-answered); color: white; border-color: #15803d; }
+        .palette-btn.review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review { background-color: var(--purple-review); color: white; border-color: #6d28d9; }
+        .palette-btn.ans-review::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* Action Footer */
+        .action-bar {
+            background-color: #eff6ff;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group-left, .btn-group-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary { background-color: #ffffff; color: #334155; border: 1px solid #cbd5e1; }
+        .btn-secondary:hover { background-color: #f1f5f9; }
+
+        .btn-purple { background-color: var(--purple-review); color: white; }
+        .btn-purple:hover { background-color: #6d28d9; }
+
+        .btn-primary { background-color: var(--btn-blue); color: white; }
+        .btn-primary:hover { background-color: var(--btn-blue-hover); }
+
+        .btn-submit { background-color: var(--green-answered); color: white; }
+        .btn-submit:hover { background-color: #15803d; }
+
+        /* Dashboard Screen */
+        #results-dashboard {
+            display: none;
+            flex: 1;
+            background-color: var(--bg-light);
+            overflow-y: auto;
+            padding: 30px;
+            user-select: text;
+        }
+
+        .dashboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--header-bg);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-card.score { border-top: 4px solid var(--btn-blue); }
+        .metric-card.correct { border-top: 4px solid var(--green-answered); }
+        .metric-card.incorrect { border-top: 4px solid var(--red-not-answered); }
+        .metric-card.unattempted { border-top: 4px solid #64748b; }
+        .metric-card.accuracy { border-top: 4px solid #0284c7; }
+
+        .metric-title {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #0f172a;
+        }
+
+        .review-section-title {
+            font-size: 1.3rem;
+            color: var(--header-bg);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            background-color: #ffffff;
+        }
+
+        .review-item.correct-bg { border-left: 5px solid var(--green-answered); }
+        .review-item.incorrect-bg { border-left: 5px solid var(--red-not-answered); }
+        .review-item.unattempted-bg { border-left: 5px solid #64748b; }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .review-q-text {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .review-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .explanation-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            line-height: 1.4;
+        }
+
+        .memory-tag {
+            display: inline-block;
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .retake-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .palette-pane {
+                width: 100%;
+                height: 220px;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+            }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .review-choices { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header Bar -->
+    <header>
+        <div class="exam-title">Kabaddi GK CBT Examination</div>
+        <div class="timer-container" id="timer-box">
+            <span>Time Remaining:</span>
+            <span id="timer-display">10:00</span>
+        </div>
+    </header>
+
+    <!-- Main Quiz Interface -->
+    <div class="main-container" id="quiz-interface">
+        
+        <!-- Left Pane: Question Section -->
+        <main class="question-pane">
+            <div class="question-header">
+                <span id="question-number-title">Question 1 of 30</span>
+                <span>Marks: +1.0 | -0.0</span>
+            </div>
+            
+            <div class="question-body">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+                
+                <ul class="options-list" id="options-container">
+                    <!-- Populated dynamically -->
+                </ul>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <footer class="action-bar">
+                <div class="btn-group-left">
+                    <button class="btn btn-purple" id="btn-mark-review">Mark for Review & Next</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear Response</button>
+                </div>
+                <div class="btn-group-right">
+                    <button class="btn btn-secondary" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" id="btn-next">Save & Next</button>
+                    <button class="btn btn-submit" id="btn-submit">Submit Test</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Right Pane: Question Palette -->
+        <aside class="palette-pane">
+            <div class="user-profile">
+                <div class="profile-avatar">🤼</div>
+                <div class="profile-info">
+                    <strong>Candidate:</strong> Govt Exam Aspirant<br>
+                    <strong>Subject:</strong> Sports GK (Kabaddi)
+                </div>
+            </div>
+
+            <div class="palette-legend">
+                <div class="legend-item"><div class="legend-box not-visited">0</div> Not Visited</div>
+                <div class="legend-item"><div class="legend-box not-answered">0</div> Visited, Unanswered</div>
+                <div class="legend-item"><div class="legend-box answered">0</div> Answered</div>
+                <div class="legend-item"><div class="legend-box review">0</div> Marked for Review</div>
+                <div class="legend-item" style="grid-column: span 2;">
+                    <div class="legend-box ans-review">0</div> Answered & Marked for Review
+                </div>
+            </div>
+
+            <div class="palette-header">Question Palette</div>
+
+            <div class="palette-grid-container">
+                <div class="palette-grid" id="palette-grid">
+                    <!-- 30 Palette Buttons dynamically generated -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Results & Analytics Dashboard Screen -->
+    <div id="results-dashboard">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h1>Performance Summary & Solutions</h1>
+                <p style="color: #64748b;">Fact-checked against official AKFI & IKF standards</p>
+            </div>
+
+            <!-- Summary Grid -->
+            <div class="summary-grid">
+                <div class="metric-card score">
+                    <div class="metric-title">Total Score</div>
+                    <div class="metric-value" id="score-display">0 / 30</div>
+                </div>
+                <div class="metric-card correct">
+                    <div class="metric-title">Correct</div>
+                    <div class="metric-value" id="correct-display">0</div>
+                </div>
+                <div class="metric-card incorrect">
+                    <div class="metric-title">Incorrect</div>
+                    <div class="metric-value" id="incorrect-display">0</div>
+                </div>
+                <div class="metric-card unattempted">
+                    <div class="metric-title">Unattempted</div>
+                    <div class="metric-value" id="unattempted-display">0</div>
+                </div>
+                <div class="metric-card accuracy">
+                    <div class="metric-title">Accuracy</div>
+                    <div class="metric-value" id="accuracy-display">0%</div>
+                </div>
+            </div>
+
+            <!-- Review List Header -->
+            <div class="review-section-title">Detailed Explanations & Key Notes</div>
+            
+            <div class="review-list" id="review-list">
+                <!-- Detailed reviews generated via JavaScript -->
+            </div>
+
+            <div class="retake-container">
+                <button class="btn btn-primary" id="btn-retake" style="padding: 12px 28px; font-size: 1rem;">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 30 High-Yield MCQs derived strictly from the provided Kabaddi study notes
+        const questionsData = [
+            {
+                id: 1,
+                question: "What is the traditional name of Kabaddi in Western India?",
+                options: ["Ha-Do-Do", "Chedugudu", "Hu-Tu-Tu", "Saunchi"],
+                correct: 2,
+                explanation: "In Western India, Kabaddi is traditionally known as Hu-Tu-Tu.",
+                memoryTip: "Regional Name: Western India = Hu-Tu-Tu."
+            },
+            {
+                id: 2,
+                question: "In Eastern India and Bangladesh, by what traditional name is Kabaddi known?",
+                options: ["Saunchi", "Ha-Do-Do", "Chedugudu", "Hu-Tu-Tu"],
+                correct: 1,
+                explanation: "In Eastern India and Bangladesh, Kabaddi is traditionally called Ha-Do-Do.",
+                memoryTip: "Regional Name: Eastern India / Bangladesh = Ha-Do-Do."
+            },
+            {
+                id: 3,
+                question: "What is the traditional name for Kabaddi in Southern India?",
+                options: ["Chedugudu", "Saunchi", "Hu-Tu-Tu", "Ha-Do-Do"],
+                correct: 0,
+                explanation: "In Southern India, Kabaddi is traditionally known as Chedugudu.",
+                memoryTip: "Regional Name: Southern India = Chedugudu."
+            },
+            {
+                id: 4,
+                question: "In the Punjab region, what traditional name is given to Kabaddi?",
+                options: ["Hu-Tu-Tu", "Chedugudu", "Saunchi", "Ha-Do-Do"],
+                correct: 2,
+                explanation: "In the Punjab region, the traditional style/name of Kabaddi is Saunchi.",
+                memoryTip: "Regional Name: Punjab Region = Saunchi."
+            },
+            {
+                id: 5,
+                question: "Which country has officially declared Kabaddi as its national sport?",
+                options: ["India", "Pakistan", "Bangladesh", "Nepal"],
+                correct: 2,
+                explanation: "Kabaddi originated in the Indian subcontinent (traditionally attributed to India), but Bangladesh has officially declared Kabaddi as its national sport. India has no officially declared national sport.",
+                memoryTip: "National Sport Distinction: Bangladesh = National Sport | India = Country of Origin (not officially declared)."
+            },
+            {
+                id: 6,
+                question: "In which Indian state were the first modern standardized rules of Kabaddi prepared in 1921 (and revised in 1923)?",
+                options: ["Punjab", "Maharashtra", "Tamil Nadu", "West Bengal"],
+                correct: 1,
+                explanation: "The first set of modern Kabaddi rules was prepared in Maharashtra in 1921 and revised in 1923.",
+                memoryTip: "First Modern Rules: 📅 Maharashtra (1921 / 1923)."
+            },
+            {
+                id: 7,
+                question: "When was the All India Kabaddi Federation (AIKF) formed to promote and regulate Kabaddi in India?",
+                options: ["1950", "1972", "1980", "2004"],
+                correct: 0,
+                explanation: "The All India Kabaddi Federation (AIKF) was formed in 1950. (It was succeeded by the Amateur Kabaddi Federation of India in 1972).",
+                memoryTip: "Federation Timeline: AIKF = 1950."
+            },
+            {
+                id: 8,
+                question: "In which year was the Amateur Kabaddi Federation of India (AKFI) established?",
+                options: ["1950", "1972", "1980", "1990"],
+                correct: 1,
+                explanation: "The Amateur Kabaddi Federation of India (AKFI) was established in 1972.",
+                memoryTip: "Federation Timeline: AKFI = 1972."
+            },
+            {
+                id: 9,
+                question: "In which year was the International Kabaddi Federation (IKF) established?",
+                options: ["1980", "1990", "2004", "2014"],
+                correct: 2,
+                explanation: "The International Kabaddi Federation (IKF), the international governing body, was founded in 2004.",
+                memoryTip: "Federation Timeline: IKF = 2004."
+            },
+            {
+                id: 10,
+                question: "In which years were the first Senior National Championship and first Asian Kabaddi Championship held respectively?",
+                options: [
+                    "Senior National: 1952 | Asian Championship: 1980",
+                    "Senior National: 1950 | Asian Championship: 1972",
+                    "Senior National: 1972 | Asian Championship: 1990",
+                    "Senior National: 1952 | Asian Championship: 2004"
+                ],
+                correct: 0,
+                explanation: "The first Senior National Kabaddi Championship was held in 1952, and the first Asian Kabaddi Championship was held in 1980.",
+                memoryTip: "Milestones: Senior National = 1952 | Asian Championship = 1980."
+            },
+            {
+                id: 11,
+                question: "How many players from each team play on the court, how many substitutes are available, and what is the total squad size?",
+                options: [
+                    "7 on court, 5 substitutes, 12 total squad",
+                    "6 on court, 6 substitutes, 12 total squad",
+                    "7 on court, 3 substitutes, 10 total squad",
+                    "9 on court, 3 substitutes, 12 total squad"
+                ],
+                correct: 0,
+                explanation: "Each team has 7 active players on the court and usually 5 substitutes, making a standard full team squad of 12 players.",
+                memoryTip: "Player Count: 7 on court + 5 substitutes = 12 squad total."
+            },
+            {
+                id: 12,
+                question: "What are the standard court dimensions for Senior Men's Kabaddi?",
+                options: ["13 m × 10 m", "12 m × 8 m", "11 m × 8 m", "14 m × 10 m"],
+                correct: 0,
+                explanation: "The standard court dimensions for Senior Men are 13 m in length by 10 m in width.",
+                memoryTip: "Court Size (Men): 13 m × 10 m."
+            },
+            {
+                id: 13,
+                question: "What are the official court dimensions for Senior Women's Kabaddi?",
+                options: ["13 m × 10 m", "12 m × 8 m", "11 m × 8 m", "12 m × 10 m"],
+                correct: 1,
+                explanation: "The standard court dimensions for Senior Women are 12 m in length by 8 m in width.",
+                memoryTip: "Court Size (Women): 12 m × 8 m."
+            },
+            {
+                id: 14,
+                question: "What court dimensions are specified for the Sub-Junior category in Kabaddi?",
+                options: ["12 m × 8 m", "11 m × 8 m", "10 m × 6 m", "13 m × 8 m"],
+                correct: 1,
+                explanation: "The Sub-junior category court measurement is 11 m in length by 8 m in width.",
+                memoryTip: "Court Size (Sub-Junior): 11 m × 8 m."
+            },
+            {
+                id: 15,
+                question: "What is the standard playing time format and total match elapsed time for a senior Kabaddi match?",
+                options: [
+                    "First half: 20 min | Interval: 5 min | Second half: 20 min (Total playing: 40 min, Total elapsed: 45 min)",
+                    "First half: 15 min | Interval: 5 min | Second half: 15 min (Total playing: 30 min, Total elapsed: 35 min)",
+                    "First half: 25 min | Interval: 10 min | Second half: 25 min (Total playing: 50 min, Total elapsed: 60 min)",
+                    "First half: 20 min | Interval: 10 min | Second half: 20 min (Total playing: 40 min, Total elapsed: 50 min)"
+                ],
+                correct: 0,
+                explanation: "A standard senior match consists of two 20-minute halves separated by a 5-minute break (20–5–20). Total playing time is 40 minutes, and total elapsed match time is 45 minutes.",
+                memoryTip: "⏱️ Match Format: 20 - 5 - 20 (Playing: 40 mins | Elapsed: 45 mins)."
+            },
+            {
+                id: 16,
+                question: "What is the continuous chanting of the word 'Kabaddi' by a raider during a raid termed?",
+                options: ["Cant", "Raid", "Struggle", "Lona"],
+                correct: 0,
+                explanation: "Cant refers to the continuous, clear chanting of the word 'Kabaddi' without breaking breath during a raid.",
+                memoryTip: "Term: Cant = Continuous chanting of 'Kabaddi'."
+            },
+            {
+                id: 17,
+                question: "Under what condition is a 'Super Tackle' triggered, and how many points does it award to the defending team?",
+                options: [
+                    "Tackle by 3 or fewer defenders; awards 2 tackle points",
+                    "Tackle by 5 or more defenders; awards 3 tackle points",
+                    "Tackle on a raider with Super 10; awards 2 tackle points",
+                    "Tackle by 4 defenders; awards 1 tackle point"
+                ],
+                correct: 0,
+                explanation: "A Super Tackle occurs when a raider is successfully tackled by 3 or fewer defenders. It earns 2 tackle points for the defending side.",
+                memoryTip: "Super Tackle = ≤3 defenders on court ➔ 2 points."
+            },
+            {
+                id: 18,
+                question: "What defines a 'Super Raid' in professional Kabaddi?",
+                options: [
+                    "A raid in which the raider touches the bonus line and returns",
+                    "A raid in which the raider scores at least 3 points",
+                    "A raid executed during a Do-or-Die situation",
+                    "A raid that revives all 7 players at once"
+                ],
+                correct: 1,
+                explanation: "A Super Raid is an offensive raid in which the raider scores 3 or more points in a single raid.",
+                memoryTip: "Super Raid = Raider scores ≥3 points."
+            },
+            {
+                id: 19,
+                question: "When is a 'Do-or-Die Raid' declared for a team?",
+                options: [
+                    "After two consecutive empty raids by that team",
+                    "In the last 2 minutes of the match",
+                    "When only 1 defender remains on court",
+                    "After a team concedes a Lona"
+                ],
+                correct: 0,
+                explanation: "A Do-or-Die raid is triggered after a team conducts two consecutive empty raids. The raider must score a point or be declared out.",
+                memoryTip: "Do-or-Die Raid = Triggered after 2 consecutive empty raids."
+            },
+            {
+                id: 20,
+                question: "What is a 'Lona' (or All-Out), and how many ADDITIONAL points are awarded to the opposing team?",
+                options: [
+                    "When all 7 players of a team are declared out; awards 2 additional points",
+                    "When a raider scores 10 points; awards 3 additional points",
+                    "When 3 defenders perform a Super Tackle; awards 1 additional point",
+                    "When a team breaks the cant twice; awards 2 additional points"
+                ],
+                correct: 0,
+                explanation: "A Lona (All-out) occurs when an entire team of 7 players is declared out. The opposing team receives 2 extra bonus points.",
+                memoryTip: "Lona (All-out) = Entire team out ➔ 2 extra points awarded."
+            },
+            {
+                id: 21,
+                question: "What area of the court becomes active only during a 'struggle' between the raider and defenders?",
+                options: ["Baulk Line", "Bonus Line", "Lobby", "Midline"],
+                correct: 2,
+                explanation: "The Lobby consists of the side strips of the court that become part of the active play area only after a contact/struggle is initiated.",
+                memoryTip: "Lobby = Strip active during a struggle."
+            },
+            {
+                id: 22,
+                question: "What line MUST a raider cross with at least one foot in the air to qualify for a valid raid (if no touch is made)?",
+                options: ["Baulk Line", "Bonus Line", "Boundary Line", "Marching Line"],
+                correct: 0,
+                explanation: "The Baulk Line must be crossed by the raider for a raid to be considered valid if no defender is touched.",
+                memoryTip: "Baulk Line = Minimum line to cross for a valid raid."
+            },
+            {
+                id: 23,
+                question: "What do the terms 'Super 10' and 'High 5' represent in individual player statistics?",
+                options: [
+                    "Super 10: Raider scoring ≥10 raid points | High 5: Defender scoring ≥5 tackle points",
+                    "Super 10: Defender scoring ≥10 tackles | High 5: Raider scoring ≥5 bonus points",
+                    "Super 10: 10 consecutive raids | High 5: 5 Super Tackles",
+                    "Super 10: Winning by 10 points | High 5: 5 Lona points"
+                ],
+                correct: 0,
+                explanation: "Super 10 = A raider accumulating 10 or more raid points in a single match. High 5 = A defender accumulating 5 or more tackle points in a match.",
+                memoryTip: "Milestones: Super 10 (Raider ≥10 pts) | High 5 (Defender ≥5 pts)."
+            },
+            {
+                id: 24,
+                question: "In which year did Kabaddi make its official debut as a medal sport at the Asian Games?",
+                options: ["1980 at New Delhi", "1990 at Beijing", "1998 at Bangkok", "2004 at Mumbai"],
+                correct: 1,
+                explanation: "Kabaddi made its official debut as a medal sport at the Asian Games in 1990 in Beijing, China.",
+                memoryTip: "Asian Games Debut: 🏅 1990 Beijing."
+            },
+            {
+                id: 25,
+                question: "Where and in which year was the first official Kabaddi World Cup organized by the IKF held?",
+                options: ["2004 in Mumbai, India", "1990 in Beijing, China", "2014 in Jaipur, India", "1980 in Kolkata, India"],
+                correct: 0,
+                explanation: "The first Kabaddi World Cup organized by the International Kabaddi Federation was held in 2004 in Mumbai, India.",
+                memoryTip: "First World Cup: 🏆 2004 (Mumbai, India)."
+            },
+            {
+                id: 26,
+                question: "In which year was the Pro Kabaddi League (PKL) launched, and who is its organizer?",
+                options: [
+                    "2014; organized by Mashal Sports",
+                    "2010; organized by AKFI",
+                    "2016; organized by Star Sports",
+                    "2012; organized by IKF"
+                ],
+                correct: 0,
+                explanation: "The Pro Kabaddi League (PKL) was launched in 2014 and is organized by Mashal Sports.",
+                memoryTip: "PKL Launch: 2014 by Mashal Sports."
+            },
+            {
+                id: 27,
+                question: "Which franchise won the inaugural (Season 1) title of the Pro Kabaddi League in 2014?",
+                options: ["U Mumba", "Jaipur Pink Panthers", "Dabang Delhi K.C.", "Patna Pirates"],
+                correct: 1,
+                explanation: "The Jaipur Pink Panthers won the first edition of the Pro Kabaddi League in 2014.",
+                memoryTip: "First PKL Champion: Jaipur Pink Panthers (2014)."
+            },
+            {
+                id: 28,
+                question: "Which team emerged as the champion of Pro Kabaddi League Season 12 (2025)?",
+                options: ["Patna Pirates", "Jaipur Pink Panthers", "Dabang Delhi K.C.", "Puneri Paltan"],
+                correct: 2,
+                explanation: "Dabang Delhi K.C. won the Pro Kabaddi League Season 12 championship in 2025.",
+                memoryTip: "PKL Season 12 Champion (2025): Dabang Delhi K.C."
+            },
+            {
+                id: 29,
+                question: "What is the fact-checked status regarding Salman Khan's association with the Pro Kabaddi League?",
+                options: [
+                    "He is the permanent official league-wide brand ambassador",
+                    "He appeared in a promotional campaign for Season 2 (2015), but has no confirmed current league-wide ambassador status",
+                    "He is the official owner of Dabang Delhi K.C.",
+                    "He was the brand ambassador for Season 1 only"
+                ],
+                correct: 1,
+                explanation: "Salman Khan featured in a promotional campaign ('Le Panga') for PKL Season 2 in 2015. However, there is no confirmed current league-wide ambassador; standard practice for exams is to note no current official league-wide ambassador confirmed.",
+                memoryTip: "⚠️ Ambassador Trap: Salman Khan = 2015 Season 2 promo only, NOT current official league ambassador!"
+            },
+            {
+                id: 30,
+                question: "What is the process of bringing an 'out' player back into active play called after scoring a point?",
+                options: ["Substitution", "Revival", "Lona", "Restoration"],
+                correct: 1,
+                explanation: "Revival is the process where a player who was out is brought back onto the court when their team scores a point.",
+                memoryTip: "Term: Revival = Bringing an out player back on court."
+            }
+        ];
+
+        // State Management (TCS iON Standard: 0=Not Visited, 1=Not Answered, 2=Answered, 3=Review, 4=Ans & Review)
+        const STATE = {
+            NOT_VISITED: 0,
+            NOT_ANSWERED: 1,
+            ANSWERED: 2,
+            REVIEW: 3,
+            ANS_REVIEW: 4
+        };
+
+        let userAnswers = new Array(30).fill(null);
+        let questionStates = new Array(30).fill(STATE.NOT_VISITED);
+        let currentQuestionIdx = 0;
+        
+        // Timer Variables (10 Minutes = 600 s)
+        const TOTAL_TIME = 600;
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+
+        // DOM Element References
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBox = document.getElementById('timer-box');
+        const questionNumberTitle = document.getElementById('question-number-title');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const paletteGrid = document.getElementById('palette-grid');
+
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const btnMarkReview = document.getElementById('btn-mark-review');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnRetake = document.getElementById('btn-retake');
+
+        // Initial Load Event
+        window.onload = function() {
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+            attachEventListeners();
+        };
+
+        // Timer Implementation
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = TOTAL_TIME;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+
+                if (timeRemaining <= 120) { // Pulse red under 2 minutes
+                    timerBox.classList.add('timer-pulse');
+                } else {
+                    timerBox.classList.remove('timer-pulse');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize Navigation Palette Grid
+        function initPalette() {
+            paletteGrid.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.textContent = i + 1;
+                btn.id = `palette-btn-${i}`;
+                btn.addEventListener('click', () => navigateToQuestion(i));
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteUI();
+        }
+
+        // Render Selected Question
+        function loadQuestion(index) {
+            currentQuestionIdx = index;
+            const q = questionsData[index];
+
+            if (questionStates[index] === STATE.NOT_VISITED) {
+                questionStates[index] = STATE.NOT_ANSWERED;
+            }
+
+            questionNumberTitle.textContent = `Question ${index + 1} of 30`;
+            questionText.textContent = `${index + 1}. ${q.question}`;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'quiz-option';
+                radio.id = `opt-${optIdx}`;
+                radio.value = optIdx;
+                radio.checked = userAnswers[index] === optIdx;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `opt-${optIdx}`;
+                label.textContent = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+
+                li.appendChild(radio);
+                li.appendChild(label);
+
+                li.addEventListener('click', () => {
+                    radio.checked = true;
+                    selectOption(optIdx);
+                });
+
+                optionsContainer.appendChild(li);
+            });
+
+            updatePaletteUI();
+            updateNavigationButtons();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIdx] = optionIndex;
+            const items = optionsContainer.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                if (idx === optionIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            btnPrev.disabled = currentQuestionIdx === 0;
+            btnPrev.style.opacity = currentQuestionIdx === 0 ? "0.5" : "1";
+            btnNext.textContent = currentQuestionIdx === 29 ? "Save" : "Save & Next";
+        }
+
+        function navigateToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        // Action Handlers
+        function saveAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+
+            if (questionStates[currentQuestionIdx] !== STATE.REVIEW && questionStates[currentQuestionIdx] !== STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANSWERED : STATE.NOT_ANSWERED;
+            } else {
+                questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+            }
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function markForReviewAndNext() {
+            const hasAnswer = userAnswers[currentQuestionIdx] !== null;
+            questionStates[currentQuestionIdx] = hasAnswer ? STATE.ANS_REVIEW : STATE.REVIEW;
+
+            if (currentQuestionIdx < 29) {
+                loadQuestion(currentQuestionIdx + 1);
+            } else {
+                updatePaletteUI();
+            }
+        }
+
+        function clearResponse() {
+            userAnswers[currentQuestionIdx] = null;
+            if (questionStates[currentQuestionIdx] === STATE.ANS_REVIEW) {
+                questionStates[currentQuestionIdx] = STATE.REVIEW;
+            } else {
+                questionStates[currentQuestionIdx] = STATE.NOT_ANSWERED;
+            }
+            loadQuestion(currentQuestionIdx);
+        }
+
+        function updatePaletteUI() {
+            let counts = { notVisited: 0, notAnswered: 0, answered: 0, review: 0, ansReview: 0 };
+
+            for (let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-btn-${i}`);
+                btn.className = 'palette-btn';
+
+                if (i === currentQuestionIdx) {
+                    btn.classList.add('active');
+                }
+
+                switch (questionStates[i]) {
+                    case STATE.NOT_VISITED:
+                        btn.classList.add('not-visited');
+                        counts.notVisited++;
+                        break;
+                    case STATE.NOT_ANSWERED:
+                        btn.classList.add('not-answered');
+                        counts.notAnswered++;
+                        break;
+                    case STATE.ANSWERED:
+                        btn.classList.add('answered');
+                        counts.answered++;
+                        break;
+                    case STATE.REVIEW:
+                        btn.classList.add('review');
+                        counts.review++;
+                        break;
+                    case STATE.ANS_REVIEW:
+                        btn.classList.add('ans-review');
+                        counts.ansReview++;
+                        break;
+                }
+            }
+
+            const legendBoxes = document.querySelectorAll('.legend-box');
+            if (legendBoxes.length >= 5) {
+                legendBoxes[0].textContent = counts.notVisited;
+                legendBoxes[1].textContent = counts.notAnswered;
+                legendBoxes[2].textContent = counts.answered;
+                legendBoxes[3].textContent = counts.review;
+                legendBoxes[4].textContent = counts.ansReview;
+            }
+        }
+
+        function attachEventListeners() {
+            btnNext.addEventListener('click', saveAndNext);
+            btnPrev.addEventListener('click', () => {
+                if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+            });
+            btnClear.addEventListener('click', clearResponse);
+            btnMarkReview.addEventListener('click', markForReviewAndNext);
+            btnSubmit.addEventListener('click', () => {
+                if (confirm("Are you sure you want to submit your test?")) {
+                    submitTest();
+                }
+            });
+            btnRetake.addEventListener('click', resetAndRetake);
+        }
+
+        function autoSubmitTest() {
+            alert("Time limit reached! Your CBT exam is auto-submitting.");
+            submitTest();
+        }
+
+        // Scorecard Generation
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const isUnattempted = userAns === null;
+
+                if (isUnattempted) {
+                    unattemptedCount++;
+                } else if (isCorrect) {
+                    score += 1;
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+
+                const item = document.createElement('div');
+                item.className = `review-item ${isUnattempted ? 'unattempted-bg' : (isCorrect ? 'correct-bg' : 'incorrect-bg')}`;
+
+                const qNum = document.createElement('div');
+                qNum.className = 'review-q-number';
+                qNum.textContent = `Question ${idx + 1} • ${isUnattempted ? 'Unattempted' : (isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)')}`;
+
+                const qText = document.createElement('div');
+                qText.className = 'review-q-text';
+                qText.textContent = q.question;
+
+                const choices = document.createElement('div');
+                choices.className = 'review-choices';
+                
+                const userChoiceStr = userAns !== null ? `${String.fromCharCode(65 + userAns)}. ${q.options[userAns]}` : "None Selected";
+                const correctChoiceStr = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                choices.innerHTML = `
+                    <div><strong>Your Choice:</strong> <span style="color: ${isCorrect ? '#16a34a' : (isUnattempted ? '#64748b' : '#dc2626')}">${userChoiceStr}</span></div>
+                    <div><strong>Correct Answer:</strong> <span style="color: #16a34a">${correctChoiceStr}</span></div>
+                `;
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation-box';
+                explanation.innerHTML = `
+                    <div class="memory-tag">${q.memoryTip}</div><br>
+                    <strong>Explanation:</strong> ${q.explanation}
+                `;
+
+                item.appendChild(qNum);
+                item.appendChild(qText);
+                item.appendChild(choices);
+                item.appendChild(explanation);
+
+                reviewList.appendChild(item);
+            });
+
+            const attemptedTotal = correctCount + incorrectCount;
+            const accuracy = attemptedTotal > 0 ? Math.round((correctCount / attemptedTotal) * 100) : 0;
+
+            document.getElementById('score-display').textContent = `${score} / 30`;
+            document.getElementById('correct-display').textContent = correctCount;
+            document.getElementById('incorrect-display').textContent = incorrectCount;
+            document.getElementById('unattempted-display').textContent = unattemptedCount;
+            document.getElementById('accuracy-display').textContent = `${accuracy}%`;
+
+            document.getElementById('quiz-interface').style.display = 'none';
+            document.getElementById('results-dashboard').style.display = 'block';
+        }
+
+        function resetAndRetake() {
+            userAnswers = new Array(30).fill(null);
+            questionStates = new Array(30).fill(STATE.NOT_VISITED);
+            currentQuestionIdx = 0;
+
+            document.getElementById('results-dashboard').style.display = 'none';
+            document.getElementById('quiz-interface').style.display = 'flex';
+
+            initPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+    </script>
+</body>
+</html>
