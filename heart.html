@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruby Line Heart</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    body {
+      display: grid;
+      place-items: center;
+    }
+    canvas {
+      display: block;
+      width: min(92vmin, 900px);
+      height: min(92vmin, 900px);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="heartCanvas" aria-label="An animated heart made from ruby-pink lines"></canvas>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById("heartCanvas");
+      const ctx = canvas.getContext("2d");
+
+      let width, height, dpr;
+      let lines = [];
+      let progress = 0;
+      let lastTime = 0;
+
+      const RUBY = "#E0115F";
+      const HEART_SCALE = 0.34;
+
+      function heartPoint(t) {
+        // Classic parametric heart curve.
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = 13 * Math.cos(t)
+                - 5 * Math.cos(2 * t)
+                - 2 * Math.cos(3 * t)
+                - Math.cos(4 * t);
+        return { x, y: -y };
+      }
+
+      function resize() {
+        dpr = Math.max(1, window.devicePixelRatio || 1);
+        const rect = canvas.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildLines();
+      }
+
+      function buildLines() {
+        lines = [];
+        const count = 190;
+        const points = [];
+        for (let i = 0; i < count; i++) {
+          points.push(heartPoint((i / count) * Math.PI * 2));
+        }
+
+        // Connect each outline point to several points across the heart.
+        // The varied offsets create a woven, fine-line structure.
+        for (let i = 0; i < count; i++) {
+          for (const jump of [17, 29, 43, 61, 83]) {
+            const j = (i + jump) % count;
+            lines.push({
+              a: points[i],
+              b: points[j],
+              delay: (i / count) * 0.42 + jump / 260,
+              alpha: 0.16 + (jump % 5) * 0.035,
+              weight: jump % 3 === 0 ? 1.05 : 0.7
+            });
+          }
+        }
+
+        // Fine radial strokes add a delicate, hand-drawn edge.
+        for (let i = 0; i < count; i += 2) {
+          const p = points[i];
+          lines.push({
+            a: { x: p.x * 0.94, y: p.y * 0.94 },
+            b: p,
+            delay: (i / count) * 0.42,
+            alpha: 0.38,
+            weight: 0.85
+          });
+        }
+      }
+
+      function mapPoint(p) {
+        const scale = Math.min(width, height) * HEART_SCALE / 16;
+        return {
+          x: width / 2 + p.x * scale,
+          y: height / 2 + p.y * scale
+        };
+      }
+
+      function draw(now) {
+        const dt = Math.min((now - lastTime) / 1000 || 0, 0.05);
+        lastTime = now;
+        progress = Math.min(1, progress + dt * 0.48);
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        // A soft ruby glow sits behind the linework.
+        const pulse = 1 + Math.sin(now * 0.0018) * 0.012;
+        const glow = ctx.createRadialGradient(
+          width / 2, height / 2, 5,
+          width / 2, height / 2, Math.min(width, height) * 0.34
+        );
+        glow.addColorStop(0, "rgba(224, 17, 95, 0.045)");
+        glow.addColorStop(1, "rgba(224, 17, 95, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, width, height);
+
+        const reveal = progress;
+        for (const line of lines) {
+          const local = Math.max(0, Math.min(1, (reveal - line.delay) / 0.58));
+          if (local <= 0) continue;
+
+          const a = mapPoint(line.a);
+          const b = mapPoint(line.b);
+          const endX = a.x + (b.x - a.x) * local;
+          const endY = a.y + (b.y - a.y) * local;
+
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(endX, endY);
+          ctx.strokeStyle = `rgba(224, 17, 95, ${line.alpha * local})`;
+          ctx.lineWidth = line.weight * (width / 700) * pulse;
+          ctx.stroke();
+        }
+
+        // A faint outer contour gives the heart a crisp silhouette.
+        if (progress > 0.55) {
+          const contourProgress = Math.min(1, (progress - 0.55) / 0.45);
+          ctx.beginPath();
+          for (let i = 0; i <= 240 * contourProgress; i++) {
+            const p = mapPoint(heartPoint((i / 240) * Math.PI * 2));
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.strokeStyle = `rgba(190, 10, 75, ${0.72 * contourProgress})`;
+          ctx.lineWidth = Math.max(1, width / 700);
+          ctx.stroke();
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>

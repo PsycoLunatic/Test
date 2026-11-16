@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Exam Portal - Field Hockey Sports GK</title>
+<style>
+  :root {
+    --primary: #1a3a6c;
+    --secondary: #2b579a;
+    --bg-light: #f4f6f9;
+    --border: #d0d7de;
+    --text-dark: #1f2328;
+    --not-visited: #e0e0e0;
+    --not-answered: #d9534f;
+    --answered: #28a745;
+    --marked: #6f42c1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  header {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+
+  .exam-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .exam-subtitle {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+
+  .timer-box {
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .timer-warning {
+    background-color: #dc2626 !important;
+    border-color: #fca5a5 !important;
+    animation: pulseRed 1s infinite;
+  }
+
+  @keyframes pulseRed {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+    50% { transform: scale(1.04); box-shadow: 0 0 12px 4px rgba(220, 38, 38, 0.5); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  /* Main Split Screen */
+  .main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Left Question Panel */
+  .question-panel {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-right: 1px solid var(--border);
+  }
+
+  .q-header {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+  }
+
+  .q-number {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--primary);
+  }
+
+  .marks-badge {
+    font-size: 0.85rem;
+    color: #166534;
+    background: #dcfce7;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .q-body {
+    padding: 28px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .q-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 1.02rem;
+  }
+
+  .option-label:hover {
+    background-color: #f1f5f9;
+    border-color: var(--secondary);
+  }
+
+  .option-label.selected {
+    background-color: #eff6ff;
+    border-color: var(--secondary);
+    font-weight: 600;
+  }
+
+  .option-label input[type="radio"] {
+    margin-right: 14px;
+    transform: scale(1.2);
+    accent-color: var(--secondary);
+  }
+
+  /* Bottom Action Bar */
+  .action-bar {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background-color: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    padding: 9px 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f1f5f9;
+  }
+
+  .btn-warning {
+    background-color: #6f42c1;
+    color: white;
+  }
+
+  .btn-primary {
+    background-color: var(--secondary);
+    color: white;
+  }
+
+  .btn-submit {
+    background-color: #16a34a;
+    color: white;
+    padding: 9px 22px;
+  }
+
+  /* Right Palette Panel */
+  .palette-panel {
+    flex: 3;
+    min-width: 290px;
+    max-width: 360px;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .candidate-info {
+    padding: 14px 18px;
+    background-color: #e2e8f0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .legend-grid {
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    font-size: 0.82rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .palette-header {
+    padding: 10px 18px;
+    background-color: var(--secondary);
+    color: white;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .palette-grid {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    overflow-y: auto;
+    align-content: start;
+    flex: 1;
+  }
+
+  .q-btn {
+    height: 38px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .q-btn.current {
+    outline: 2.5px solid #0f172a;
+    outline-offset: 1px;
+  }
+
+  /* Status Colors */
+  .status-not-visited {
+    background-color: var(--not-visited);
+    color: #333;
+  }
+  .status-not-answered {
+    background-color: var(--not-answered);
+    color: white;
+    border-color: #b91c1c;
+  }
+  .status-answered {
+    background-color: var(--answered);
+    color: white;
+    border-color: #15803d;
+  }
+  .status-marked {
+    background-color: var(--marked);
+    color: white;
+    border-color: #5b21b6;
+  }
+
+  /* Results Dashboard */
+  #results-view {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    background-color: var(--bg-light);
+  }
+
+  .scorecard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .review-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .badge-correct { color: #15803d; background: #dcfce7; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-wrong { color: #b91c1c; background: #fee2e2; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-unattempted { color: #475569; background: #f1f5f9; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+
+  .review-options {
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rev-opt {
+    padding: 10px 14px;
+    border-radius: 5px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+
+  .rev-opt.correct-ans {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    color: #14532d;
+    font-weight: 600;
+  }
+
+  .rev-opt.user-wrong {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #7f1d1d;
+    font-weight: 600;
+  }
+
+  .explanation-box {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #334155;
+  }
+
+  @media (max-width: 768px) {
+    .main-container { flex-direction: column; overflow-y: auto; }
+    .palette-panel { max-width: 100%; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="exam-title">SSC / RRB / AAI — Mock CBT Portal</div>
+    <div class="exam-subtitle">Topic: Field Hockey – Complete Exam Notes</div>
+  </div>
+  <div id="timer-display" class="timer-box">
+    <span>Time Left:</span>
+    <span id="time-text">10:00</span>
+  </div>
+</header>
+
+<!-- QUIZ INTERFACE -->
+<div id="quiz-view" class="main-container">
+  <!-- Left Panel -->
+  <div class="question-panel">
+    <div class="q-header">
+      <span class="q-number" id="q-num-label">Question No. 1</span>
+      <span class="marks-badge">+1.00 Mark | No Negative Marking</span>
+    </div>
+
+    <div class="q-body">
+      <div class="q-text" id="q-text-display">Loading question...</div>
+      <div class="options-list" id="options-container"></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="nav-group">
+        <button class="btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn-secondary" onclick="clearResponse()">Clear Response</button>
+        <button class="btn-warning" onclick="markForReview()">Mark for Review</button>
+      </div>
+      <div class="nav-group">
+        <button class="btn-primary" onclick="nextQuestion()">Next</button>
+        <button class="btn-submit" onclick="confirmSubmit()">Submit Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="palette-panel">
+    <div class="candidate-info">
+      <div class="avatar">U</div>
+      <div>
+        <div style="font-weight: 700; font-size: 0.95rem;">Candidate</div>
+        <div style="font-size: 0.8rem; color: #475569;">General Sports GK</div>
+      </div>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item">
+        <span class="legend-box status-not-visited" id="count-not-visited">30</span>
+        <span>Not Visited</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-not-answered" id="count-not-answered">0</span>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-answered" id="count-answered">0</span>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-marked" id="count-marked">0</span>
+        <span>Marked for Review</span>
+      </div>
+    </div>
+
+    <div class="palette-header">Question Palette</div>
+    <div class="palette-grid" id="palette-container"></div>
+  </div>
+</div>
+
+<!-- RESULTS DASHBOARD -->
+<div id="results-view">
+  <div class="scorecard-container">
+    <div class="score-header">
+      <h2>Exam Performance Scorecard</h2>
+      <button class="btn-primary" onclick="retakeTest()">Retake Test</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="res-score" style="color: var(--primary);">0 / 30</div>
+        <div class="stat-label">Total Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-correct" style="color: #16a34a;">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-incorrect" style="color: #dc2626;">0</div>
+        <div class="stat-label">Incorrect</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-unattempted" style="color: #64748b;">0</div>
+        <div class="stat-label">Unattempted</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 16px; color: var(--primary);">Detailed Question-by-Question Review</h3>
+    <div id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Where did the modern rules of field hockey develop during the 19th century?",
+    options: ["France", "England", "India", "Switzerland"],
+    ans: 1,
+    exp: "The modern form and rules of field hockey developed in England during the 19th century."
+  },
+  {
+    q: "When and where was the International Hockey Federation (FIH) founded?",
+    options: ["7 November 1925 in Gwalior", "7 January 1924 in Paris", "20 May 2009 in New Delhi", "15 August 1928 in Amsterdam"],
+    ans: 1,
+    exp: "FIH (Fédération Internationale de Hockey sur Gazon) was founded on 7 January 1924 in Paris, France. Remember not to confuse this with India."
+  },
+  {
+    q: "Who was the first president and a key figure in the establishment of the International Hockey Federation (FIH)?",
+    options: ["Paul Léautey", "Dhyan Chand", "Renato William Jones", "Pierre de Coubertin"],
+    ans: 0,
+    exp: "Paul Léautey of France was the first president and a key figure in establishing the FIH in 1924."
+  },
+  {
+    q: "Where is the headquarters of the International Hockey Federation (FIH) located?",
+    options: ["Paris, France", "London, England", "Lausanne, Switzerland", "Gwalior, India"],
+    ans: 2,
+    exp: "The headquarters of the International Hockey Federation (FIH) is located in Lausanne, Switzerland."
+  },
+  {
+    q: "When and where was the former Indian Hockey Federation (IHF) formed?",
+    options: ["7 January 1924 in Kolkata", "7 November 1925 in Gwalior", "20 May 2009 in New Delhi", "12 March 1928 in Mumbai"],
+    ans: 1,
+    exp: "The Indian Hockey Federation (IHF) was formed on 7 November 1925 at Gwalior."
+  },
+  {
+    q: "Which organization is the current national governing body recognized by the Government of India for hockey, and when was it formed?",
+    options: ["Indian Hockey Federation (1925)", "Hockey India (20 May 2009)", "All India Hockey Association (1947)", "Indian Olympic Association (1927)"],
+    ans: 1,
+    exp: "Hockey India, formed on 20 May 2009, is the current national governing body recognized by the Government of India. The former IHF is no longer the current governing body."
+  },
+  {
+    q: "What are the official standard dimensions (length × width) of a field hockey pitch?",
+    options: ["91.4 metres × 55 metres", "100 metres × 60 metres", "90 metres × 50 metres", "94 metres × 55 metres"],
+    ans: 0,
+    exp: "The official standard field hockey ground measurement is 91.4 metres in length by 55 metres in width."
+  },
+  {
+    q: "What is the standard total match duration and quarter structure in field hockey?",
+    options: ["70 minutes (2 halves of 35 minutes)", "60 minutes (4 quarters of 15 minutes)", "90 minutes (2 halves of 45 minutes)", "60 minutes (3 periods of 20 minutes)"],
+    ans: 1,
+    exp: "A standard field hockey match lasts 60 minutes, divided into 4 quarters of 15 minutes each, with breaks between quarters and a longer half-time interval."
+  },
+  {
+    q: "What are the standard dimensions (width × height) of a field hockey goal?",
+    options: ["3.66 metres × 2.14 metres", "7.32 metres × 2.44 metres", "3.00 metres × 2.00 metres", "4.00 metres × 2.14 metres"],
+    ans: 0,
+    exp: "The official goal dimensions in field hockey are 3.66 metres wide by 2.14 metres high."
+  },
+  {
+    q: "How many players per team are allowed on the field in standard outdoor field hockey?",
+    options: ["9 players", "10 players", "11 players", "12 players"],
+    ans: 2,
+    exp: "Outdoor field hockey is played by 11 players per team on the field, normally consisting of 10 outfield players and 1 goalkeeper."
+  },
+  {
+    q: "With which part of the hockey stick must outfield players play the ball?",
+    options: ["Either side of the stick", "The rounded side only", "The flat side only", "The handle end only"],
+    ans: 2,
+    exp: "The ball must be played with the flat side of the stick. Playing the ball with the rounded side is called 'Backstick' and is a foul for field players."
+  },
+  {
+    q: "In which Olympic Games did field hockey first appear?",
+    options: ["1896 Athens", "1900 Paris", "1908 London", "1928 Amsterdam"],
+    ans: 2,
+    exp: "Field hockey first appeared in the Olympic Games in 1908 in London. (Note: It was absent from the 1912 and 1924 Games)."
+  },
+  {
+    q: "When did India win its first Olympic hockey gold medal?",
+    options: ["1908 London", "1928 Amsterdam", "1932 Los Angeles", "1936 Berlin"],
+    ans: 1,
+    exp: "India first won an Olympic hockey gold medal at the 1928 Amsterdam Olympics."
+  },
+  {
+    q: "How many men's Olympic gold medals has India won in field hockey?",
+    options: ["6", "7", "8", "9"],
+    ans: 2,
+    exp: "India has won 8 men's Olympic gold medals in field hockey, which is the most by any country in hockey history."
+  },
+  {
+    q: "Which medals did the Indian men's hockey team win at the Tokyo 2020 and Paris 2024 Olympics?",
+    options: ["Gold in both", "Silver in Tokyo 2020 and Bronze in Paris 2024", "Bronze medals in both Tokyo 2020 and Paris 2024", "Bronze in Tokyo 2020 and Silver in Paris 2024"],
+    ans: 2,
+    exp: "India's men's team won back-to-back Olympic bronze medals at Tokyo 2020 and Paris 2024."
+  },
+  {
+    q: "In which Olympic Games did women's field hockey make its debut?",
+    options: ["1976 Montreal", "1980 Moscow", "1984 Los Angeles", "1988 Seoul"],
+    ans: 1,
+    exp: "Women's field hockey made its Olympic debut at the 1980 Moscow Olympic Games."
+  },
+  {
+    q: "When and where was the first Men's Hockey World Cup held?",
+    options: ["1971, Barcelona", "1975, Kuala Lumpur", "1973, Amstelveen", "1978, Buenos Aires"],
+    ans: 0,
+    exp: "The first Men's Hockey World Cup was held in 1971 in Barcelona, Spain."
+  },
+  {
+    q: "In which year did India win its only Men's Hockey World Cup title?",
+    options: ["1971", "1973", "1975", "1982"],
+    ans: 2,
+    exp: "India won its only Men's Hockey World Cup title in 1975."
+  },
+  {
+    q: "What is the D-shaped area around the goal from within which an attacker must play the ball to score a valid goal called?",
+    options: ["Penalty Box", "Striking Circle / Shooting Circle / D", "23-metre Zone", "Goal Crease"],
+    ans: 1,
+    exp: "The Striking Circle (also known as the Shooting Circle or the 'D') is the D-shaped area around the goal; a goal can be scored only when the ball is played by an attacker from within this circle."
+  },
+  {
+    q: "What is the hockey term for lifting the ball off the ground by placing the stick under it?",
+    options: ["Undercutting", "Scoop", "Advancing", "Sticks"],
+    ans: 1,
+    exp: "Scoop is the legal technique of lifting the ball off the ground by placing the flat face of the stick underneath it. (Contrast with 'Undercutting', which is dangerously lifting the ball by striking underneath it)."
+  },
+  {
+    q: "What foul is committed when a player deliberately uses their body (such as their foot) to stop or propel the ball?",
+    options: ["Backstick", "Advancing", "Hockey Stick Interference", "Undercutting"],
+    ans: 1,
+    exp: "Advancing is the foul for deliberately using the body to stop or propel the ball, such as kicking or using the foot."
+  },
+  {
+    q: "Under modern FIH rules, what has replaced the outdated '16-yard hit' terminology when an attacker plays the ball over the backline?",
+    options: ["A penalty corner", "A free hit taken 15 metres from the backline", "A bully-off at the centre line", "A penalty stroke"],
+    ans: 1,
+    exp: "Exam update: The old 16-yard hit terminology is outdated in modern FIH rules. The current restart is a free hit taken 15 metres from the backline."
+  },
+  {
+    q: "What is a 'Penalty Corner' commonly referred to as, and when is it awarded?",
+    options: ["Long corner; awarded for fouls outside the 23-metre area", "Short corner; awarded for certain defensive fouls inside the circle or deliberate defensive offences in the 23-metre area", "Penalty stroke; awarded for minor midfield fouls", "Free hit; awarded for offside"],
+    ans: 1,
+    exp: "A penalty corner (commonly called a short corner) is awarded for certain defensive fouls inside the circle or deliberate defensive offences in the 23-metre area. A penalty stroke is for serious defensive offences preventing a probable goal."
+  },
+  {
+    q: "What is the informal hockey term 'Quarterback' used to describe?",
+    options: ["The official goalkeeper position", "A deep-lying player who helps organise play (not an official FIH position)", "The referee who times the four quarters", "A player serving a 2-minute suspension"],
+    ans: 1,
+    exp: "Quarterback is a term sometimes used informally for a deep-lying player who helps organise play; it is not a standard FIH playing position or official rule term."
+  },
+  {
+    q: "Which tournament is the Indian Senior Men's National Hockey Championship?",
+    options: ["Aga Khan Gold Cup", "Rangaswami Cup", "Beighton Cup", "Murugappa Gold Cup"],
+    ans: 1,
+    exp: "Exam memory fact: Rangaswami Cup → Indian Senior Men's National Hockey Championship."
+  },
+  {
+    q: "Which of the following is one of the oldest field hockey tournaments in the world, first held in 1895 in Kolkata?",
+    options: ["Scindia Gold Cup", "Beighton Cup", "Nehru Trophy", "Guru Nanak Championship"],
+    ans: 1,
+    exp: "The Beighton Cup, first held in 1895 in Kolkata, is one of the oldest field hockey tournaments in the world."
+  },
+  {
+    q: "What is the key difference between the Sultan of Johor Cup and the Sultan Azlan Shah Cup, both held in Malaysia?",
+    options: ["Sultan of Johor Cup is for women; Sultan Azlan Shah Cup is for men", "Sultan of Johor Cup is an international junior men's (under-21) tournament; Sultan Azlan Shah Cup is a senior international men's invitational tournament", "Sultan of Johor Cup is indoor; Sultan Azlan Shah Cup is outdoor", "Both are Indian domestic tournaments"],
+    ans: 1,
+    exp: "Memory trick: Don't mix them up! Sultan of Johor Cup = Junior men's (under-21) tournament in Malaysia; Sultan Azlan Shah Cup = Senior international men's invitational tournament in Malaysia."
+  },
+  {
+    q: "Where is the Murugappa Gold Cup hockey tournament held, and where is the Scindia Gold Cup held?",
+    options: ["Murugappa: Chennai; Scindia: Gwalior", "Murugappa: Kolkata; Scindia: Mumbai", "Murugappa: New Delhi; Scindia: Bengaluru", "Murugappa: Gwalior; Scindia: Chennai"],
+    ans: 0,
+    exp: "Murugappa Gold Cup is held in Chennai, while the Scindia Gold Cup is a hockey tournament held in Gwalior."
+  },
+  {
+    q: "Which tournament among the following is specifically an All-India women's hockey competition?",
+    options: ["Rangaswami Cup", "Guru Nanak Championship", "Sultan of Johor Cup", "Aga Khan Gold Cup"],
+    ans: 1,
+    exp: "The Guru Nanak Championship is an All-India women's hockey competition."
+  },
+  {
+    q: "In which two Olympic Games was field hockey absent after its 1908 debut?",
+    options: ["1912 and 1924", "1920 and 1928", "1932 and 1936", "1948 and 1952"],
+    ans: 0,
+    exp: "After first appearing at the 1908 London Olympics, field hockey was absent from the 1912 and 1924 Olympic Games."
+  }
+];
+
+let currentIdx = 0;
+let userAnswers = new Array(questions.length).fill(null);
+// Statuses: 'not-visited', 'not-answered', 'answered', 'marked'
+let statuses = new Array(questions.length).fill('not-visited');
+let timeLeft = 10 * 60; // 10 minutes in seconds
+let timerInterval = null;
+
+function initExam() {
+  currentIdx = 0;
+  userAnswers.fill(null);
+  statuses.fill('not-visited');
+  timeLeft = 10 * 60;
+
+  document.getElementById('quiz-view').style.display = 'flex';
+  document.getElementById('results-view').style.display = 'none';
+  document.getElementById('timer-display').classList.remove('timer-warning');
+
+  renderPalette();
+  loadQuestion(0);
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  document.getElementById('time-text').textContent =
+    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+  const timerBox = document.getElementById('timer-display');
+  if (timeLeft < 120 && timeLeft > 0) {
+    timerBox.classList.add('timer-warning');
+  } else {
+    timerBox.classList.remove('timer-warning');
+  }
+}
+
+function loadQuestion(idx) {
+  currentIdx = idx;
+
+  // Mark visited if not visited yet
+  if (statuses[currentIdx] === 'not-visited') {
+    statuses[currentIdx] = 'not-answered';
+  }
+
+  const qObj = questions[currentIdx];
+  document.getElementById('q-num-label').textContent = `Question No. ${currentIdx + 1} of ${questions.length}`;
+  document.getElementById('q-text-display').textContent = qObj.q;
+
+  const optsContainer = document.getElementById('options-container');
+  optsContainer.innerHTML = '';
+
+  qObj.options.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = 'option-label' + (userAnswers[currentIdx] === i ? ' selected' : '');
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'option';
+    radio.value = i;
+    radio.checked = (userAnswers[currentIdx] === i);
+    radio.onchange = () => selectOption(i);
+
+    const span = document.createElement('span');
+    span.textContent = `${String.fromCharCode(65 + i)}. ${optText}`;
+
+    label.appendChild(radio);
+    label.appendChild(span);
+    optsContainer.appendChild(label);
+  });
+
+  renderPalette();
+}
+
+function selectOption(optIdx) {
+  userAnswers[currentIdx] = optIdx;
+  statuses[currentIdx] = 'answered';
+  loadQuestion(currentIdx);
+}
+
+function clearResponse() {
+  userAnswers[currentIdx] = null;
+  statuses[currentIdx] = 'not-answered';
+  loadQuestion(currentIdx);
+}
+
+function markForReview() {
+  statuses[currentIdx] = 'marked';
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  } else {
+    renderPalette();
+  }
+}
+
+function nextQuestion() {
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  }
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) {
+    loadQuestion(currentIdx - 1);
+  }
+}
+
+function renderPalette() {
+  const container = document.getElementById('palette-container');
+  container.innerHTML = '';
+
+  let cNotVisited = 0, cNotAnswered = 0, cAnswered = 0, cMarked = 0;
+
+  statuses.forEach((st, idx) => {
+    if (st === 'not-visited') cNotVisited++;
+    else if (st === 'not-answered') cNotAnswered++;
+    else if (st === 'answered') cAnswered++;
+    else if (st === 'marked') cMarked++;
+
+    const btn = document.createElement('button');
+    btn.className = `q-btn status-${st}` + (idx === currentIdx ? ' current' : '');
+    btn.textContent = idx + 1;
+    btn.onclick = () => loadQuestion(idx);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('count-not-visited').textContent = cNotVisited;
+  document.getElementById('count-not-answered').textContent = cNotAnswered;
+  document.getElementById('count-answered').textContent = cAnswered;
+  document.getElementById('count-marked').textContent = cMarked;
+}
+
+function confirmSubmit() {
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  const msg = `You have answered ${answeredCount} out of ${questions.length} questions.\nAre you sure you want to submit the test?`;
+  if (confirm(msg)) {
+    submitTest();
+  }
+}
+
+function submitTest() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-view').style.display = 'none';
+  document.getElementById('results-view').style.display = 'block';
+
+  let correct = 0, incorrect = 0, unattempted = 0;
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+
+  questions.forEach((qObj, idx) => {
+    const uAns = userAnswers[idx];
+    let statusBadge = '';
+
+    if (uAns === null) {
+      unattempted++;
+      statusBadge = '<span class="badge-unattempted">Unattempted</span>';
+    } else if (uAns === qObj.ans) {
+      correct++;
+      statusBadge = '<span class="badge-correct">Correct (+1)</span>';
+    } else {
+      incorrect++;
+      statusBadge = '<span class="badge-wrong">Incorrect (0)</span>';
+    }
+
+    const card = document.createElement('div');
+    card.className = 'review-card';
+
+    let optsHtml = '<div class="review-options">';
+    qObj.options.forEach((opt, oIdx) => {
+      let cls = 'rev-opt';
+      let tag = '';
+      if (oIdx === qObj.ans) {
+        cls += ' correct-ans';
+        tag = ' ✓ (Correct Answer)';
+      } else if (oIdx === uAns && uAns !== qObj.ans) {
+        cls += ' user-wrong';
+        tag = ' ✗ (Your Choice)';
+      }
+      optsHtml += `<div class="${cls}">${String.fromCharCode(65 + oIdx)}. ${opt}${tag}</div>`;
+    });
+    optsHtml += '</div>';
+
+    card.innerHTML = `
+      <div class="review-header">
+        <span>Question ${idx + 1}</span>
+        ${statusBadge}
+      </div>
+      <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 8px;">${qObj.q}</div>
+      ${optsHtml}
+      <div class="explanation-box"><strong>Explanation:</strong> ${qObj.exp}</div>
+    `;
+
+    reviewList.appendChild(card);
+  });
+
+  document.getElementById('res-score').textContent = `${correct} / ${questions.length}`;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-incorrect').textContent = incorrect;
+  document.getElementById('res-unattempted').textContent = unattempted;
+}
+
+function retakeTest() {
+  initExam();
+}
+
+// Start on page load
+window.onload = initExam;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Exam Portal - Polo Sports GK</title>
+<style>
+  :root {
+    --primary: #1a3a6c;
+    --secondary: #2b579a;
+    --bg-light: #f4f6f9;
+    --border: #d0d7de;
+    --text-dark: #1f2328;
+    --not-visited: #e0e0e0;
+    --not-answered: #d9534f;
+    --answered: #28a745;
+    --marked: #6f42c1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  header {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+
+  .exam-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .exam-subtitle {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+
+  .timer-box {
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .timer-warning {
+    background-color: #dc2626 !important;
+    border-color: #fca5a5 !important;
+    animation: pulseRed 1s infinite;
+  }
+
+  @keyframes pulseRed {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+    50% { transform: scale(1.04); box-shadow: 0 0 12px 4px rgba(220, 38, 38, 0.5); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  /* Main Split Screen */
+  .main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Left Question Panel */
+  .question-panel {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-right: 1px solid var(--border);
+  }
+
+  .q-header {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+  }
+
+  .q-number {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--primary);
+  }
+
+  .marks-badge {
+    font-size: 0.85rem;
+    color: #166534;
+    background: #dcfce7;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .q-body {
+    padding: 28px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .q-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 1.02rem;
+  }
+
+  .option-label:hover {
+    background-color: #f1f5f9;
+    border-color: var(--secondary);
+  }
+
+  .option-label.selected {
+    background-color: #eff6ff;
+    border-color: var(--secondary);
+    font-weight: 600;
+  }
+
+  .option-label input[type="radio"] {
+    margin-right: 14px;
+    transform: scale(1.2);
+    accent-color: var(--secondary);
+  }
+
+  /* Bottom Action Bar */
+  .action-bar {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background-color: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    padding: 9px 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f1f5f9;
+  }
+
+  .btn-warning {
+    background-color: #6f42c1;
+    color: white;
+  }
+
+  .btn-primary {
+    background-color: var(--secondary);
+    color: white;
+  }
+
+  .btn-submit {
+    background-color: #16a34a;
+    color: white;
+    padding: 9px 22px;
+  }
+
+  /* Right Palette Panel */
+  .palette-panel {
+    flex: 3;
+    min-width: 290px;
+    max-width: 360px;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .candidate-info {
+    padding: 14px 18px;
+    background-color: #e2e8f0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .legend-grid {
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    font-size: 0.82rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .palette-header {
+    padding: 10px 18px;
+    background-color: var(--secondary);
+    color: white;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .palette-grid {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    overflow-y: auto;
+    align-content: start;
+    flex: 1;
+  }
+
+  .q-btn {
+    height: 38px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .q-btn.current {
+    outline: 2.5px solid #0f172a;
+    outline-offset: 1px;
+  }
+
+  /* Status Colors */
+  .status-not-visited {
+    background-color: var(--not-visited);
+    color: #333;
+  }
+  .status-not-answered {
+    background-color: var(--not-answered);
+    color: white;
+    border-color: #b91c1c;
+  }
+  .status-answered {
+    background-color: var(--answered);
+    color: white;
+    border-color: #15803d;
+  }
+  .status-marked {
+    background-color: var(--marked);
+    color: white;
+    border-color: #5b21b6;
+  }
+
+  /* Results Dashboard */
+  #results-view {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    background-color: var(--bg-light);
+  }
+
+  .scorecard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .review-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .badge-correct { color: #15803d; background: #dcfce7; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-wrong { color: #b91c1c; background: #fee2e2; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-unattempted { color: #475569; background: #f1f5f9; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+
+  .review-options {
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rev-opt {
+    padding: 10px 14px;
+    border-radius: 5px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+
+  .rev-opt.correct-ans {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    color: #14532d;
+    font-weight: 600;
+  }
+
+  .rev-opt.user-wrong {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #7f1d1d;
+    font-weight: 600;
+  }
+
+  .explanation-box {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #334155;
+  }
+
+  @media (max-width: 768px) {
+    .main-container { flex-direction: column; overflow-y: auto; }
+    .palette-panel { max-width: 100%; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="exam-title">SSC / RRB / AAI — Mock CBT Portal</div>
+    <div class="exam-subtitle">Topic: Polo – Complete Exam Notes</div>
+  </div>
+  <div id="timer-display" class="timer-box">
+    <span>Time Left:</span>
+    <span id="time-text">10:00</span>
+  </div>
+</header>
+
+<!-- QUIZ INTERFACE -->
+<div id="quiz-view" class="main-container">
+  <!-- Left Panel -->
+  <div class="question-panel">
+    <div class="q-header">
+      <span class="q-number" id="q-num-label">Question No. 1</span>
+      <span class="marks-badge">+1.00 Mark | No Negative Marking</span>
+    </div>
+
+    <div class="q-body">
+      <div class="q-text" id="q-text-display">Loading question...</div>
+      <div class="options-list" id="options-container"></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="nav-group">
+        <button class="btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn-secondary" onclick="clearResponse()">Clear Response</button>
+        <button class="btn-warning" onclick="markForReview()">Mark for Review</button>
+      </div>
+      <div class="nav-group">
+        <button class="btn-primary" onclick="nextQuestion()">Next</button>
+        <button class="btn-submit" onclick="confirmSubmit()">Submit Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="palette-panel">
+    <div class="candidate-info">
+      <div class="avatar">U</div>
+      <div>
+        <div style="font-weight: 700; font-size: 0.95rem;">Candidate</div>
+        <div style="font-size: 0.8rem; color: #475569;">General Sports GK</div>
+      </div>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item">
+        <span class="legend-box status-not-visited" id="count-not-visited">30</span>
+        <span>Not Visited</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-not-answered" id="count-not-answered">0</span>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-answered" id="count-answered">0</span>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-marked" id="count-marked">0</span>
+        <span>Marked for Review</span>
+      </div>
+    </div>
+
+    <div class="palette-header">Question Palette</div>
+    <div class="palette-grid" id="palette-container"></div>
+  </div>
+</div>
+
+<!-- RESULTS DASHBOARD -->
+<div id="results-view">
+  <div class="scorecard-container">
+    <div class="score-header">
+      <h2>Exam Performance Scorecard</h2>
+      <button class="btn-primary" onclick="retakeTest()">Retake Test</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="res-score" style="color: var(--primary);">0 / 30</div>
+        <div class="stat-label">Total Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-correct" style="color: #16a34a;">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-incorrect" style="color: #dc2626;">0</div>
+        <div class="stat-label">Incorrect</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-unattempted" style="color: #64748b;">0</div>
+        <div class="stat-label">Unattempted</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 16px; color: var(--primary);">Detailed Question-by-Question Review</h3>
+    <div id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Why is polo traditionally known as the 'Sport of Kings'?",
+    options: ["Because it was invented by King George III", "Because of its historical association with royalty, nobility, and military training", "Because only reigning monarchs are allowed to play", "Because matches are played exclusively inside royal palaces"],
+    ans: 1,
+    exp: "Polo is traditionally known as the 'Sport of Kings' due to its historical association with royalty, nobility, and cavalry military training."
+  },
+  {
+    q: "In which ancient region did polo originate, and by what name was it known there?",
+    options: ["Persia (modern-day Iran); known as Chovgan or Chogan", "China; known as Cuju", "Mongolia; known as Buzkashi", "England; known as Equestrian Hockey"],
+    ans: 0,
+    exp: "Polo has ancient roots in Persia (modern-day Iran), where it was known as Chovgan or Chogan and played as a training exercise for cavalry soldiers."
+  },
+  {
+    q: "What was the traditional form of polo played in Manipur known as?",
+    options: ["Malla-Yuddha", "Sagol Kangjei", "Vallam Kali", "Kabaddi"],
+    ans: 1,
+    exp: "In Manipur, a traditional form of polo was known as Sagol Kangjei (also associated with names like Kanjai-bazi and Pulu). Important distinction: Persian Chovgan is the ancient ancestor, while Manipur's Sagol Kangjei influenced modern polo in India."
+  },
+  {
+    q: "Where and in which year was the first polo club in the modern era established?",
+    options: ["Calcutta, 1862", "Silchar, Assam, 1859", "Jaipur, 1880", "London, 1869"],
+    ans: 1,
+    exp: "The first polo club in the modern era was established at Silchar, Assam, in 1859 by British officers and tea planters who had learnt the game from Manipuris."
+  },
+  {
+    q: "Which club, established in 1862, is regarded as the world's oldest surviving polo club?",
+    options: ["Silchar Polo Club", "Calcutta Polo Club", "Hurlingham Polo Club", "Jaipur Polo Club"],
+    ans: 1,
+    exp: "Calcutta Polo Club was established in 1862 and is regarded as the world's oldest surviving polo club."
+  },
+  {
+    q: "In which year was polo introduced in England, and which teams played an early recorded match there in 1871?",
+    options: ["Introduced 1869; 9th Lancers vs 10th Hussars in 1871", "Introduced 1862; Oxford vs Cambridge in 1871", "Introduced 1875; Royal Engineers vs Wanderers in 1871", "Introduced 1859; East India Company vs British Army in 1871"],
+    ans: 0,
+    exp: "Polo was introduced in England in 1869, and an early recorded polo match was played in England in 1871 between the 9th Lancers and 10th Hussars."
+  },
+  {
+    q: "When was the Indian Polo Association (IPA) established?",
+    options: ["1859", "1862", "1880", "1892"],
+    ans: 3,
+    exp: "The Indian Polo Association (IPA) was established in 1892."
+  },
+  {
+    q: "How many players per team participate in modern outdoor grass polo?",
+    options: ["3 players", "4 players", "5 players", "6 players"],
+    ans: 1,
+    exp: "Modern standardised rules reduced the traditional larger teams to 4 players per side in outdoor grass polo."
+  },
+  {
+    q: "What are the periods of play in a polo match called?",
+    options: ["Quarters", "Innings", "Chukkas / Chukkers", "Halves"],
+    ans: 2,
+    exp: "The periods of play in a polo match are called chukkas (or chukkers)."
+  },
+  {
+    q: "What is the typical duration of playing time for a single chukka?",
+    options: ["5 minutes", "7 minutes", "10 minutes", "15 minutes"],
+    ans: 1,
+    exp: "A chukka is generally 7 minutes of playing time, with additional time allowed in certain circumstances."
+  },
+  {
+    q: "What is the maximum number of chukkas allowed under Indian Polo Association (IPA) rules (excluding extra time)?",
+    options: ["4 chukkas", "6 chukkas", "8 chukkas", "10 chukkas"],
+    ans: 1,
+    exp: "The number of chukkas is often 4 or 6 depending on the tournament, with a maximum of 6 chukkas under Indian Polo Association rules (excluding extra time)."
+  },
+  {
+    q: "Why does a polo match NOT have a single fixed total duration of one to two hours?",
+    options: ["Because matches end immediately after the first goal", "Because duration varies with the number of chukkas, stoppages, and tournament rules", "Because horses are only allowed to run for 30 minutes total", "Because umpires decide the end time randomly"],
+    ans: 1,
+    exp: "Exam correction: A polo match does not have one fixed duration; its total length varies according to the number of chukkas, stoppages, and specific tournament rules."
+  },
+  {
+    q: "For safety reasons, how must competitive polo be played by all riders?",
+    options: ["Left-handed only", "Right-handed only", "Alternating hands every chukka", "Either hand depending on the horse"],
+    ans: 1,
+    exp: "In modern competitive polo, the game is played right-handed for safety reasons so riders do not collide head-on."
+  },
+  {
+    q: "What is one of the most important safety rules in polo regarding the ball's trajectory?",
+    options: ["A player must not cross the line of the ball in a dangerous manner", "A player must never hit the ball backwards", "Horses must stay at a trot near the goal", "Only the team captain can hit penalty shots"],
+    ans: 0,
+    exp: "The 'Line of the ball' (the ball's path) governs the right of way and safe riding; a player must not cross the line of the ball in a dangerous manner."
+  },
+  {
+    q: "When do teams change ends during a polo match, and when do players generally change horses?",
+    options: ["Change ends after each chukka; change horses after each goal", "Change ends after a goal; change horses at the end of each chukka", "Change ends at half-time; change horses only if injured", "Never change ends; change horses every 2 minutes"],
+    ans: 1,
+    exp: "After every goal scored, teams change ends; at the end of each chukka, players generally change horses."
+  },
+  {
+    q: "What does the polo term 'Bump / Ride-off' refer to?",
+    options: ["Hitting the ball out of bounds intentionally", "A player using their horse to push an opponent's horse off the line, within permitted rules", "Blocking an opponent's mallet swing", "Falling off the horse during play"],
+    ans: 1,
+    exp: "A Bump or Ride-off is when a player uses their horse to push an opponent's horse off the line of the ball within permitted safety rules."
+  },
+  {
+    q: "What is 'Hooking' in polo terminology?",
+    options: ["Using one's mallet to interfere with or block an opponent's swing, subject to safety rules", "Pulling the opponent's reins", "Scoring a goal from a corner", "Catching the ball in mid-air"],
+    ans: 0,
+    exp: "Hook refers to using one's mallet to interfere with or block an opponent's swing, subject to strict safety rules (such as hooking only on the side where the opponent is swinging)."
+  },
+  {
+    q: "What is a 'Knock-in' in polo?",
+    options: ["The throw-in that starts every chukka", "Restart awarded to the defending team when the attacking team hits the ball over the defending team's backline without scoring", "A penalty shot from 30 yards", "Changing horses between periods"],
+    ans: 1,
+    exp: "A Knock-in is the restart awarded to the defending team when the attacking team hits the ball over the defending team's backline without scoring a goal."
+  },
+  {
+    q: "Which of the following is true about a 'Polo pony'?",
+    options: ["It must strictly be under 12 hands tall", "It is the traditional name for the horse used in polo, and it can be a full-sized horse rather than a pony", "It refers to the wooden ball used in indoor polo", "It is the substitute player on the sidelines"],
+    ans: 1,
+    exp: "'Polo pony' is simply the traditional name for the horse used in polo; it can be a full-sized horse and is not necessarily a pony."
+  },
+  {
+    q: "What is a 'Handicap' in polo?",
+    options: ["An injury penalty given to a team", "A rating of a player's ability, used to balance teams in handicap polo", "A restriction on the length of the mallet", "A type of foul for crossing the line of the ball"],
+    ans: 1,
+    exp: "A Handicap is a numerical rating of a player's skill and ability, used to balance teams competitively in handicap polo tournaments."
+  },
+  {
+    q: "Which trophy, first played in 1880 by the Calcutta Polo Club, is regarded as the world's oldest polo trophy?",
+    options: ["Westchester Cup", "Ezra Cup", "Radha Mohan Cup", "Prithvi Singh Cup"],
+    ans: 1,
+    exp: "The Ezra Cup, first played in 1880 in Kolkata by the Calcutta Polo Club and named after David Elias Ezra, is regarded as the world's oldest polo trophy."
+  },
+  {
+    q: "Between which two countries is the Westchester Cup contested, and when was it first played?",
+    options: ["India and Pakistan; 1947", "England and the United States; 1886", "Argentina and England; 1924", "Australia and New Zealand; 1900"],
+    ans: 1,
+    exp: "The Westchester Cup is an international polo trophy contested between England and the United States, first contested in 1886."
+  },
+  {
+    q: "Which polo exhibition trophy is featured in the Jaipur Polo Season?",
+    options: ["Ezra Cup", "Westchester Cup", "Maharaj Prithvi Singh Baria Cup", "Radha Mohan Cup"],
+    ans: 2,
+    exp: "The Maharaj Prithvi Singh Baria Cup is a polo exhibition trophy featured in the Jaipur Polo Season (distinct from the Prithvi Singh Cup listed in general Indian polo trophy references)."
+  },
+  {
+    q: "In how many editions of the modern Olympic Games was polo featured as an Olympic sport?",
+    options: ["3 editions", "4 editions", "5 editions", "6 editions"],
+    ans: 2,
+    exp: "Polo was an Olympic sport at five editions: 1900 (Paris), 1908 (London), 1920 (Antwerp), 1924 (Paris), and 1936 (Berlin)."
+  },
+  {
+    q: "After which Olympic Games was polo removed from the Olympic programme?",
+    options: ["1924 Paris Olympics", "1936 Berlin Olympics", "1948 London Olympics", "1920 Antwerp Olympics"],
+    ans: 1,
+    exp: "Polo made its final Olympic appearance at the 1936 Berlin Olympics and was removed from the Olympic programme afterward."
+  },
+  {
+    q: "Which country won the last Olympic polo gold medal at the 1936 Berlin Olympics?",
+    options: ["Great Britain", "United States", "Argentina", "India"],
+    ans: 2,
+    exp: "Argentina won the last Olympic polo gold medal at the 1936 Berlin Olympics."
+  },
+  {
+    q: "What are the alternative traditional names associated with Manipuri polo besides Sagol Kangjei?",
+    options: ["Chovgan and Pulu", "Kanjai-bazi and Pulu", "Kushti and Dangal", "Mawashi and Rikishi"],
+    ans: 1,
+    exp: "Besides Sagol Kangjei, other names associated with the traditional Manipuri game include Kanjai-bazi and Pulu."
+  },
+  {
+    q: "What is the long-handled wooden or composite implement used by players to hit the ball in polo called?",
+    options: ["Stick / Mallet", "Cue", "Bat", "Club"],
+    ans: 0,
+    exp: "Players use a long-handled wooden or composite implement called a polo mallet (or stick) to hit the ball."
+  },
+  {
+    q: "What is the strap used by a polo rider to control and guide the horse called?",
+    options: ["Mawashi", "Rein", "Saddle", "Stirrup"],
+    ans: 1,
+    exp: "A Rein is the strap used by a rider to control and guide the horse during a match."
+  },
+  {
+    q: "Who is the Ezra Cup named after?",
+    options: ["Sir Henry Mortimer Durand", "David Elias Ezra", "Lord Curzon", "Maharaj Prithvi Singh"],
+    ans: 1,
+    exp: "The Ezra Cup (first played in 1880 by the Calcutta Polo Club) is named after David Elias Ezra."
+  }
+];
+
+let currentIdx = 0;
+let userAnswers = new Array(questions.length).fill(null);
+// Statuses: 'not-visited', 'not-answered', 'answered', 'marked'
+let statuses = new Array(questions.length).fill('not-visited');
+let timeLeft = 10 * 60; // 10 minutes in seconds
+let timerInterval = null;
+
+function initExam() {
+  currentIdx = 0;
+  userAnswers.fill(null);
+  statuses.fill('not-visited');
+  timeLeft = 10 * 60;
+
+  document.getElementById('quiz-view').style.display = 'flex';
+  document.getElementById('results-view').style.display = 'none';
+  document.getElementById('timer-display').classList.remove('timer-warning');
+
+  renderPalette();
+  loadQuestion(0);
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  document.getElementById('time-text').textContent =
+    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+  const timerBox = document.getElementById('timer-display');
+  if (timeLeft < 120 && timeLeft > 0) {
+    timerBox.classList.add('timer-warning');
+  } else {
+    timerBox.classList.remove('timer-warning');
+  }
+}
+
+function loadQuestion(idx) {
+  currentIdx = idx;
+
+  // Mark visited if not visited yet
+  if (statuses[currentIdx] === 'not-visited') {
+    statuses[currentIdx] = 'not-answered';
+  }
+
+  const qObj = questions[currentIdx];
+  document.getElementById('q-num-label').textContent = `Question No. ${currentIdx + 1} of ${questions.length}`;
+  document.getElementById('q-text-display').textContent = qObj.q;
+
+  const optsContainer = document.getElementById('options-container');
+  optsContainer.innerHTML = '';
+
+  qObj.options.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = 'option-label' + (userAnswers[currentIdx] === i ? ' selected' : '');
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'option';
+    radio.value = i;
+    radio.checked = (userAnswers[currentIdx] === i);
+    radio.onchange = () => selectOption(i);
+
+    const span = document.createElement('span');
+    span.textContent = `${String.fromCharCode(65 + i)}. ${optText}`;
+
+    label.appendChild(radio);
+    label.appendChild(span);
+    optsContainer.appendChild(label);
+  });
+
+  renderPalette();
+}
+
+function selectOption(optIdx) {
+  userAnswers[currentIdx] = optIdx;
+  statuses[currentIdx] = 'answered';
+  loadQuestion(currentIdx);
+}
+
+function clearResponse() {
+  userAnswers[currentIdx] = null;
+  statuses[currentIdx] = 'not-answered';
+  loadQuestion(currentIdx);
+}
+
+function markForReview() {
+  statuses[currentIdx] = 'marked';
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  } else {
+    renderPalette();
+  }
+}
+
+function nextQuestion() {
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  }
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) {
+    loadQuestion(currentIdx - 1);
+  }
+}
+
+function renderPalette() {
+  const container = document.getElementById('palette-container');
+  container.innerHTML = '';
+
+  let cNotVisited = 0, cNotAnswered = 0, cAnswered = 0, cMarked = 0;
+
+  statuses.forEach((st, idx) => {
+    if (st === 'not-visited') cNotVisited++;
+    else if (st === 'not-answered') cNotAnswered++;
+    else if (st === 'answered') cAnswered++;
+    else if (st === 'marked') cMarked++;
+
+    const btn = document.createElement('button');
+    btn.className = `q-btn status-${st}` + (idx === currentIdx ? ' current' : '');
+    btn.textContent = idx + 1;
+    btn.onclick = () => loadQuestion(idx);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('count-not-visited').textContent = cNotVisited;
+  document.getElementById('count-not-answered').textContent = cNotAnswered;
+  document.getElementById('count-answered').textContent = cAnswered;
+  document.getElementById('count-marked').textContent = cMarked;
+}
+
+function confirmSubmit() {
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  const msg = `You have answered ${answeredCount} out of ${questions.length} questions.\nAre you sure you want to submit the test?`;
+  if (confirm(msg)) {
+    submitTest();
+  }
+}
+
+function submitTest() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-view').style.display = 'none';
+  document.getElementById('results-view').style.display = 'block';
+
+  let correct = 0, incorrect = 0, unattempted = 0;
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+
+  questions.forEach((qObj, idx) => {
+    const uAns = userAnswers[idx];
+    let statusBadge = '';
+
+    if (uAns === null) {
+      unattempted++;
+      statusBadge = '<span class="badge-unattempted">Unattempted</span>';
+    } else if (uAns === qObj.ans) {
+      correct++;
+      statusBadge = '<span class="badge-correct">Correct (+1)</span>';
+    } else {
+      incorrect++;
+      statusBadge = '<span class="badge-wrong">Incorrect (0)</span>';
+    }
+
+    const card = document.createElement('div');
+    card.className = 'review-card';
+
+    let optsHtml = '<div class="review-options">';
+    qObj.options.forEach((opt, oIdx) => {
+      let cls = 'rev-opt';
+      let tag = '';
+      if (oIdx === qObj.ans) {
+        cls += ' correct-ans';
+        tag = ' ✓ (Correct Answer)';
+      } else if (oIdx === uAns && uAns !== qObj.ans) {
+        cls += ' user-wrong';
+        tag = ' ✗ (Your Choice)';
+      }
+      optsHtml += `<div class="${cls}">${String.fromCharCode(65 + oIdx)}. ${opt}${tag}</div>`;
+    });
+    optsHtml += '</div>';
+
+    card.innerHTML = `
+      <div class="review-header">
+        <span>Question ${idx + 1}</span>
+        ${statusBadge}
+      </div>
+      <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 8px;">${qObj.q}</div>
+      ${optsHtml}
+      <div class="explanation-box"><strong>Explanation:</strong> ${qObj.exp}</div>
+    `;
+
+    reviewList.appendChild(card);
+  });
+
+  document.getElementById('res-score').textContent = `${correct} / ${questions.length}`;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-incorrect').textContent = incorrect;
+  document.getElementById('res-unattempted').textContent = unattempted;
+}
+
+function retakeTest() {
+  initExam();
+}
+
+// Start on page load
+window.onload = initExam;
+</script>
+
+</body>
+</html>

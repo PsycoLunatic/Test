@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Exam Portal - Cricket Sports GK</title>
+<style>
+  :root {
+    --primary: #1a3a6c;
+    --secondary: #2b579a;
+    --bg-light: #f4f6f9;
+    --border: #d0d7de;
+    --text-dark: #1f2328;
+    --not-visited: #e0e0e0;
+    --not-answered: #d9534f;
+    --answered: #28a745;
+    --marked: #6f42c1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  header {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+
+  .exam-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .exam-subtitle {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+
+  .timer-box {
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .timer-warning {
+    background-color: #dc2626 !important;
+    border-color: #fca5a5 !important;
+    animation: pulseRed 1s infinite;
+  }
+
+  @keyframes pulseRed {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+    50% { transform: scale(1.04); box-shadow: 0 0 12px 4px rgba(220, 38, 38, 0.5); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  /* Main Split Screen */
+  .main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Left Question Panel */
+  .question-panel {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-right: 1px solid var(--border);
+  }
+
+  .q-header {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+  }
+
+  .q-number {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--primary);
+  }
+
+  .marks-badge {
+    font-size: 0.85rem;
+    color: #166534;
+    background: #dcfce7;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .q-body {
+    padding: 28px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .q-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 1.02rem;
+  }
+
+  .option-label:hover {
+    background-color: #f1f5f9;
+    border-color: var(--secondary);
+  }
+
+  .option-label.selected {
+    background-color: #eff6ff;
+    border-color: var(--secondary);
+    font-weight: 600;
+  }
+
+  .option-label input[type="radio"] {
+    margin-right: 14px;
+    transform: scale(1.2);
+    accent-color: var(--secondary);
+  }
+
+  /* Bottom Action Bar */
+  .action-bar {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background-color: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    padding: 9px 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f1f5f9;
+  }
+
+  .btn-warning {
+    background-color: #6f42c1;
+    color: white;
+  }
+
+  .btn-primary {
+    background-color: var(--secondary);
+    color: white;
+  }
+
+  .btn-submit {
+    background-color: #16a34a;
+    color: white;
+    padding: 9px 22px;
+  }
+
+  /* Right Palette Panel */
+  .palette-panel {
+    flex: 3;
+    min-width: 290px;
+    max-width: 360px;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .candidate-info {
+    padding: 14px 18px;
+    background-color: #e2e8f0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .legend-grid {
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    font-size: 0.82rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .palette-header {
+    padding: 10px 18px;
+    background-color: var(--secondary);
+    color: white;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .palette-grid {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    overflow-y: auto;
+    align-content: start;
+    flex: 1;
+  }
+
+  .q-btn {
+    height: 38px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .q-btn.current {
+    outline: 2.5px solid #0f172a;
+    outline-offset: 1px;
+  }
+
+  /* Status Colors */
+  .status-not-visited {
+    background-color: var(--not-visited);
+    color: #333;
+  }
+  .status-not-answered {
+    background-color: var(--not-answered);
+    color: white;
+    border-color: #b91c1c;
+  }
+  .status-answered {
+    background-color: var(--answered);
+    color: white;
+    border-color: #15803d;
+  }
+  .status-marked {
+    background-color: var(--marked);
+    color: white;
+    border-color: #5b21b6;
+  }
+
+  /* Results Dashboard */
+  #results-view {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    background-color: var(--bg-light);
+  }
+
+  .scorecard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .review-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .badge-correct { color: #15803d; background: #dcfce7; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-wrong { color: #b91c1c; background: #fee2e2; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-unattempted { color: #475569; background: #f1f5f9; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+
+  .review-options {
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rev-opt {
+    padding: 10px 14px;
+    border-radius: 5px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+
+  .rev-opt.correct-ans {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    color: #14532d;
+    font-weight: 600;
+  }
+
+  .rev-opt.user-wrong {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #7f1d1d;
+    font-weight: 600;
+  }
+
+  .explanation-box {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #334155;
+  }
+
+  @media (max-width: 768px) {
+    .main-container { flex-direction: column; overflow-y: auto; }
+    .palette-panel { max-width: 100%; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="exam-title">SSC / RRB / AAI — Mock CBT Portal</div>
+    <div class="exam-subtitle">Topic: Cricket – Complete Exam Notes</div>
+  </div>
+  <div id="timer-display" class="timer-box">
+    <span>Time Left:</span>
+    <span id="time-text">10:00</span>
+  </div>
+</header>
+
+<!-- QUIZ INTERFACE -->
+<div id="quiz-view" class="main-container">
+  <!-- Left Panel -->
+  <div class="question-panel">
+    <div class="q-header">
+      <span class="q-number" id="q-num-label">Question No. 1</span>
+      <span class="marks-badge">+1.00 Mark | No Negative Marking</span>
+    </div>
+
+    <div class="q-body">
+      <div class="q-text" id="q-text-display">Loading question...</div>
+      <div class="options-list" id="options-container"></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="nav-group">
+        <button class="btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn-secondary" onclick="clearResponse()">Clear Response</button>
+        <button class="btn-warning" onclick="markForReview()">Mark for Review</button>
+      </div>
+      <div class="nav-group">
+        <button class="btn-primary" onclick="nextQuestion()">Next</button>
+        <button class="btn-submit" onclick="confirmSubmit()">Submit Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="palette-panel">
+    <div class="candidate-info">
+      <div class="avatar">U</div>
+      <div>
+        <div style="font-weight: 700; font-size: 0.95rem;">Candidate</div>
+        <div style="font-size: 0.8rem; color: #475569;">General Sports GK</div>
+      </div>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item">
+        <span class="legend-box status-not-visited" id="count-not-visited">30</span>
+        <span>Not Visited</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-not-answered" id="count-not-answered">0</span>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-answered" id="count-answered">0</span>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-marked" id="count-marked">0</span>
+        <span>Marked for Review</span>
+      </div>
+    </div>
+
+    <div class="palette-header">Question Palette</div>
+    <div class="palette-grid" id="palette-container"></div>
+  </div>
+</div>
+
+<!-- RESULTS DASHBOARD -->
+<div id="results-view">
+  <div class="scorecard-container">
+    <div class="score-header">
+      <h2>Exam Performance Scorecard</h2>
+      <button class="btn-primary" onclick="retakeTest()">Retake Test</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="res-score" style="color: var(--primary);">0 / 30</div>
+        <div class="stat-label">Total Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-correct" style="color: #16a34a;">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-incorrect" style="color: #dc2626;">0</div>
+        <div class="stat-label">Incorrect</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-unattempted" style="color: #64748b;">0</div>
+        <div class="stat-label">Unattempted</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 16px; color: var(--primary);">Detailed Question-by-Question Review</h3>
+    <div id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Between which two countries was the first known international cricket match played in 1844 in New York?",
+    options: ["England and Australia", "Canada and the United States", "England and South Africa", "India and England"],
+    ans: 1,
+    exp: "The first known international cricket match was played between Canada and the United States in 1844 in New York."
+  },
+  {
+    q: "When and where was the first Test cricket match played?",
+    options: ["1844 in New York", "1877 in Melbourne", "1882 at The Oval", "1932 at Lord's"],
+    ans: 1,
+    exp: "The first Test match was played between Australia and England in 1877 in Melbourne."
+  },
+  {
+    q: "Which was the first cricket club established in India in 1792?",
+    options: ["Parsee Oriental Cricket Club", "Calcutta Cricket Club", "Bombay Gymkhana", "Madras Cricket Club"],
+    ans: 1,
+    exp: "Exam correction: Calcutta Cricket Club (1792) predates the Parsee Oriental / Orient Club (1848, Bombay), so Calcutta Cricket Club should be remembered as India's first cricket club."
+  },
+  {
+    q: "When did India play its first official Test match, and against which team?",
+    options: ["1928 against Australia", "1932 against England at Lord's", "1936 against West Indies", "1947 against Australia"],
+    ans: 1,
+    exp: "India played its first Test match against England at Lord's in 1932, four years after the BCCI was established in 1928."
+  },
+  {
+    q: "Which organization, founded in 1787 in London, is recognized as the guardian of the Laws of Cricket?",
+    options: ["ICC (International Cricket Council)", "MCC (Marylebone Cricket Club)", "BCCI", "ECB"],
+    ans: 1,
+    exp: "MCC (Marylebone Cricket Club), founded in 1787 in London, is the guardian of the Laws of Cricket."
+  },
+  {
+    q: "In what year was the ICC founded as the Imperial Cricket Conference, and where is its current headquarters?",
+    options: ["1909; Dubai, UAE", "1928; London, UK", "1965; Melbourne, Australia", "1989; Mumbai, India"],
+    ans: 0,
+    exp: "The ICC was founded in 1909 as the Imperial Cricket Conference, renamed International Cricket Conference in 1965, and became the International Cricket Council in 1989. Its headquarters are in Dubai, UAE."
+  },
+  {
+    q: "What are the standard dimensions (length × width) of a cricket pitch?",
+    options: ["22 yards (20.12 m) × 10 feet (3.05 m)", "20 yards (18.28 m) × 12 feet (3.66 m)", "24 yards (21.95 m) × 10 feet (3.02 m)", "22 yards (20.12 m) × 9 feet (2.74 m)"],
+    ans: 0,
+    exp: "Exam correction: Standard cricket pitch length is 22 yards (20.12 m — the distance between the two sets of stumps) and pitch width is 10 feet (3.05 m, not 3.02 m)."
+  },
+  {
+    q: "What are the official dimensions (height × width) of a cricket wicket (stumps)?",
+    options: ["28 inches (71.1 cm) × 9 inches (22.86 cm)", "30 inches (76.2 cm) × 10 inches (25.4 cm)", "27 inches (68.6 cm) × 8 inches (20.3 cm)", "28 inches (71.1 cm) × 10 inches (25.4 cm)"],
+    ans: 0,
+    exp: "A standard cricket wicket has a height of 28 inches (71.1 cm) and a width of 9 inches (22.86 cm)."
+  },
+  {
+    q: "When and where was the first One Day International (ODI) cricket match played?",
+    options: ["1971 in Melbourne (Australia vs England)", "1973 in London (England vs Australia)", "1975 at Lord's (West Indies vs Australia)", "1971 in Auckland (Australia vs New Zealand)"],
+    ans: 0,
+    exp: "The first One Day International (ODI) was played between Australia and England in 1971 in Melbourne."
+  },
+  {
+    q: "Which statement accurately compares the inauguration of the first Men's and Women's Cricket World Cups?",
+    options: ["Both started together in 1975 in England", "The first Women's World Cup was held in 1973 in England, two years before the Men's World Cup in 1975", "The Men's World Cup started in 1971 and Women's in 1975", "The Women's World Cup started in 1983 in India"],
+    ans: 1,
+    exp: "The first Women's Cricket World Cup was held in 1973 in England — two years before the first Men's Cricket World Cup in 1975 (also in England)."
+  },
+  {
+    q: "Between which two teams and in what year was the first men's T20 International played?",
+    options: ["India vs Pakistan, 2007", "Australia vs New Zealand, 2005 (Auckland)", "England vs Australia, 2005 (Southampton)", "South Africa vs West Indies, 2007"],
+    ans: 1,
+    exp: "The first men's T20 International was played between Australia and New Zealand in 2005 in Auckland."
+  },
+  {
+    q: "What is the modern official terminology for 'Chinaman' bowling?",
+    options: ["Right-arm leg spin", "Left-arm orthodox spin", "Left-arm wrist spin", "Right-arm off-break"],
+    ans: 2,
+    exp: "'Chinaman' is the traditional term for left-arm wrist-spin bowling, which turns the ball into a right-handed batter. The modern term is left-arm wrist spin."
+  },
+  {
+    q: "Which bowling delivery is described as a full toss that reaches the batter at around head height or above?",
+    options: ["Yorker", "Beamer", "Googly", "Bouncer"],
+    ans: 1,
+    exp: "A Beamer is a full toss that reaches the batter at around head height or above; a dangerous beamer is called a no-ball."
+  },
+  {
+    q: "What is a 'Maiden over' in cricket?",
+    options: ["An over in which a wicket falls on the first ball", "An over in which no runs are charged to the bowler (byes and leg-byes may still be scored)", "The very first over of a Test match", "An over bowled entirely with full tosses"],
+    ans: 1,
+    exp: "A maiden over is an over in which no runs are charged to the bowler. Note that byes and leg-byes may still be scored during a maiden over."
+  },
+  {
+    q: "Which fielding position is located on the off side, behind the batter, near the boundary?",
+    options: ["Fine leg", "Third man", "Mid-wicket", "Square leg"],
+    ans: 1,
+    exp: "Third man is on the off side, behind the batter, near the boundary. Fine leg, mid-wicket, and square leg are all on the leg side."
+  },
+  {
+    q: "What is the minimum run lead required to enforce a 'Follow-on' in a five-day Test match?",
+    options: ["150 runs", "200 runs", "250 runs", "100 runs"],
+    ans: 1,
+    exp: "In a five-day Test match, the team batting first must have a lead of at least 200 runs to require the team batting second to follow on immediately."
+  },
+  {
+    q: "How is 'Mankading' officially classified under the current Laws of Cricket?",
+    options: ["Obstructing the field", "Hit wicket", "Run out", "Retired out"],
+    ans: 2,
+    exp: "Exam point: Named after Indian cricketer Vinoo Mankad (who ran out Bill Brown in 1947), running out the non-striker leaving their crease early is now officially classified as a 'Run out', and a prior warning is not mandatory."
+  },
+  {
+    q: "What is the difference between a 'Bye' and a 'Leg-bye' in cricket?",
+    options: ["Bye touches the bat; Leg-bye touches the stumps", "Bye is scored without touching bat or body; Leg-bye is scored after touching the batter's body (excluding hand holding bat)", "Bye is worth 2 runs; Leg-bye is worth 1 run", "There is no difference"],
+    ans: 1,
+    exp: "A Bye is a run scored when the ball passes the batter without touching the bat or body, whereas a Leg-bye is scored after the ball touches the batter's body (not the hand holding the bat)."
+  },
+  {
+    q: "Which Indian domestic tournament is played between the Ranji Trophy champions and the Rest of India team?",
+    options: ["Duleep Trophy", "Irani Cup", "Deodhar Trophy", "Vijay Hazare Trophy"],
+    ans: 1,
+    exp: "The Irani Cup (established in 1959–60) is played annually between the reigning Ranji Trophy champions and a Rest of India XI."
+  },
+  {
+    q: "Which of the following is India's premier domestic List A (50-over) competition?",
+    options: ["Syed Mushtaq Ali Trophy", "Ranji Trophy", "Vijay Hazare Trophy", "C. K. Nayudu Trophy"],
+    ans: 2,
+    exp: "Vijay Hazare Trophy is India's domestic List A (50-over) competition. Syed Mushtaq Ali Trophy is T20, Ranji Trophy is first-class, and C. K. Nayudu Trophy is under-23."
+  },
+  {
+    q: "Which bilateral Test cricket series trophy is contested between India and Australia?",
+    options: ["The Ashes", "Pataudi Trophy", "Border-Gavaskar Trophy", "Wisden Trophy"],
+    ans: 2,
+    exp: "The Border-Gavaskar Trophy is contested between India and Australia. The Ashes is England vs Australia, Pataudi Trophy is India vs England (in England), and Wisden Trophy was England vs West Indies."
+  },
+  {
+    q: "What is the standard weight range of a men's cricket ball?",
+    options: ["140–150 g", "155.9–163 g", "165–175 g", "142–155 g"],
+    ans: 1,
+    exp: "According to the quick revision facts, the standard weight of a men's cricket ball is 155.9–163 grams."
+  },
+  {
+    q: "In which year did India win its first Cricket World Cup title?",
+    options: ["1975", "1979", "1983", "2007"],
+    ans: 2,
+    exp: "India won its first Cricket World Cup victory in 1983."
+  },
+  {
+    q: "What significance does the year 1709 hold in cricket history?",
+    options: ["The first-ever cricket match in world history was played", "An early recorded cricket match took place involving teams identified by their county names", "The MCC was founded in London", "The first Test match was played"],
+    ans: 1,
+    exp: "Exam correction: 1709 is specifically associated with an early recorded match in which teams used county names, not necessarily the very first cricket match in history."
+  },
+  {
+    q: "Which Indian team became the first to tour England in 1886?",
+    options: ["A Calcutta club team", "A Parsi team", "An All-India XI", "A Madras XI"],
+    ans: 1,
+    exp: "The Parsis were pioneers in introducing organised cricket in India, and the first Indian team to tour England was a Parsi team in 1886."
+  },
+  {
+    q: "What is a 'Yorker' in cricket bowling terminology?",
+    options: ["A delivery pitched short that rises to chest height", "A delivery pitched very close to the batter's feet, usually near the base of the stumps", "A delivery that reaches the batter without bouncing", "A slow leg-break delivery"],
+    ans: 1,
+    exp: "A Yorker is a delivery pitched very close to the batter's feet, usually right near the base of the stumps."
+  },
+  {
+    q: "Which close-catching fielding position is situated on the off side, behind the batter and near the slips?",
+    options: ["Gully", "Square leg", "Mid-on", "Fine leg"],
+    ans: 0,
+    exp: "Gully is a close-catching fielding position on the off side, located behind the batter and just next to the slips."
+  },
+  {
+    q: "Which trophy was retired after 2020 as the Test series trophy between England and West Indies?",
+    options: ["Pataudi Trophy", "Wisden Trophy", "The Ashes", "Irani Cup"],
+    ans: 1,
+    exp: "The Wisden Trophy was the former Test series trophy contested between England and West Indies, which was retired after 2020."
+  },
+  {
+    q: "What is the Indian domestic under-23 cricket competition called?",
+    options: ["Deodhar Trophy", "C. K. Nayudu Trophy", "Duleep Trophy", "Syed Mushtaq Ali Trophy"],
+    ans: 1,
+    exp: "The C. K. Nayudu Trophy is India's domestic under-23 cricket competition."
+  },
+  {
+    q: "When was India's first recorded cricket match played?",
+    options: ["1709", "1751", "1787", "1792"],
+    ans: 1,
+    exp: "India's first recorded cricket match took place in 1751 (followed by the establishment of the Calcutta Cricket Club in 1792)."
+  }
+];
+
+let currentIdx = 0;
+let userAnswers = new Array(questions.length).fill(null);
+// Statuses: 'not-visited', 'not-answered', 'answered', 'marked'
+let statuses = new Array(questions.length).fill('not-visited');
+let timeLeft = 10 * 60; // 10 minutes in seconds
+let timerInterval = null;
+
+function initExam() {
+  currentIdx = 0;
+  userAnswers.fill(null);
+  statuses.fill('not-visited');
+  timeLeft = 10 * 60;
+
+  document.getElementById('quiz-view').style.display = 'flex';
+  document.getElementById('results-view').style.display = 'none';
+  document.getElementById('timer-display').classList.remove('timer-warning');
+
+  renderPalette();
+  loadQuestion(0);
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  document.getElementById('time-text').textContent =
+    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+  const timerBox = document.getElementById('timer-display');
+  if (timeLeft < 120 && timeLeft > 0) {
+    timerBox.classList.add('timer-warning');
+  } else {
+    timerBox.classList.remove('timer-warning');
+  }
+}
+
+function loadQuestion(idx) {
+  currentIdx = idx;
+
+  // Mark visited if not visited yet
+  if (statuses[currentIdx] === 'not-visited') {
+    statuses[currentIdx] = 'not-answered';
+  }
+
+  const qObj = questions[currentIdx];
+  document.getElementById('q-num-label').textContent = `Question No. ${currentIdx + 1} of ${questions.length}`;
+  document.getElementById('q-text-display').textContent = qObj.q;
+
+  const optsContainer = document.getElementById('options-container');
+  optsContainer.innerHTML = '';
+
+  qObj.options.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = 'option-label' + (userAnswers[currentIdx] === i ? ' selected' : '');
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'option';
+    radio.value = i;
+    radio.checked = (userAnswers[currentIdx] === i);
+    radio.onchange = () => selectOption(i);
+
+    const span = document.createElement('span');
+    span.textContent = `${String.fromCharCode(65 + i)}. ${optText}`;
+
+    label.appendChild(radio);
+    label.appendChild(span);
+    optsContainer.appendChild(label);
+  });
+
+  renderPalette();
+}
+
+function selectOption(optIdx) {
+  userAnswers[currentIdx] = optIdx;
+  statuses[currentIdx] = 'answered';
+  loadQuestion(currentIdx);
+}
+
+function clearResponse() {
+  userAnswers[currentIdx] = null;
+  statuses[currentIdx] = 'not-answered';
+  loadQuestion(currentIdx);
+}
+
+function markForReview() {
+  statuses[currentIdx] = 'marked';
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  } else {
+    renderPalette();
+  }
+}
+
+function nextQuestion() {
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  }
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) {
+    loadQuestion(currentIdx - 1);
+  }
+}
+
+function renderPalette() {
+  const container = document.getElementById('palette-container');
+  container.innerHTML = '';
+
+  let cNotVisited = 0, cNotAnswered = 0, cAnswered = 0, cMarked = 0;
+
+  statuses.forEach((st, idx) => {
+    if (st === 'not-visited') cNotVisited++;
+    else if (st === 'not-answered') cNotAnswered++;
+    else if (st === 'answered') cAnswered++;
+    else if (st === 'marked') cMarked++;
+
+    const btn = document.createElement('button');
+    btn.className = `q-btn status-${st}` + (idx === currentIdx ? ' current' : '');
+    btn.textContent = idx + 1;
+    btn.onclick = () => loadQuestion(idx);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('count-not-visited').textContent = cNotVisited;
+  document.getElementById('count-not-answered').textContent = cNotAnswered;
+  document.getElementById('count-answered').textContent = cAnswered;
+  document.getElementById('count-marked').textContent = cMarked;
+}
+
+function confirmSubmit() {
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  const msg = `You have answered ${answeredCount} out of ${questions.length} questions.\nAre you sure you want to submit the test?`;
+  if (confirm(msg)) {
+    submitTest();
+  }
+}
+
+function submitTest() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-view').style.display = 'none';
+  document.getElementById('results-view').style.display = 'block';
+
+  let correct = 0, incorrect = 0, unattempted = 0;
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+
+  questions.forEach((qObj, idx) => {
+    const uAns = userAnswers[idx];
+    let statusBadge = '';
+
+    if (uAns === null) {
+      unattempted++;
+      statusBadge = '<span class="badge-unattempted">Unattempted</span>';
+    } else if (uAns === qObj.ans) {
+      correct++;
+      statusBadge = '<span class="badge-correct">Correct (+1)</span>';
+    } else {
+      incorrect++;
+      statusBadge = '<span class="badge-wrong">Incorrect (0)</span>';
+    }
+
+    const card = document.createElement('div');
+    card.className = 'review-card';
+
+    let optsHtml = '<div class="review-options">';
+    qObj.options.forEach((opt, oIdx) => {
+      let cls = 'rev-opt';
+      let tag = '';
+      if (oIdx === qObj.ans) {
+        cls += ' correct-ans';
+        tag = ' ✓ (Correct Answer)';
+      } else if (oIdx === uAns && uAns !== qObj.ans) {
+        cls += ' user-wrong';
+        tag = ' ✗ (Your Choice)';
+      }
+      optsHtml += `<div class="${cls}">${String.fromCharCode(65 + oIdx)}. ${opt}${tag}</div>`;
+    });
+    optsHtml += '</div>';
+
+    card.innerHTML = `
+      <div class="review-header">
+        <span>Question ${idx + 1}</span>
+        ${statusBadge}
+      </div>
+      <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 8px;">${qObj.q}</div>
+      ${optsHtml}
+      <div class="explanation-box"><strong>Explanation:</strong> ${qObj.exp}</div>
+    `;
+
+    reviewList.appendChild(card);
+  });
+
+  document.getElementById('res-score').textContent = `${correct} / ${questions.length}`;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-incorrect').textContent = incorrect;
+  document.getElementById('res-unattempted').textContent = unattempted;
+}
+
+function retakeTest() {
+  initExam();
+}
+
+// Start on page load
+window.onload = initExam;
+</script>
+
+</body>
+</html>
