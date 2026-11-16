@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Exam Portal - Basketball Sports GK</title>
+<style>
+  :root {
+    --primary: #1a3a6c;
+    --secondary: #2b579a;
+    --bg-light: #f4f6f9;
+    --border: #d0d7de;
+    --text-dark: #1f2328;
+    --not-visited: #e0e0e0;
+    --not-answered: #d9534f;
+    --answered: #28a745;
+    --marked: #6f42c1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  header {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+
+  .exam-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .exam-subtitle {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+
+  .timer-box {
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .timer-warning {
+    background-color: #dc2626 !important;
+    border-color: #fca5a5 !important;
+    animation: pulseRed 1s infinite;
+  }
+
+  @keyframes pulseRed {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+    50% { transform: scale(1.04); box-shadow: 0 0 12px 4px rgba(220, 38, 38, 0.5); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  /* Main Split Screen */
+  .main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Left Question Panel */
+  .question-panel {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-right: 1px solid var(--border);
+  }
+
+  .q-header {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+  }
+
+  .q-number {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--primary);
+  }
+
+  .marks-badge {
+    font-size: 0.85rem;
+    color: #166534;
+    background: #dcfce7;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .q-body {
+    padding: 28px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .q-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 1.02rem;
+  }
+
+  .option-label:hover {
+    background-color: #f1f5f9;
+    border-color: var(--secondary);
+  }
+
+  .option-label.selected {
+    background-color: #eff6ff;
+    border-color: var(--secondary);
+    font-weight: 600;
+  }
+
+  .option-label input[type="radio"] {
+    margin-right: 14px;
+    transform: scale(1.2);
+    accent-color: var(--secondary);
+  }
+
+  /* Bottom Action Bar */
+  .action-bar {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background-color: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    padding: 9px 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f1f5f9;
+  }
+
+  .btn-warning {
+    background-color: #6f42c1;
+    color: white;
+  }
+
+  .btn-primary {
+    background-color: var(--secondary);
+    color: white;
+  }
+
+  .btn-submit {
+    background-color: #16a34a;
+    color: white;
+    padding: 9px 22px;
+  }
+
+  /* Right Palette Panel */
+  .palette-panel {
+    flex: 3;
+    min-width: 290px;
+    max-width: 360px;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .candidate-info {
+    padding: 14px 18px;
+    background-color: #e2e8f0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .legend-grid {
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    font-size: 0.82rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .palette-header {
+    padding: 10px 18px;
+    background-color: var(--secondary);
+    color: white;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .palette-grid {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    overflow-y: auto;
+    align-content: start;
+    flex: 1;
+  }
+
+  .q-btn {
+    height: 38px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .q-btn.current {
+    outline: 2.5px solid #0f172a;
+    outline-offset: 1px;
+  }
+
+  /* Status Colors */
+  .status-not-visited {
+    background-color: var(--not-visited);
+    color: #333;
+  }
+  .status-not-answered {
+    background-color: var(--not-answered);
+    color: white;
+    border-color: #b91c1c;
+  }
+  .status-answered {
+    background-color: var(--answered);
+    color: white;
+    border-color: #15803d;
+  }
+  .status-marked {
+    background-color: var(--marked);
+    color: white;
+    border-color: #5b21b6;
+  }
+
+  /* Results Dashboard */
+  #results-view {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    background-color: var(--bg-light);
+  }
+
+  .scorecard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .review-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .badge-correct { color: #15803d; background: #dcfce7; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-wrong { color: #b91c1c; background: #fee2e2; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+  .badge-unattempted { color: #475569; background: #f1f5f9; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; }
+
+  .review-options {
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rev-opt {
+    padding: 10px 14px;
+    border-radius: 5px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+
+  .rev-opt.correct-ans {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    color: #14532d;
+    font-weight: 600;
+  }
+
+  .rev-opt.user-wrong {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #7f1d1d;
+    font-weight: 600;
+  }
+
+  .explanation-box {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #334155;
+  }
+
+  @media (max-width: 768px) {
+    .main-container { flex-direction: column; overflow-y: auto; }
+    .palette-panel { max-width: 100%; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="exam-title">SSC / RRB / AAI ATC — Mock CBT Portal</div>
+    <div class="exam-subtitle">Topic: Basketball – Complete Notes (Sports GK)</div>
+  </div>
+  <div id="timer-display" class="timer-box">
+    <span>Time Left:</span>
+    <span id="time-text">10:00</span>
+  </div>
+</header>
+
+<!-- QUIZ INTERFACE -->
+<div id="quiz-view" class="main-container">
+  <!-- Left Panel -->
+  <div class="question-panel">
+    <div class="q-header">
+      <span class="q-number" id="q-num-label">Question No. 1</span>
+      <span class="marks-badge">+1.00 Mark | No Negative Marking</span>
+    </div>
+
+    <div class="q-body">
+      <div class="q-text" id="q-text-display">Loading question...</div>
+      <div class="options-list" id="options-container"></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="nav-group">
+        <button class="btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn-secondary" onclick="clearResponse()">Clear Response</button>
+        <button class="btn-warning" onclick="markForReview()">Mark for Review</button>
+      </div>
+      <div class="nav-group">
+        <button class="btn-primary" onclick="nextQuestion()">Next</button>
+        <button class="btn-submit" onclick="confirmSubmit()">Submit Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="palette-panel">
+    <div class="candidate-info">
+      <div class="avatar">U</div>
+      <div>
+        <div style="font-weight: 700; font-size: 0.95rem;">Candidate</div>
+        <div style="font-size: 0.8rem; color: #475569;">General Awareness (Sports)</div>
+      </div>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item">
+        <span class="legend-box status-not-visited" id="count-not-visited">30</span>
+        <span>Not Visited</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-not-answered" id="count-not-answered">0</span>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-answered" id="count-answered">0</span>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-box status-marked" id="count-marked">0</span>
+        <span>Marked for Review</span>
+      </div>
+    </div>
+
+    <div class="palette-header">Question Palette</div>
+    <div class="palette-grid" id="palette-container"></div>
+  </div>
+</div>
+
+<!-- RESULTS DASHBOARD -->
+<div id="results-view">
+  <div class="scorecard-container">
+    <div class="score-header">
+      <h2>Exam Performance Scorecard</h2>
+      <button class="btn-primary" onclick="retakeTest()">Retake Test</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="res-score" style="color: var(--primary);">0 / 30</div>
+        <div class="stat-label">Total Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-correct" style="color: #16a34a;">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-incorrect" style="color: #dc2626;">0</div>
+        <div class="stat-label">Incorrect</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="res-unattempted" style="color: #64748b;">0</div>
+        <div class="stat-label">Unattempted</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 16px; color: var(--primary);">Detailed Question-by-Question Review</h3>
+    <div id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Who is known as the 'Father of Basketball' and invented the game in December 1891?",
+    options: ["Renato William Jones", "James Naismith", "Walter A. Brown", "Larry O'Brien"],
+    ans: 1,
+    exp: "Basketball was invented in December 1891 in Springfield, Massachusetts, USA by James Naismith, a Canadian-American physical education instructor, to keep students physically active indoors during winter."
+  },
+  {
+    q: "What equipment was originally used as goals and ball in the very first game of basketball?",
+    options: ["Iron hoops and a volleyball", "Wooden crates and a handball", "Peach baskets and a soccer ball", "Metal buckets and a rugby ball"],
+    ans: 2,
+    exp: "Originally, peach baskets were used as goals, and the first game was played with a soccer ball. The original game consisted of 13 rules."
+  },
+  {
+    q: "When and where was the first public basketball game played?",
+    options: ["11 March 1892 in Springfield", "15 December 1891 in Boston", "10 August 1936 in Berlin", "18 June 1932 in Geneva"],
+    ans: 0,
+    exp: "The first public basketball game was played on 11 March 1892 in Springfield, Massachusetts, USA."
+  },
+  {
+    q: "In which Olympic Games did men's basketball and women's basketball make their respective debuts?",
+    options: ["Men: 1932 Los Angeles; Women: 1972 Munich", "Men: 1936 Berlin; Women: 1976 Montreal", "Men: 1928 Amsterdam; Women: 1980 Moscow", "Men: 1948 London; Women: 1984 Los Angeles"],
+    ans: 1,
+    exp: "Men's basketball became an Olympic sport in 1936 (Berlin Olympics), while women's basketball became an Olympic sport in 1976 (Montreal Olympics)."
+  },
+  {
+    q: "Where is the headquarters of FIBA (International Basketball Federation), which was founded in 1932?",
+    options: ["Lausanne, Switzerland", "Mies, Switzerland", "Geneva, Switzerland", "Zurich, Switzerland"],
+    ans: 1,
+    exp: "FIBA (International Basketball Federation) was founded in 1932 and has its headquarters in Mies, Switzerland."
+  },
+  {
+    q: "What are the standard dimensions (length × width) of a FIBA basketball court?",
+    options: ["28 metres × 15 metres", "28.65 metres × 15.24 metres", "32 metres × 19 metres", "26 metres × 14 metres"],
+    ans: 0,
+    exp: "A standard rectangular FIBA court measures 28 metres in length and 15 metres in width. (Note: 32 m × 19 m is the minimum overall floor area including the surrounding boundary lane, while 28.65 m × 15.24 m / 94 ft × 50 ft is the NBA court dimension)."
+  },
+  {
+    q: "What is the standard height of the basketball hoop/basket from the floor?",
+    options: ["2.95 metres", "3.00 metres", "3.05 metres", "3.15 metres"],
+    ans: 2,
+    exp: "According to FIBA court specifications, the height of the basket from the floor is 3.05 metres."
+  },
+  {
+    q: "What is the distance of the three-point line and the diameter of the centre circle under FIBA rules?",
+    options: ["Three-point line: 6.25 m; Centre circle: 3.0 m", "Three-point line: 6.75 m; Centre circle: 3.6 m", "Three-point line: 7.24 m; Centre circle: 3.6 m", "Three-point line: 6.75 m; Centre circle: 4.0 m"],
+    ans: 1,
+    exp: "Under FIBA dimensions, the three-point line is at 6.75 metres, the centre circle diameter is 3.6 metres, and the width of court boundary lines is 5 cm."
+  },
+  {
+    q: "What is the maximum number of players allowed per team on a standard FIBA roster, and how many are on the court at a time?",
+    options: ["10 roster players; 5 on court", "12 roster players; 5 on court", "15 roster players; 5 on court", "12 roster players; 6 on court"],
+    ans: 1,
+    exp: "Each team can have a maximum of 12 players under standard FIBA rules, with only 5 players from each team allowed on the court at a time."
+  },
+  {
+    q: "Which playing position is primarily responsible for acting as the team's playmaker and ball handler?",
+    options: ["Shooting Guard (SG)", "Small Forward (SF)", "Point Guard (PG)", "Power Forward (PF)"],
+    ans: 2,
+    exp: "The five positions are: Point Guard (PG – playmaker and ball handler), Shooting Guard (SG – shooting), Small Forward (SF – versatile attacking/defensive), Power Forward (PF – near basket/rebounds), and Centre (C – tallest player close to basket)."
+  },
+  {
+    q: "What is the total regular playing duration of a FIBA basketball match compared to an NBA match?",
+    options: ["FIBA: 40 minutes; NBA: 48 minutes", "FIBA: 48 minutes; NBA: 40 minutes", "FIBA: 36 minutes; NBA: 48 minutes", "FIBA: 40 minutes; NBA: 60 minutes"],
+    ans: 0,
+    exp: "Exam trick: FIBA = 40 minutes (4 × 10 minutes); NBA = 48 minutes (4 × 12 minutes)."
+  },
+  {
+    q: "In a FIBA match, what is the duration of the half-time interval and each overtime period?",
+    options: ["Half-time: 10 minutes; Overtime: 5 minutes", "Half-time: 15 minutes; Overtime: 5 minutes", "Half-time: 15 minutes; Overtime: 10 minutes", "Half-time: 20 minutes; Overtime: 5 minutes"],
+    ans: 1,
+    exp: "In FIBA competitions, the half-time interval is 15 minutes and overtime is 5 minutes (played when scores are tied at the end of regular time)."
+  },
+  {
+    q: "What is the maximum number of points a player can score in a single scoring play in basketball?",
+    options: ["3 points", "4 points", "5 points", "6 points"],
+    ans: 1,
+    exp: "A player can score a maximum of 4 points in a single scoring play—a four-point play occurs when a player scores a three-pointer while being fouled and converts the additional 1-point free throw. There is no limit for an entire match."
+  },
+  {
+    q: "Which trophy replaced the Walter A. Brown Trophy in 1977 as the award for the NBA Finals winner?",
+    options: ["Oscar Robertson Trophy", "Sam Jones Trophy", "Larry O'Brien Championship Trophy", "William Jones Cup"],
+    ans: 2,
+    exp: "The Walter A. Brown Trophy was the former NBA championship trophy (1947–1976) and was replaced by the Larry O'Brien Championship Trophy in 1977."
+  },
+  {
+    q: "What are the Oscar Robertson Trophy and the Sam Jones Trophy awarded for in the NBA?",
+    options: ["NBA MVP and Rookie of the Year", "Western Conference Championship and Northwest Division Championship", "Eastern Conference Championship and Finals MVP", "Defensive Player of the Year and Sixth Man of the Year"],
+    ans: 1,
+    exp: "Introduced in their current naming in 2022, the Oscar Robertson Trophy is the NBA Western Conference championship trophy, and the Sam Jones Trophy is the NBA Northwest Division championship trophy."
+  },
+  {
+    q: "Where is the William Jones Cup held, and who is it named after?",
+    options: ["Held in China; named after a former FIBA President", "Held in Taiwan; named after Renato William Jones", "Held in Japan; named after James Naismith's assistant", "Held in South Korea; named after an Olympic medalist"],
+    ans: 1,
+    exp: "The William Jones Cup is an international basketball tournament held in Taiwan, named after Renato William Jones, an important figure in international basketball."
+  },
+  {
+    q: "Which of the following groups of trophies is associated with Indian basketball?",
+    options: ["Basalat Jha Trophy, Todd Memorial Trophy, Federation Cup", "Santosh Trophy, Durand Cup, Rovers Cup", "Thomas Cup, Uber Cup, Sudirman Cup", "Rangaswami Cup, Beighton Cup, Aga Khan Cup"],
+    ans: 0,
+    exp: "Basalat Jha Trophy, Todd Memorial Trophy, Federation Cup, and B.C. Gupta Trophy are associated with Indian basketball in General Knowledge references."
+  },
+  {
+    q: "What is the basketball term for a play where a player catches a pass in mid-air and scores, usually with a dunk?",
+    options: ["Lay-up", "Alley-oop", "Pivot", "Rebound"],
+    ans: 1,
+    exp: "An Alley-oop is when a player catches a pass in the air and scores, usually with a slam dunk. A Lay-up is a close-range shot taken while moving towards the basket."
+  },
+  {
+    q: "In basketball terminology, what does 'Pivot' refer to?",
+    options: ["Bouncing the ball continuously while moving", "Moving one foot while keeping the other foot fixed", "Taking possession of the ball from an opponent", "Applying defensive pressure across the entire court"],
+    ans: 1,
+    exp: "Pivot means moving one foot while keeping the other foot fixed on the floor. Moving both feet illegally while holding the ball is called Travelling."
+  },
+  {
+    q: "Which violation occurs when a player starts a second dribble after having ended their first dribble?",
+    options: ["Travelling", "Backcourt violation", "Double Dribble", "Three-second violation"],
+    ans: 2,
+    exp: "Double Dribble is an illegal second dribble after ending the first dribble. Travelling is illegal movement of the feet while holding the ball."
+  },
+  {
+    q: "Under FIBA rules, what is the shot clock duration within which a team must attempt a shot?",
+    options: ["8 seconds", "14 seconds", "24 seconds", "30 seconds"],
+    ans: 2,
+    exp: "Under FIBA rules, the shot clock is 24 seconds—a team must attempt a field goal shot within 24 seconds of gaining possession."
+  },
+  {
+    q: "How many seconds does a team have under FIBA rules to advance the ball from its backcourt to its frontcourt?",
+    options: ["3 seconds", "5 seconds", "8 seconds", "10 seconds"],
+    ans: 2,
+    exp: "The 8-second rule (backcourt violation) requires a team to move the ball from its backcourt into its frontcourt within 8 seconds."
+  },
+  {
+    q: "According to the FIBA 3-second rule, where is an offensive player prohibited from remaining for more than 3 consecutive seconds?",
+    options: ["Inside their own backcourt", "Inside the opponents' restricted area while their team controls the ball in the frontcourt", "Outside the three-point arc", "Inside the centre circle"],
+    ans: 1,
+    exp: "Under the 3-second rule, an offensive player cannot remain in the opponents' restricted area (key/paint) for more than 3 consecutive seconds while their team controls the ball in the frontcourt."
+  },
+  {
+    q: "How many personal fouls result in a player's disqualification from further participation under standard FIBA rules?",
+    options: ["4 personal fouls", "5 personal fouls", "6 personal fouls", "7 personal fouls"],
+    ans: 1,
+    exp: "Under standard FIBA rules, a player who commits 5 personal fouls is disqualified from further participation in the match."
+  },
+  {
+    q: "When and where did 3×3 basketball make its debut as an Olympic sport?",
+    options: ["Rio 2016 Olympics", "Tokyo 2020 Olympics (held in 2021)", "Paris 2024 Olympics", "London 2012 Olympics"],
+    ans: 1,
+    exp: "3×3 basketball became an Olympic sport at the Tokyo 2020 Olympics (held in 2021). It is played with three players per team on one basket."
+  },
+  {
+    q: "When was the Basketball Federation of India (BFI) established?",
+    options: ["1932", "1947", "1950", "1954"],
+    ans: 2,
+    exp: "The Basketball Federation of India (BFI), the governing body of basketball in India, was established in 1950."
+  },
+  {
+    q: "How does a standard basketball game officially start?",
+    options: ["With a Free Throw", "With a Jump Ball", "With a Throw-in from the baseline", "With a Penalty Shot"],
+    ans: 1,
+    exp: "A Jump Ball is the method of starting the game by tossing the ball into the air between two opposing players at the centre circle."
+  },
+  {
+    q: "What is the term for recovering the basketball after a missed field goal or free throw attempt?",
+    options: ["Steal", "Assist", "Rebound", "Block"],
+    ans: 2,
+    exp: "Rebound refers to recovering the ball after a missed shot. A Block is preventing an opponent's shot from reaching the basket, while a Steal is taking possession from an opponent."
+  },
+  {
+    q: "What is a defensive strategy that involves applying pressure across the entire length of the basketball court called?",
+    options: ["Zone Defence", "Full-court Press", "Pivot Trap", "Fast Break"],
+    ans: 1,
+    exp: "Full-court Press is a defensive strategy in which defenders apply pressure on the offensive team across the entire court rather than waiting in their own half."
+  },
+  {
+    q: "How many original rules did James Naismith write when he invented basketball in 1891?",
+    options: ["10 rules", "11 rules", "13 rules", "15 rules"],
+    ans: 2,
+    exp: "When James Naismith invented basketball in December 1891, the game originally consisted of 13 rules."
+  }
+];
+
+let currentIdx = 0;
+let userAnswers = new Array(questions.length).fill(null);
+// Statuses: 'not-visited', 'not-answered', 'answered', 'marked'
+let statuses = new Array(questions.length).fill('not-visited');
+let timeLeft = 10 * 60; // 10 minutes in seconds
+let timerInterval = null;
+
+function initExam() {
+  currentIdx = 0;
+  userAnswers.fill(null);
+  statuses.fill('not-visited');
+  timeLeft = 10 * 60;
+
+  document.getElementById('quiz-view').style.display = 'flex';
+  document.getElementById('results-view').style.display = 'none';
+  document.getElementById('timer-display').classList.remove('timer-warning');
+
+  renderPalette();
+  loadQuestion(0);
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  document.getElementById('time-text').textContent =
+    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+  const timerBox = document.getElementById('timer-display');
+  if (timeLeft < 120 && timeLeft > 0) {
+    timerBox.classList.add('timer-warning');
+  } else {
+    timerBox.classList.remove('timer-warning');
+  }
+}
+
+function loadQuestion(idx) {
+  currentIdx = idx;
+
+  // Mark visited if not visited yet
+  if (statuses[currentIdx] === 'not-visited') {
+    statuses[currentIdx] = 'not-answered';
+  }
+
+  const qObj = questions[currentIdx];
+  document.getElementById('q-num-label').textContent = `Question No. ${currentIdx + 1} of ${questions.length}`;
+  document.getElementById('q-text-display').textContent = qObj.q;
+
+  const optsContainer = document.getElementById('options-container');
+  optsContainer.innerHTML = '';
+
+  qObj.options.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = 'option-label' + (userAnswers[currentIdx] === i ? ' selected' : '');
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'option';
+    radio.value = i;
+    radio.checked = (userAnswers[currentIdx] === i);
+    radio.onchange = () => selectOption(i);
+
+    const span = document.createElement('span');
+    span.textContent = `${String.fromCharCode(65 + i)}. ${optText}`;
+
+    label.appendChild(radio);
+    label.appendChild(span);
+    optsContainer.appendChild(label);
+  });
+
+  renderPalette();
+}
+
+function selectOption(optIdx) {
+  userAnswers[currentIdx] = optIdx;
+  statuses[currentIdx] = 'answered';
+  loadQuestion(currentIdx);
+}
+
+function clearResponse() {
+  userAnswers[currentIdx] = null;
+  statuses[currentIdx] = 'not-answered';
+  loadQuestion(currentIdx);
+}
+
+function markForReview() {
+  statuses[currentIdx] = 'marked';
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  } else {
+    renderPalette();
+  }
+}
+
+function nextQuestion() {
+  if (currentIdx < questions.length - 1) {
+    loadQuestion(currentIdx + 1);
+  }
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) {
+    loadQuestion(currentIdx - 1);
+  }
+}
+
+function renderPalette() {
+  const container = document.getElementById('palette-container');
+  container.innerHTML = '';
+
+  let cNotVisited = 0, cNotAnswered = 0, cAnswered = 0, cMarked = 0;
+
+  statuses.forEach((st, idx) => {
+    if (st === 'not-visited') cNotVisited++;
+    else if (st === 'not-answered') cNotAnswered++;
+    else if (st === 'answered') cAnswered++;
+    else if (st === 'marked') cMarked++;
+
+    const btn = document.createElement('button');
+    btn.className = `q-btn status-${st}` + (idx === currentIdx ? ' current' : '');
+    btn.textContent = idx + 1;
+    btn.onclick = () => loadQuestion(idx);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('count-not-visited').textContent = cNotVisited;
+  document.getElementById('count-not-answered').textContent = cNotAnswered;
+  document.getElementById('count-answered').textContent = cAnswered;
+  document.getElementById('count-marked').textContent = cMarked;
+}
+
+function confirmSubmit() {
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  const msg = `You have answered ${answeredCount} out of ${questions.length} questions.\nAre you sure you want to submit the test?`;
+  if (confirm(msg)) {
+    submitTest();
+  }
+}
+
+function submitTest() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-view').style.display = 'none';
+  document.getElementById('results-view').style.display = 'block';
+
+  let correct = 0, incorrect = 0, unattempted = 0;
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+
+  questions.forEach((qObj, idx) => {
+    const uAns = userAnswers[idx];
+    let statusBadge = '';
+
+    if (uAns === null) {
+      unattempted++;
+      statusBadge = '<span class="badge-unattempted">Unattempted</span>';
+    } else if (uAns === qObj.ans) {
+      correct++;
+      statusBadge = '<span class="badge-correct">Correct (+1)</span>';
+    } else {
+      incorrect++;
+      statusBadge = '<span class="badge-wrong">Incorrect (0)</span>';
+    }
+
+    const card = document.createElement('div');
+    card.className = 'review-card';
+
+    let optsHtml = '<div class="review-options">';
+    qObj.options.forEach((opt, oIdx) => {
+      let cls = 'rev-opt';
+      let tag = '';
+      if (oIdx === qObj.ans) {
+        cls += ' correct-ans';
+        tag = ' ✓ (Correct Answer)';
+      } else if (oIdx === uAns && uAns !== qObj.ans) {
+        cls += ' user-wrong';
+        tag = ' ✗ (Your Choice)';
+      }
+      optsHtml += `<div class="${cls}">${String.fromCharCode(65 + oIdx)}. ${opt}${tag}</div>`;
+    });
+    optsHtml += '</div>';
+
+    card.innerHTML = `
+      <div class="review-header">
+        <span>Question ${idx + 1}</span>
+        ${statusBadge}
+      </div>
+      <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 8px;">${qObj.q}</div>
+      ${optsHtml}
+      <div class="explanation-box"><strong>Explanation:</strong> ${qObj.exp}</div>
+    `;
+
+    reviewList.appendChild(card);
+  });
+
+  document.getElementById('res-score').textContent = `${correct} / ${questions.length}`;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-incorrect').textContent = incorrect;
+  document.getElementById('res-unattempted').textContent = unattempted;
+}
+
+function retakeTest() {
+  initExam();
+}
+
+// Start on page load
+window.onload = initExam;
+</script>
+
+</body>
+</html>
